@@ -86,7 +86,7 @@ void register_nodes(){
 //============</registered-nodelist>===========
 
 //============<parameters>============
-#define MESH_SSID "cricket-crackers"
+#define MESH_SSID "forest-all/around"
 #define MESH_PASSWORD "cc*vvvv/kkk"
 #define MESH_PORT 5555
 #define MESH_CHANNEL 5
