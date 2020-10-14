@@ -42,7 +42,8 @@
 //==========</preset>==========
 
 //============<this cricket>============
-#define CRICKET_KEY CRICKET_A_KEY
+#include "crickets.h"
+#define CRICKET_KEY CRICKET_A_KEY // A-E-I-O-U-W-Y-N (up to 7 crickets)
 //============</this cricket>===========
 
 //============<parameters>============
@@ -157,31 +158,19 @@ Task nothappyalone_task(100, TASK_FOREVER, &nothappyalone); // by default, ENABL
 static Servo myservo;
 
 // my tasks
-extern Task fastturn_task;
-extern Task slowturn_task;
+extern Task set_speed_task;
 extern Task rest_task;
 int speed = 0;
-void fastturn() {
+void set_speed() {
   int r = speed;
   analogWrite(12,r);
-  Serial.print("fast:");
+  Serial.print("set_speed:");
   Serial.println(r);
-  //slowturn_task.restartDelayed(5000);
 }
-Task fastturn_task(0, TASK_ONCE, &fastturn);
-
-void slowturn() {
-  int r = random(200, 400);
-  Serial.print("slow:");
-  Serial.println(r);
-  analogWrite(12,r);
-  rest_task.restartDelayed(10);
-}
-Task slowturn_task(0, TASK_ONCE, &slowturn);
+Task set_speed_task(0, TASK_ONCE, &set_speed);
 
 void rest() {
   analogWrite(12,0);
-  // fastturn_task.restartDelayed(100);
 }
 Task rest_task(0, TASK_ONCE, &rest);
 
@@ -214,12 +203,12 @@ void receivedCallback(uint32_t from, String & msg) { // REQUIRED
   int velocity = str_velocity.toInt(); // 0 ~ 127
   int gate = str_gate.toInt();
 
-  speed = velocity * 4;
+  speed = velocity * 4; // 0 ~ 508
 
-  //is it for me, the gastank?
+  //is it for me?
   if (key == CRICKET_KEY) {
     if (gate == 1) {
-      fastturn_task.restartDelayed(10);
+      set_speed_task.restartDelayed(10);
     } else if (gate == 0) {
       rest_task.restartDelayed(10);
     }
@@ -337,8 +326,7 @@ void setup() {
   randomSeed(analogRead(0));
 
   //tasks
-  runner.addTask(fastturn_task);
-  runner.addTask(slowturn_task);
+  runner.addTask(set_speed_task);
   runner.addTask(rest_task);
 
   rest_task.restartDelayed(500);
