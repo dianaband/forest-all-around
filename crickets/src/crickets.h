@@ -1,0 +1,10 @@
+//============<list of crickets>============
+#define CRICKET_A_KEY 120
+#define CRICKET_E_KEY 121
+#define CRICKET_I_KEY 122
+#define CRICKET_O_KEY 123
+#define CRICKET_U_KEY 124
+#define CRICKET_W_KEY 125
+#define CRICKET_Y_KEY 126
+#define CRICKET_N_KEY 127
+//============</list of crickets>===========
