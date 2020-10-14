@@ -1,0 +1,263 @@
+# persistent device name
+
+#
+# run following shell cmd.
+#
+# udevadm info -a -p $(udevadm info -q path -n /dev/ttyACM0)
+#
+
+#
+# then you get sth. like following:
+#
+
+# Udevadm info starts with the device specified by the devpath and then
+# walks up the chain of parent devices. It prints for every device
+# found, all possible attributes in the udev rules key format.
+# A rule to match, can be composed by the attributes of the device
+# and the attributes from one single parent device.
+
+#   looking at device '/devices/pci0000:00/0000:00:14.0/usb1/1-2/1-2.4/1-2.4:1.0/tty/ttyACM0':
+#     KERNEL=="ttyACM0"
+#     SUBSYSTEM=="tty"
+#     DRIVER==""
+
+#   looking at parent device '/devices/pci0000:00/0000:00:14.0/usb1/1-2/1-2.4/1-2.4:1.0':
+#     KERNELS=="1-2.4:1.0"
+#     SUBSYSTEMS=="usb"
+#     DRIVERS=="cdc_acm"
+#     ATTRS{authorized}=="1"
+#     ATTRS{bAlternateSetting}==" 0"
+#     ATTRS{bInterfaceClass}=="02"
+#     ATTRS{bInterfaceNumber}=="00"
+#     ATTRS{bInterfaceProtocol}=="01"
+#     ATTRS{bInterfaceSubClass}=="02"
+#     ATTRS{bNumEndpoints}=="01"
+#     ATTRS{bmCapabilities}=="6"
+#     ATTRS{supports_autosuspend}=="1"
+
+#   looking at parent device '/devices/pci0000:00/0000:00:14.0/usb1/1-2/1-2.4':
+#     KERNELS=="1-2.4"
+#     SUBSYSTEMS=="usb"
+#     DRIVERS=="usb"
+#     ATTRS{authorized}=="1"
+#     ATTRS{avoid_reset_quirk}=="0"
+#     ATTRS{bConfigurationValue}=="1"
+#     ATTRS{bDeviceClass}=="02"
+#     ATTRS{bDeviceProtocol}=="00"
+#     ATTRS{bDeviceSubClass}=="00"
+#     ATTRS{bMaxPacketSize0}=="64"
+#     ATTRS{bMaxPower}=="100mA"
+#     ATTRS{bNumConfigurations}=="1"
+#     ATTRS{bNumInterfaces}==" 2"
+#     ATTRS{bcdDevice}=="0277"
+#     ATTRS{bmAttributes}=="c0"
+#     ATTRS{busnum}=="1"
+#     ATTRS{configuration}==""
+#     ATTRS{devnum}=="31"
+#     ATTRS{devpath}=="2.4"
+#     ATTRS{idProduct}=="0483"
+#     ATTRS{idVendor}=="16c0"
+#     ATTRS{ltm_capable}=="no"
+#     ATTRS{manufacturer}=="Teensyduino"
+#     ATTRS{maxchild}=="0"
+#     ATTRS{product}=="USB Serial"
+#     ATTRS{quirks}=="0x0"
+#     ATTRS{removable}=="fixed"
+#     ATTRS{rx_lanes}=="1"
+#     ATTRS{serial}=="4871050"
+#     ATTRS{speed}=="12"
+#     ATTRS{tx_lanes}=="1"
+#     ATTRS{urbnum}=="10"
+#     ATTRS{version}==" 1.10"
+
+#   looking at parent device '/devices/pci0000:00/0000:00:14.0/usb1/1-2':
+#     KERNELS=="1-2"
+#     SUBSYSTEMS=="usb"
+#     DRIVERS=="usb"
+#     ATTRS{authorized}=="1"
+#     ATTRS{avoid_reset_quirk}=="0"
+#     ATTRS{bConfigurationValue}=="1"
+#     ATTRS{bDeviceClass}=="09"
+#     ATTRS{bDeviceProtocol}=="02"
+#     ATTRS{bDeviceSubClass}=="00"
+#     ATTRS{bMaxPacketSize0}=="64"
+#     ATTRS{bMaxPower}=="100mA"
+#     ATTRS{bNumConfigurations}=="1"
+#     ATTRS{bNumInterfaces}==" 1"
+#     ATTRS{bcdDevice}=="9212"
+#     ATTRS{bmAttributes}=="e0"
+#     ATTRS{busnum}=="1"
+#     ATTRS{configuration}==""
+#     ATTRS{devnum}=="30"
+#     ATTRS{devpath}=="2"
+#     ATTRS{idProduct}=="0610"
+#     ATTRS{idVendor}=="05e3"
+#     ATTRS{ltm_capable}=="no"
+#     ATTRS{manufacturer}=="GenesysLogic"
+#     ATTRS{maxchild}=="4"
+#     ATTRS{product}=="USB2.0 Hub"
+#     ATTRS{quirks}=="0x0"
+#     ATTRS{removable}=="removable"
+#     ATTRS{rx_lanes}=="1"
+#     ATTRS{speed}=="480"
+#     ATTRS{tx_lanes}=="1"
+#     ATTRS{urbnum}=="44"
+#     ATTRS{version}==" 2.10"
+
+#   looking at parent device '/devices/pci0000:00/0000:00:14.0/usb1':
+#     KERNELS=="usb1"
+#     SUBSYSTEMS=="usb"
+#     DRIVERS=="usb"
+#     ATTRS{authorized}=="1"
+#     ATTRS{authorized_default}=="1"
+#     ATTRS{avoid_reset_quirk}=="0"
+#     ATTRS{bConfigurationValue}=="1"
+#     ATTRS{bDeviceClass}=="09"
+#     ATTRS{bDeviceProtocol}=="01"
+#     ATTRS{bDeviceSubClass}=="00"
+#     ATTRS{bMaxPacketSize0}=="64"
+#     ATTRS{bMaxPower}=="0mA"
+#     ATTRS{bNumConfigurations}=="1"
+#     ATTRS{bNumInterfaces}==" 1"
+#     ATTRS{bcdDevice}=="0504"
+#     ATTRS{bmAttributes}=="e0"
+#     ATTRS{busnum}=="1"
+#     ATTRS{configuration}==""
+#     ATTRS{devnum}=="1"
+#     ATTRS{devpath}=="0"
+#     ATTRS{idProduct}=="0002"
+#     ATTRS{idVendor}=="1d6b"
+#     ATTRS{interface_authorized_default}=="1"
+#     ATTRS{ltm_capable}=="no"
+#     ATTRS{manufacturer}=="Linux 5.4.0-48-generic xhci-hcd"
+#     ATTRS{maxchild}=="11"
+#     ATTRS{product}=="xHCI Host Controller"
+#     ATTRS{quirks}=="0x0"
+#     ATTRS{removable}=="unknown"
+#     ATTRS{rx_lanes}=="1"
+#     ATTRS{serial}=="0000:00:14.0"
+#     ATTRS{speed}=="480"
+#     ATTRS{tx_lanes}=="1"
+#     ATTRS{urbnum}=="1026"
+#     ATTRS{version}==" 2.00"
+
+#   looking at parent device '/devices/pci0000:00/0000:00:14.0':
+#     KERNELS=="0000:00:14.0"
+#     SUBSYSTEMS=="pci"
+#     DRIVERS=="xhci_hcd"
+#     ATTRS{ari_enabled}=="0"
+#     ATTRS{broken_parity_status}=="0"
+#     ATTRS{class}=="0x0c0330"
+#     ATTRS{consistent_dma_mask_bits}=="64"
+#     ATTRS{d3cold_allowed}=="1"
+#     ATTRS{dbc}=="disabled"
+#     ATTRS{device}=="0x9cb1"
+#     ATTRS{dma_mask_bits}=="64"
+#     ATTRS{driver_override}=="(null)"
+#     ATTRS{enable}=="1"
+#     ATTRS{irq}=="53"
+#     ATTRS{local_cpulist}=="0-3"
+#     ATTRS{local_cpus}=="f"
+#     ATTRS{msi_bus}=="1"
+#     ATTRS{numa_node}=="-1"
+#     ATTRS{revision}=="0x03"
+#     ATTRS{subsystem_device}=="0x7270"
+#     ATTRS{subsystem_vendor}=="0x8086"
+#     ATTRS{vendor}=="0x8086"
+
+#   looking at parent device '/devices/pci0000:00':
+#     KERNELS=="pci0000:00"
+#     SUBSYSTEMS==""
+#     DRIVERS==""
+
+
+
+# now look at (line 28 of this file). which is:
+
+#     KERNELS=="1-2.4:1.0"
+
+
+#
+# KERNELS value indicates what port is being used.
+#
+
+
+
+#
+# now, look at the usb plugs of the usb hub (black one w/ usb 3 support)
+# by pluging in and out (trial and error)
+# one can easily get a mapping of KERNELS values like:
+#
+
+
+
+#
+# but, be careful !
+# all usb ports are usb 3.0 capable ports.
+# plug-in usb 3.0 device, then they will be registered under usb3 bus.
+# plug-in usb 2.0 device, then they will be registered under usb2 bus.
+# usb2 bus & usb3 bus numbering map is totally different !
+#
+
+
+
+# usb 2.0 mapping (for example, you will get one of these with 'arduino')
+
+#     +-------+-------+-------+-------+
+#     | 1-2.1 | 1-2.2 | 1-2.3 | 1-2.4 |--------[USB A plug]|||
+#     +-------+-------+-------+-------+
+
+
+
+# usb 3.0 mapping (for example, you will get one of these with 'usb3.0 external ssd')
+
+#     +-------+-------+-------+-------+
+#     | 2-2.1 | 2-2.2 | 2-2.3 | 2-2.4 |--------[USB A plug]|||
+#     +-------+-------+-------+-------+
+
+
+
+# so, as a summary
+
+# usb 2/3 port mappings
+
+#     +-------+-------+-------+-------+
+#     |   A   |   B   |   C   |   D   |--------[USB A plug]|||
+#     +-------+-------+-------+-------+
+#     +-------+-------+-------+-------+
+#     | 1-2.1 | 1-2.2 | 1-2.3 | 1-2.4 |--------[USB A plug]|||
+#     +-------+-------+-------+-------+
+#     +-------+-------+-------+-------+
+#     | 2-2.1 | 2-2.2 | 2-2.3 | 2-2.4 |--------[USB A plug]|||
+#     +-------+-------+-------+-------+
+
+
+# configurations to get fixed symlinks only for ttyACM* & ttyUSB*
+
+# usb 2.0
+KERNEL=="ttyACM*", KERNELS=="1-2.1", MODE="0666", SYMLINK+="portA"
+KERNEL=="ttyUSB*", KERNELS=="1-2.1", MODE="0666", SYMLINK+="portA"
+# usb 3.0
+KERNEL=="ttyACM*", KERNELS=="2-2.1", MODE="0666", SYMLINK+="portA"
+KERNEL=="ttyUSB*", KERNELS=="2-2.1", MODE="0666", SYMLINK+="portA"
+
+# usb 2.0
+KERNEL=="ttyACM*", KERNELS=="1-2.2", MODE="0666", SYMLINK+="portB"
+KERNEL=="ttyUSB*", KERNELS=="1-2.2", MODE="0666", SYMLINK+="portB"
+# usb 3.0
+KERNEL=="ttyACM*", KERNELS=="2-2.2", MODE="0666", SYMLINK+="portB"
+KERNEL=="ttyUSB*", KERNELS=="2-2.2", MODE="0666", SYMLINK+="portB"
+
+# usb 2.0
+KERNEL=="ttyACM*", KERNELS=="1-2.3", MODE="0666", SYMLINK+="portC"
+KERNEL=="ttyUSB*", KERNELS=="1-2.3", MODE="0666", SYMLINK+="portC"
+# usb 3.0
+KERNEL=="ttyACM*", KERNELS=="2-2.3", MODE="0666", SYMLINK+="portC"
+KERNEL=="ttyUSB*", KERNELS=="2-2.3", MODE="0666", SYMLINK+="portC"
+
+# usb 2.0
+KERNEL=="ttyACM*", KERNELS=="1-2.4", MODE="0666", SYMLINK+="portD"
+KERNEL=="ttyUSB*", KERNELS=="1-2.4", MODE="0666", SYMLINK+="portD"
+# usb 3.0
+KERNEL=="ttyACM*", KERNELS=="2-2.4", MODE="0666", SYMLINK+="portD"
+KERNEL=="ttyUSB*", KERNELS=="2-2.4", MODE="0666", SYMLINK+="portD"
