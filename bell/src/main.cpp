@@ -10,31 +10,7 @@
 //
 
 //
-// 2019 12 10
-//
-// (part-1) esp8266 : 'postman' (the mesh network nodes)
-//
-//   this module will build up a mesh cloud.
-//
-//   for now, ESP-MESH is out there.
-//   which is probably more complete impl. of this kind.
-//   but that's only for esp32, not for esp8266
-//   we want to use esp8266, so, we will use painlessMesh
-//   which is also good.
-//
-//   for painlessMesh, a node is a JSON 'postman'
-//   we can broadcast/unicast/recv. msg. w/ meshID and nodelist
-//   so, let's just use it.
-//
-//   but one specific thing is that we will use I2C comm. to feed this postman.
-//   and I2C is a FIXED-length msg.
-//   so, at least, we need to fix this length of the msg.
-//   otherwise, we need to do variable-length comm. like uart. to feed/fetch msg. from postman.
-//
-//   well, okay. but, let's just do.. I2C. and fix a length.
-//   maybe, ... 32 bytes?
-//   so, then, this postman will read/write I2C channel. always.. 32 bytes.
-//   and then, this 32 bytes will be flying in the clouds.
+// 2020 10 14
 //
 
 //==========<configurations>===========
@@ -62,21 +38,12 @@
 //==========</configurations>==========
 
 //==========<preset>===========
-// (1) the backbone AP
-#if 0
-#define DISABLE_I2C_REQ
 #define SET_CONTAINSROOT
-// (2) osc client (the ROOT)
-#elif 0
-#define SET_ROOT
-#define SET_CONTAINSROOT
-// (3) sampler client
-#elif 1
-#define DISABLE_AP
-#define DISABLE_I2C_REQ
-//
-#endif
 //==========</preset>==========
+
+//============<gastank>============
+#define BELL_HIT_KEY 105
+//============</gastank>===========
 
 //============<parameters>============
 #define MESH_SSID "forest-all/around"
@@ -112,7 +79,7 @@
 
 //i2c
 #include <Wire.h>
-#include "../post.h"
+#include "../../post.h"
 
 //painlessmesh
 #include <painlessMesh.h>
@@ -184,98 +151,156 @@ void nothappyalone() {
 // Task nothappyalone_task(1000, TASK_FOREVER, &nothappyalone, &runner, true); // by default, ENABLED.
 Task nothappyalone_task(100, TASK_FOREVER, &nothappyalone); // by default, ENABLED.
 
-//task #2 : regular post collection
-#if !defined(DISABLE_I2C_REQ)
-void collect_post() {
-  //
-  static char letter_outro[POST_BUFF_LEN] = "................................";
-  // ask a letter and collect the feedback.
-  Wire.requestFrom(I2C_ADDR, POST_LENGTH);
-  // error flag
-  bool letter_is_good = false;
-  // check the first byte
-  char first = '.';
-  // automatically match start byte.
-  while (Wire.available()) {
-    first = Wire.read();
-    if (first == '[') {
-      // client want to give me a letter.
-      letter_outro[0] = first;
-      // matched!
-      letter_is_good = true;
-      break;
-    } else if (first == ' ') {
-      // client says nothing to send.
-      Serial.print("."); // nothing to send.
-      return;
-    }
+// servo
+#define SERVO_PIN D6
+#include <Servo.h>
+Servo myservo;
+#define HITTING_ANGLE 87
+#define RELEASE_ANGLE 60
+#define STABILIZE_ANGLE 53
+
+//
+extern Task hit_task;
+
+//
+extern Task pcontrol_task;
+bool pcontrol_new = false;
+int pcontrol_start = 0;
+int pcontrol_target = 0;
+int control_count = 0;
+
+//
+extern Task servo_release_task;
+
+// my tasks
+// hit!
+void hit() {
+  static int count = 0;
+  if (hit_task.isFirstIteration()) {
+    count = 0;
+    Serial.println("hit! start.");
   }
-  //
-  if (letter_is_good == false) {
-    // no more letters, but no valid char.
-    Serial.print("?"); // wrong client.
-    return;
-  } else if (letter_is_good == true) {
-    // get more contents
-    for (int i = 1; i < (POST_LENGTH-1); i++) {
-      if (Wire.available()) {
-        letter_outro[i] = Wire.read();
-      } else {
-        // hmm.. letter is too short.
-        letter_outro[i] = '.'; // fill-out with dots.
-        Serial.print("$"); // too $hort msg.
-        letter_is_good = false;
-      }
-    }
-    // the last byte
-    char last = '.';
-    if (Wire.available()) {
-      letter_outro[POST_LENGTH-1] = last = Wire.read();
-      if (last != ']') {
-        // hmm.. last byte is strange
-        Serial.print("#"); // last byte error.
-        letter_is_good = false;
-      }
-    } else {
-      // hmm.. letter is too short.
-      letter_outro[POST_LENGTH-1] = '.'; // fill-out with dots.
-      Serial.print("$"); // too $hort msg.
-      letter_is_good = false;
-    }
-    // terminal char.
-    letter_outro[POST_LENGTH] = '\0';
-  }
-  // no good letter, we discard.
-  if (letter_is_good == false) {
-    return;
-  }
-  // or, post it.
-  if (isConnected == true) {
-    mesh.sendBroadcast(String(letter_outro));
-    Serial.print("sendBroadcast: ");
-    Serial.println(letter_outro);
+  if (count % 3 == 0) {
+    //
+    myservo.attach(SERVO_PIN);
+    myservo.write(RELEASE_ANGLE);
+    // servo_release_task.restartDelayed(200);
+    //
+  } else if (count % 3 == 1) {
+    //
+    myservo.attach(SERVO_PIN);
+    myservo.write(HITTING_ANGLE);
+    // servo_release_task.restartDelayed(200);
+    //
+    Serial.print("bell, bell, bell! : ");
+    Serial.print(HITTING_ANGLE);
+    Serial.println(" deg.");
+    //
   } else {
-    Serial.print("_"); // disconnected.
+    //
+    myservo.attach(SERVO_PIN);
+    myservo.write(RELEASE_ANGLE);
+    servo_release_task.restartDelayed(200);
+    //
+    Serial.print("release to .. : ");
+    Serial.print(RELEASE_ANGLE);
+    Serial.println(" deg.");
+    // start stablizing..
+    pcontrol_new = true;
+    pcontrol_start = RELEASE_ANGLE;
+    pcontrol_target = STABILIZE_ANGLE;
+    pcontrol_task.restartDelayed(80);
+    //
+    control_count = 0;
+  }
+  //
+  count++;
+}
+Task hit_task(100, 3, &hit);
+
+// pcontrol
+void pcontrol() {
+  static int angle;
+  if (pcontrol_new == true) {
+    pcontrol_new = false;
+    angle = pcontrol_start;
+  }
+  int error = pcontrol_target - angle;
+  int sign = (error >= 0 ? 1 : -1);
+  //
+  Serial.print("step-by-step to.. : ");
+  Serial.println(sign);
+  //
+  if (error != 0) {
+    angle = angle + sign; // most gentle move : 1 step each time.
+    //
+    Serial.print("stablizing in action ==> next angle : ");
+    Serial.print(angle);
+    Serial.println(" deg.");
+    //
+    myservo.attach(SERVO_PIN);
+    myservo.write(angle);
+    servo_release_task.restartDelayed(50);
+    pcontrol_task.restartDelayed(400);
+  }
+  else {
+    // stand-by processes
+    if (control_count % 2 == 0) {
+      pcontrol_new = true;
+      pcontrol_start = STABILIZE_ANGLE;
+      pcontrol_target = RELEASE_ANGLE;
+      pcontrol_task.restartDelayed(300);
+    } else if (control_count % 2 == 1) {
+      pcontrol_new = true;
+      pcontrol_start = RELEASE_ANGLE;
+      pcontrol_target = STABILIZE_ANGLE;
+      pcontrol_task.restartDelayed(300);
+    }
+    //
+    control_count++;
   }
 }
-Task collect_post_task(10, TASK_FOREVER, &collect_post, &runner, true); // by default, ENABLED
-//MAYBE... 10ms is too fast? move this to the loop() then?
-#endif
+Task pcontrol_task(0, TASK_ONCE, &pcontrol); // hit -> 100ms -> step back -> 50ms -> slowly move to rest pos.
+
+// pcontrol release
+void servo_release() {
+  myservo.detach();
+}
+Task servo_release_task(0, TASK_ONCE, &servo_release);
 
 // mesh callbacks
 void receivedCallback(uint32_t from, String & msg) { // REQUIRED
   Serial.print("got msg.: ");
   Serial.println(msg);
-  // truncate any extra. letters.
-  msg = msg.substring(0, POST_LENGTH); // (0) ~ (POST_LENGTH-1)
-  // send whatever letter we postmans trust other postman.
-  Wire.beginTransmission(I2C_ADDR);
-#if defined(ARDUINO_NodeMCU_32S)
-  Wire.write((const uint8_t*)msg.c_str(), POST_LENGTH);
-#else
-  Wire.write(msg.c_str(), POST_LENGTH);
-#endif
-  Wire.endTransmission();
+  //parse now.
+
+  //parse letter string.
+
+  // letter frame ( '[' + 30 bytes + ']' )
+  //    : [123456789012345678901234567890]
+
+  // 'MIDI' letter frame
+  //    : [123456789012345678901234567890]
+  //    : [KKKVVVG.......................]
+  //    : KKK - Key
+  //      .substring(1, 4);
+  //    : VVV - Velocity (volume/amp.)
+  //      .substring(4, 7);
+  //    : G - Gate (note on/off)
+  //      .substring(7, 8);
+
+  String str_key = msg.substring(1, 4);
+  String str_velocity = msg.substring(4, 7);
+  String str_gate = msg.substring(7, 8);
+
+  int key = str_key.toInt();
+  int velocity = str_velocity.toInt(); // 0 ~ 127
+  int gate = str_gate.toInt();
+
+  //is it for me, the bell?
+  if (key == BELL_HIT_KEY && gate == 1) {
+    hit_task.restartDelayed(10);
+  }
 }
 void changedConnectionCallback() {
   Serial.println(mesh.getNodeList().size());
@@ -384,6 +409,11 @@ void setup() {
 
   //i2c master
   Wire.begin();
+
+  //tasks
+  runner.addTask(hit_task);
+  runner.addTask(pcontrol_task);
+  runner.addTask(servo_release_task);
 }
 
 void loop() {

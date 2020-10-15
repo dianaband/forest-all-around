@@ -6,8 +6,7 @@
 //
 
 //
-// COSMO40 @ Incheon w/ Factory2
-// RTA @ Seoul w/ Post Territory Ujeongguk
+// Forest all/around @ MMCA, Seoul
 //
 
 //
@@ -15,6 +14,11 @@
 //
 // (part-3) teensy35 : 'client:sampler' (mesh post --> play sounds)
 //
+
+//============<sampler>============
+//optionally pin3 will go HIGH/LOW in sync w/ sound PLAY/STOP
+#define MOTOR_PIN 3
+//============</sampler>===========
 
 //HACK: let auto-poweroff speakers stay turned ON! - (creative muvo mini)
 #define IDLE_FREQ 22000
@@ -81,6 +85,8 @@ void sample_player_start()
   // if (playSdWav1.isPlaying() == false) {
   playSdWav1.play(filename);
   // }
+  //fan action
+  digitalWrite(MOTOR_PIN, HIGH);
   //mark the indicator : HIGH: ON
   digitalWrite(13, HIGH);
   //to wait a bit for updating isPlaying()
@@ -108,6 +114,8 @@ void sample_player_stop() {
   //stop the player.
   if (playSdWav1.isPlaying() == true) {
     playSdWav1.stop();
+    //fan stop
+    digitalWrite(MOTOR_PIN, LOW);
   }
 }
 void sample_player_check() {
@@ -229,6 +237,10 @@ void setup() {
   //
   // while (!Serial) {}
   //  --> use this.. to capture start-up messages, properly. very handy.
+
+  //motor
+  pinMode(MOTOR_PIN, OUTPUT);
+  digitalWrite(MOTOR_PIN, LOW);
 
   //i2c
   Wire.begin(I2C_ADDR);

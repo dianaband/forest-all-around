@@ -10,7 +10,7 @@
 //
 
 //
-// 2020 10 17
+// 2020 10 14
 //
 
 //==========<configurations>===========
@@ -43,7 +43,7 @@
 
 //============<this cricket>============
 #include "crickets.h"
-#define CRICKET_KEY CRICKET_A_KEY // A-E-I-O-U-W-Y-N (up to 7 crickets)
+#define CRICKET_KEY CRICKET_N_KEY // A-E-I-O-U-W-Y-N (up to 8 crickets) - KEY 120 ~ 127
 //============</this cricket>===========
 
 //============<parameters>============
@@ -70,6 +70,8 @@
 #elif defined(ARDUINO_FEATHER_ESP32) // featheresp32
 #define LED_PIN 13
 #elif defined(ARDUINO_NodeMCU_32S) // nodemcu-32s
+#define LED_PIN 2
+#elif defined(ARDUINO_ESP32_DEV) // esp32doit-devkit-v1
 #define LED_PIN 2
 #endif
 #define LED_PERIOD (1111)
@@ -153,9 +155,16 @@ void nothappyalone() {
 Task nothappyalone_task(100, TASK_FOREVER, &nothappyalone); // by default, ENABLED.
 
 // servo
-#define SERVO_PIN D6
-#include <Servo.h>
-static Servo myservo;
+#if defined(ESP8266)
+  #define SERVO_PIN 12 //D6
+  #if (CRICKET_KEY==CRICKET_O_KEY)
+    #undef SERVO_PIN
+    #define SERVO_PIN 13 //D7
+  #endif
+  #include <Servo.h>
+#elif defined(ESP32)
+  #define SERVO_PIN 5
+#endif
 
 // my tasks
 extern Task set_speed_task;
@@ -163,14 +172,22 @@ extern Task rest_task;
 int speed = 0;
 void set_speed() {
   int r = speed;
-  analogWrite(12,r);
+#if defined(ESP32)
+  ledcWrite(0, r);
+#elif defined(ESP8266)
+  analogWrite(SERVO_PIN, r);
+#endif
   Serial.print("set_speed:");
   Serial.println(r);
 }
 Task set_speed_task(0, TASK_ONCE, &set_speed);
 
 void rest() {
-  analogWrite(12,0);
+#if defined(ESP32)
+  ledcWrite(0, 0);
+#elif defined(ESP8266)
+  analogWrite(SERVO_PIN, 0);
+#endif
 }
 Task rest_task(0, TASK_ONCE, &rest);
 
@@ -204,6 +221,9 @@ void receivedCallback(uint32_t from, String & msg) { // REQUIRED
   int gate = str_gate.toInt();
 
   speed = velocity * 4; // 0 ~ 508
+#if defined(ESP32)
+  speed = velocity; // 10 bit (esp8266) ==> 8 bit (esp32-ledc)
+#endif
 
   //is it for me?
   if (key == CRICKET_KEY) {
@@ -249,6 +269,11 @@ void newConnectionCallback(uint32_t nodeId) {
 void setup() {
   //led
   pinMode(LED_PIN, OUTPUT);
+
+#if defined(ESP32)
+  ledcSetup(0, 1000, 8); // 8bit
+  ledcAttachPin(SERVO_PIN, 0);
+#endif
 
   //mesh
   WiFiMode_t node_type = WIFI_AP_STA;

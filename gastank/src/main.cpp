@@ -6,12 +6,11 @@
 //
 
 //
-// COSMO40 @ Incheon w/ Factory2
-// RTA @ Seoul w/ Post Territory Ujeongguk
+// Forest all/around @ MMCA, Seoul
 //
 
 //
-// 2019 12 15
+// 2020 10 14
 //
 
 //==========<configurations>===========

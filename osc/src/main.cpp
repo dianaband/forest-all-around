@@ -6,8 +6,7 @@
 //
 
 //
-// COSMO40 @ Incheon w/ Factory2
-// RTA @ Seoul w/ Post Territory Ujeongguk
+// Forest all/around @ MMCA, Seoul
 //
 
 //
