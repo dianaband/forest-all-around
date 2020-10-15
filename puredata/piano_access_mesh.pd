@@ -69,8 +69,8 @@
 #X msg 1090 144 127;
 #X obj 979 246 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X obj 957 471 s NOTE;
-#X msg 957 445 68 100 1;
+#X obj 1129 470 s NOTE;
+#X msg 1129 444 68 100 1;
 #X obj 976 154 print NOTE;
 #X obj 733 252 t a b;
 #X msg 760 273 [;
@@ -85,7 +85,7 @@
 #X obj 510 267 print CTRL;
 #X obj 510 209 r CTRL;
 #X obj 664 203 r CTRL;
-#N canvas 423 89 875 805 crickets 1;
+#N canvas 423 89 875 805 crickets 0;
 #X obj 89 492 pack f f;
 #X obj 134 466 tgl 15 0 empty \$0-c-tgl r:0-c-tgl 17 7 0 10 -262144
 -1 -1 0 1;
@@ -398,8 +398,8 @@ of doing this messy approach.;
 #X obj 430 267 print OSC2;
 #X obj 896 104 r OSC;
 #X msg 1135 254 set \$1;
-#X obj 1027 471 s NOTE;
-#X msg 1027 445 68 100 0;
+#X obj 1199 470 s NOTE;
+#X msg 1199 444 68 100 0;
 #X connect 0 0 3 0;
 #X connect 2 0 7 1;
 #X connect 3 0 11 0;
