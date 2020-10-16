@@ -18,6 +18,7 @@
 //============<sampler>============
 //optionally pin3 will go HIGH/LOW in sync w/ sound PLAY/STOP
 #define MOTOR_PIN 3
+// #define FAN_ACTION // this is noisy....
 //============</sampler>===========
 
 //HACK: let auto-poweroff speakers stay turned ON! - (creative muvo mini)
@@ -85,8 +86,10 @@ void sample_player_start()
   // if (playSdWav1.isPlaying() == false) {
   playSdWav1.play(filename);
   // }
+#if defined(FAN_ACTION)
   //fan action
   digitalWrite(MOTOR_PIN, HIGH);
+#endif
   //mark the indicator : HIGH: ON
   digitalWrite(13, HIGH);
   //to wait a bit for updating isPlaying()
@@ -114,8 +117,10 @@ void sample_player_stop() {
   //stop the player.
   if (playSdWav1.isPlaying() == true) {
     playSdWav1.stop();
+#if defined(FAN_ACTION)
     //fan stop
     digitalWrite(MOTOR_PIN, LOW);
+#endif
   }
 }
 void sample_player_check() {
@@ -239,8 +244,10 @@ void setup() {
   //  --> use this.. to capture start-up messages, properly. very handy.
 
   //motor
+#if defined(FAN_ACTION)
   pinMode(MOTOR_PIN, OUTPUT);
   digitalWrite(MOTOR_PIN, LOW);
+#endif
 
   //i2c
   Wire.begin(I2C_ADDR);
