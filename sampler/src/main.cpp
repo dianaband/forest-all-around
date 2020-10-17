@@ -18,7 +18,9 @@
 //============<sampler>============
 //optionally pin3 will go HIGH/LOW in sync w/ sound PLAY/STOP
 #define MOTOR_PIN 3
-// #define FAN_ACTION // this is noisy....
+// #define FAN_ACTION // this is noisy.... ==> not so recommendable..
+#define NOTE_MIN 24
+#define NOTE_MAX 84
 //============</sampler>===========
 
 //HACK: let auto-poweroff speakers stay turned ON! - (creative muvo mini)
@@ -184,20 +186,22 @@ void receiveEvent(int numBytes) {
 
     //
     int key = str_key.toInt();
-    sample_now = key;
-    //
-    int velocity = str_velocity.toInt(); // 0 ~ 127
-    float amp_gain = (float)velocity / 127.0;
-    amp1.gain(amp_gain);
-    amp2.gain(amp_gain);
-    //
-    int gate = str_gate.toInt();
-    if (gate == 0) {
-      sample_player_stop_task.restart();
-      Serial.println("sample_player_stop_task");
-    } else {
-      sample_player_start_task.restart();
-      Serial.println("sample_player_start_task");
+    if (key >= NOTE_MIN && key <= NOTE_MAX) {
+      sample_now = key;
+      //
+      int velocity = str_velocity.toInt(); // 0 ~ 127
+      float amp_gain = (float)velocity / 127.0;
+      amp1.gain(amp_gain);
+      amp2.gain(amp_gain);
+      //
+      int gate = str_gate.toInt();
+      if (gate == 0) {
+        sample_player_stop_task.restart();
+        Serial.println("sample_player_stop_task");
+      } else {
+        sample_player_start_task.restart();
+        Serial.println("sample_player_start_task");
+      }
     }
   }
 }
