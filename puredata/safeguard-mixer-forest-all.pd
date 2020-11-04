@@ -102,18 +102,18 @@
 #X msg 521 558 exponential 64 1000 10;
 #X obj 71 179 route 0 1 2 3 4 5;
 #X obj 71 204 vsl 10 64 0 1 0 0 empty empty empty 0 -9 0 10 -261234
--1 -1 2833 1;
+-1 -1 2537 1;
 #X floatatom 71 310 5 0 0 0 signal - -;
 #X obj 87 204 vsl 10 64 0 1 0 0 empty empty empty 0 -9 0 10 -261682
--1 -1 2020 1;
+-1 -1 1466 1;
 #X obj 104 204 vsl 10 64 0 1 0 0 empty empty empty 0 -9 0 10 -262130
--1 -1 1675 1;
+-1 -1 1022 1;
 #X obj 120 204 vsl 10 64 0 1 0 0 empty empty empty 0 -9 0 10 -204786
--1 -1 1540 1;
+-1 -1 1004 1;
 #X obj 137 204 vsl 10 64 0 1 0 0 empty empty empty 0 -9 0 10 -204800
--1 -1 1601 1;
+-1 -1 1681 1;
 #X obj 153 204 vsl 10 64 0 1 0 0 empty empty empty 0 -9 0 10 -203904
--1 -1 1435 1;
+-1 -1 973 1;
 #X obj 219 303 scope;
 #X obj 229 323 scope;
 #X obj 239 343 scope;
@@ -126,22 +126,22 @@
 #X text 602 405 2 sine-wave + 1 colored noise;
 #X text 874 418 volume_controlled;
 #X obj 564 148 nbx 5 14 -1e+37 1e+37 0 0 empty empty mod1 0 -8 0 10
--4034 -1 -1 1000 256;
+-4034 -1 -1 874.016 256;
 #X obj 754 148 nbx 5 14 -1e+37 1e+37 0 0 empty empty tone2 0 -8 0 10
--4034 -1 -1 1000 256;
+-4034 -1 -1 874.016 256;
 #X obj 941 357 nbx 5 14 -1e+37 1e+37 0 0 empty empty noise_level 0
--8 0 10 -4034 -1 -1 8.66142 256;
+-8 0 10 -4034 -1 -1 0 256;
 #X obj 721 595 nbx 5 14 -1e+37 1e+37 0 0 empty empty feedback_1 0 -8
 0 10 -4032 -1 -1 0 256;
 #X obj 792 595 nbx 5 14 -1e+37 1e+37 0 0 empty empty feedback_2 0 -8
 0 10 -4032 -1 -1 0 256;
 #X obj 494 205 f;
 #X obj 509 74 nbx 5 14 -1e+37 1e+37 0 0 empty empty base1 0 -8 0 10
--4034 -1 -1 614.173 256;
+-4034 -1 -1 1118.11 256;
 #X msg 699 37 660;
 #X obj 684 205 f;
 #X obj 699 74 nbx 5 14 -1e+37 1e+37 0 0 empty empty base1 0 -8 0 10
--4034 -1 -1 660 256;
+-4034 -1 -1 0 256;
 #X floatatom 755 35 5 0 0 0 - - -;
 #X floatatom 961 253 5 0 0 0 - - -;
 #X floatatom 786 94 5 0 0 0 - - -;
@@ -152,7 +152,6 @@
 #X obj 965 176 * 1000;
 #X floatatom 1054 206 5 0 0 0 - - -;
 #X obj 1054 185 * 10;
-#X obj 1109 292 * 1;
 #X msg 71 69 devicename /dev/tty.HC-06-DevB;
 #X obj 1005 14 inlet;
 #X obj 1045 14 inlet;
@@ -161,7 +160,10 @@
 #X obj 925 14 inlet;
 #X obj 965 14 inlet;
 #X obj 1109 349 nbx 5 14 -1e+37 1e+37 0 0 empty empty gain 0 -8 0 10
--4034 -1 -1 0.448819 256;
+-4034 -1 -1 0 256;
+#X obj 699 93 skip 500;
+#X obj 509 93 skip 1500;
+#X obj 1109 292 * 1.2;
 #X connect 2 0 5 0;
 #X connect 3 0 2 0;
 #X connect 4 0 2 0;
@@ -285,10 +287,10 @@
 #X connect 118 0 76 1;
 #X connect 119 0 76 2;
 #X connect 120 0 55 0;
-#X connect 121 0 120 1;
+#X connect 121 0 144 0;
 #X connect 122 0 124 0;
 #X connect 123 0 64 0;
-#X connect 124 0 123 1;
+#X connect 124 0 143 0;
 #X connect 125 0 121 0;
 #X connect 126 0 124 0;
 #X connect 127 0 115 0;
@@ -299,12 +301,14 @@
 #X connect 132 0 128 0;
 #X connect 133 0 117 0;
 #X connect 134 0 133 0;
-#X connect 135 0 143 0;
-#X connect 136 0 2 0;
-#X connect 137 0 129 0;
-#X connect 138 0 132 0;
-#X connect 139 0 134 0;
-#X connect 140 0 135 0;
-#X connect 141 0 130 0;
-#X connect 142 0 131 0;
-#X connect 143 0 39 0;
+#X connect 135 0 2 0;
+#X connect 136 0 129 0;
+#X connect 137 0 132 0;
+#X connect 138 0 134 0;
+#X connect 139 0 145 0;
+#X connect 140 0 130 0;
+#X connect 141 0 131 0;
+#X connect 142 0 39 0;
+#X connect 143 0 123 1;
+#X connect 144 0 120 1;
+#X connect 145 0 142 0;
