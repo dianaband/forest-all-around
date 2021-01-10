@@ -18,6 +18,9 @@
 //============<sampler>============
 //optionally pin3 will go HIGH/LOW in sync w/ sound PLAY/STOP
 #define MOTOR_PIN 3
+// #define FAN_ACTION // this is noisy.... ==> not so recommendable..
+#define NOTE_MIN 24
+#define NOTE_MAX 84
 //============</sampler>===========
 
 //HACK: let auto-poweroff speakers stay turned ON! - (creative muvo mini)
@@ -85,8 +88,10 @@ void sample_player_start()
   // if (playSdWav1.isPlaying() == false) {
   playSdWav1.play(filename);
   // }
+#if defined(FAN_ACTION)
   //fan action
   digitalWrite(MOTOR_PIN, HIGH);
+#endif
   //mark the indicator : HIGH: ON
   digitalWrite(13, HIGH);
   //to wait a bit for updating isPlaying()
@@ -114,8 +119,10 @@ void sample_player_stop() {
   //stop the player.
   if (playSdWav1.isPlaying() == true) {
     playSdWav1.stop();
+#if defined(FAN_ACTION)
     //fan stop
     digitalWrite(MOTOR_PIN, LOW);
+#endif
   }
 }
 void sample_player_check() {
@@ -179,20 +186,22 @@ void receiveEvent(int numBytes) {
 
     //
     int key = str_key.toInt();
-    sample_now = key;
-    //
-    int velocity = str_velocity.toInt(); // 0 ~ 127
-    float amp_gain = (float)velocity / 127.0;
-    amp1.gain(amp_gain);
-    amp2.gain(amp_gain);
-    //
-    int gate = str_gate.toInt();
-    if (gate == 0) {
-      sample_player_stop_task.restart();
-      Serial.println("sample_player_stop_task");
-    } else {
-      sample_player_start_task.restart();
-      Serial.println("sample_player_start_task");
+    if (key >= NOTE_MIN && key <= NOTE_MAX) {
+      sample_now = key;
+      //
+      int velocity = str_velocity.toInt(); // 0 ~ 127
+      float amp_gain = (float)velocity / 127.0;
+      amp1.gain(amp_gain);
+      amp2.gain(amp_gain);
+      //
+      int gate = str_gate.toInt();
+      if (gate == 0) {
+        sample_player_stop_task.restart();
+        Serial.println("sample_player_stop_task");
+      } else {
+        sample_player_start_task.restart();
+        Serial.println("sample_player_start_task");
+      }
     }
   }
 }
@@ -239,8 +248,10 @@ void setup() {
   //  --> use this.. to capture start-up messages, properly. very handy.
 
   //motor
+#if defined(FAN_ACTION)
   pinMode(MOTOR_PIN, OUTPUT);
   digitalWrite(MOTOR_PIN, LOW);
+#endif
 
   //i2c
   Wire.begin(I2C_ADDR);

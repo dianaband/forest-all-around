@@ -177,40 +177,59 @@ void side_release() {
 }
 Task side_release_task(0, TASK_ONCE, &side_release);
 
-// ring_head.
 static Servo head;
 extern Task head_release_task;
-extern Task ring_head_task;
-// ring_head!
 void ring_head() {
-  static int count = 0;
-  if (ring_head_task.isFirstIteration()) {
-    count = 0;
-    Serial.println("ring_head! start.");
-  }
-  if (count % 3 == 0) {
-    //
-    head.attach(D5);
-    head.write(170);
-    //
-  } else if (count % 3 == 1) {
-    //
-    head.detach();
-    //
-  } else {
-    //
-    head.attach(D5);
-    head.write(100);
-    head_release_task.restartDelayed(100);
-  }
+  int angle = random(0, 90);
   //
-  count++;
+  Serial.print("ring_head go -> ");
+  Serial.print(angle);
+  Serial.println(" deg.");
+  //
+  head.attach(D5);
+  head.write(angle);
+  head_release_task.restartDelayed(100);
 }
-Task ring_head_task(100, 3, &ring_head);
+Task ring_head_task(0, TASK_ONCE, &ring_head);
 void head_release() {
   head.detach();
 }
 Task head_release_task(0, TASK_ONCE, &head_release);
+
+// ring_head.
+// static Servo head;
+// extern Task head_release_task;
+// extern Task ring_head_task;
+// // ring_head!
+// void ring_head() {
+//   static int count = 0;
+//   if (ring_head_task.isFirstIteration()) {
+//     count = 0;
+//     Serial.println("ring_head! start.");
+//   }
+//   if (count % 3 == 0) {
+//     //
+//     head.attach(D5);
+//     head.write(70);
+//     //
+//   } else if (count % 3 == 1) {
+//     //
+//     head.detach();
+//     //
+//   } else {
+//     //
+//     head.attach(D5);
+//     head.write(0);
+//     head_release_task.restartDelayed(100);
+//   }
+//   //
+//   count++;
+// }
+// Task ring_head_task(100, 3, &ring_head);
+// void head_release() {
+//   head.detach();
+// }
+// Task head_release_task(0, TASK_ONCE, &head_release);
 
 // mesh callbacks
 void receivedCallback(uint32_t from, String & msg) { // REQUIRED

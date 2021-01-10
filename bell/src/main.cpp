@@ -155,7 +155,8 @@ Task nothappyalone_task(100, TASK_FOREVER, &nothappyalone); // by default, ENABL
 #define SERVO_PIN D6
 #include <Servo.h>
 Servo myservo;
-#define HITTING_ANGLE 87
+// #define HITTING_ANGLE 87
+#define HITTING_ANGLE 90
 #define RELEASE_ANGLE 60
 #define STABILIZE_ANGLE 53
 
