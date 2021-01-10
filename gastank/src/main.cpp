@@ -160,18 +160,38 @@ Task nothappyalone_task(100, TASK_FOREVER, &nothappyalone); // by default, ENABL
 // ring_side.
 static Servo side;
 extern Task side_release_task;
+extern Task ring_side_task;
+int side_start_angle = 170;
+int side_hit_angle = 100;
 void ring_side() {
-  int angle = random(80, 125);
-  //
-  Serial.print("ring_side go -> ");
-  Serial.print(angle);
-  Serial.println(" deg.");
-  //
-  side.attach(D6);
-  side.write(angle);
-  side_release_task.restartDelayed(100);
+  static int count = 0;
+  if (ring_side_task.isFirstIteration()) {
+    count = 0;
+    Serial.println("ring_side! start.");
+  }
+  if (count % 3 == 0) {
+    side.attach(D6);
+    side.write(side_start_angle);
+  } else if (count % 3 == 1) {
+    side.detach();
+  } else {
+    side.attach(D6);
+    side.write(side_hit_angle);
+    side_release_task.restartDelayed(100);
+  }
+  count++;
+  // int angle = random(80, 125);
+  // //
+  // Serial.print("ring_side go -> ");
+  // Serial.print(angle);
+  // Serial.println(" deg.");
+  // //
+  // side.attach(D6);
+  // side.write(angle);
+  // side_release_task.restartDelayed(100);
 }
-Task ring_side_task(0, TASK_ONCE, &ring_side);
+Task ring_side_task(100, 3, &ring_side);
+// Task ring_side_task(0, TASK_ONCE, &ring_side);
 void side_release() {
   side.detach();
 }
@@ -259,6 +279,43 @@ void receivedCallback(uint32_t from, String & msg) { // REQUIRED
   int key = str_key.toInt();
   int velocity = str_velocity.toInt(); // 0 ~ 127
   int gate = str_gate.toInt();
+
+  //    : [_______X......................]
+  //    : X - Extension starter 'X'
+  //      .substring(8, 9);
+  // Extension (X == 'X')
+  //    : [_______X1111222233344455667788]
+  //    : 1 - data of 4 letters
+  //      .substring(9, 13);
+  //    : 2 - data of 4 letters
+  //      .substring(13, 17);
+  //    : 3 - data of 3 letters
+  //      .substring(17, 20);
+  //    : 4 - data of 3 letters
+  //      .substring(20, 23);
+  //    : 5 - data of 2 letters
+  //      .substring(23, 25);
+  //    : 6 - data of 2 letters
+  //      .substring(25, 27);
+  //    : 7 - data of 2 letters
+  //      .substring(27, 29);
+  //    : 8 - data of 2 letters
+  //      .substring(29, 31);
+
+  String str_ext = msg.substring(8, 9);
+  String str_x1 = msg.substring(9, 13);
+  String str_x2 = msg.substring(13, 17);
+  String str_x3 = msg.substring(17, 20);
+  String str_x4 = msg.substring(20, 23);
+  String str_x5 = msg.substring(23, 25);
+  String str_x6 = msg.substring(25, 27);
+  String str_x7 = msg.substring(27, 29);
+  String str_x8 = msg.substring(29, 31);
+
+  if (str_ext == "X") {
+    side_start_angle = str_x1.toInt(); // ? ~ ?
+    side_hit_angle = str_x2.toInt(); // ? ~ ?
+  }
 
   //is it for me, the gastank?
   if (key == GASTANK_SIDE_KEY && gate == 1) {

@@ -41,6 +41,42 @@
 //      .substring(7, 8);
 //
 
+//
+// 2021 01 10
+//
+
+//    : [_______X......................]
+//    : X - Extension starter 'X'
+//      .substring(8, 9);
+
+// "/note/x1" (4 digit)
+// "/note/x2" (4 digit)
+// "/note/x3" (3 digit)
+// "/note/x4" (3 digit)
+// "/note/x5" (2 digit)
+// "/note/x6" (2 digit)
+// "/note/x7" (2 digit)
+// "/note/x8" (2 digit)
+
+// Extension (X == 'X')
+//    : [_______X1111222233344455667788]
+//    : 1 - data of 4 letters
+//      .substring(9, 13);
+//    : 2 - data of 4 letters
+//      .substring(13, 17);
+//    : 3 - data of 3 letters
+//      .substring(17, 20);
+//    : 4 - data of 3 letters
+//      .substring(20, 23);
+//    : 5 - data of 2 letters
+//      .substring(23, 25);
+//    : 6 - data of 2 letters
+//      .substring(25, 27);
+//    : 7 - data of 2 letters
+//      .substring(27, 29);
+//    : 8 - data of 2 letters
+//      .substring(29, 31);
+
 //arduino
 #include <Arduino.h>
 
@@ -96,6 +132,14 @@ void midinote(OSCMessage& msg, int offset) {
   static int pitch = 0;
   static int velocity = 0;
   static int onoff = 0;
+  static int x1 = 0;
+  static int x2 = 0;
+  static int x3 = 0;
+  static int x4 = 0;
+  static int x5 = 0;
+  static int x6 = 0;
+  static int x7 = 0;
+  static int x8 = 0;
   // (1) --> /onoff
   if (msg.fullMatch("/onoff", offset)) {
     //
@@ -119,9 +163,31 @@ void midinote(OSCMessage& msg, int offset) {
     if (pitch < 0) pitch = 0;
     // if (pitch > 127) pitch = 127;
     if (pitch > 999) pitch = 999;
-    //
+  }
+  // (4) --> /x
+  if (msg.fullMatch("/x", offset)) {
+    x1 = msg.getInt(0);
+    x2 = msg.getInt(1);
+    x3 = msg.getInt(2);
+    x4 = msg.getInt(3);
+    x5 = msg.getInt(4);
+    x6 = msg.getInt(5);
+    x7 = msg.getInt(6);
+    x8 = msg.getInt(7);
+
     // while (new_letter != false) {}; // <-- sort of semaphore.. but it doesn't work yet.. buggy.
-    sprintf(letter_outro, "[%03d%03d%01d.......................]", pitch, velocity, onoff);
+    sprintf(letter_outro, "[%03d%03d%01dX%04d%04d%03d%03d%02d%02d%02d%02d]",
+            pitch,
+            velocity,
+            onoff,
+            x1,
+            x2,
+            x3,
+            x4,
+            x5,
+            x6,
+            x7,
+            x8);
     new_letter = true;
   }
 }
