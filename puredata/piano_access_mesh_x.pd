@@ -1,4 +1,4 @@
-#N canvas 1 89 1308 582 10;
+#N canvas 131 89 1308 582 10;
 #X obj 20 126 unpackOSC;
 #X obj 107 18 loadbang;
 #X msg 147 91 devices;
@@ -381,7 +381,7 @@ pollintervall 1 \, verbose 1;
 #X msg 1208 146 180;
 #X floatatom 1168 343 5 0 0 0 s:0-vol - #0-vol;
 #X obj 430 230 spigot;
-#X obj 479 215 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X obj 479 215 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X obj 430 209 r OSC2;
 #X obj 430 267 print OSC2;
@@ -1061,7 +1061,7 @@ noteout to the button.;
 #X text 689 196 /pitch /velocity /onoff;
 #X obj 643 196 r CTRL;
 #X obj 643 242 s OSC2;
-#N canvas 458 205 443 395 buildOSC 1;
+#N canvas 458 205 443 395 buildOSC 0;
 #X obj 239 76 t a b;
 #X msg 376 94 [;
 #X msg 34 327 ];
@@ -1114,12 +1114,16 @@ noteout to the button.;
 #X connect 22 0 8 0;
 #X restore 643 219 pd buildOSC;
 #X text 723 218 <-- also mix-in /x;
-#X obj 642 302 s X1;
-#X obj 672 302 s X2;
-#X floatatom 638 273 5 0 0 0 - - -;
-#X floatatom 678 273 5 0 0 0 - - -;
-#X text 726 262 some extra. values! X1 \, X2: 4 digits X3 \, X4: 3
-digits X5~ X8: 2 digits;
+#X obj 647 300 s X1;
+#X obj 677 300 s X2;
+#X floatatom 643 271 5 0 0 0 - - -;
+#X floatatom 683 271 5 0 0 0 - - -;
+#X text 723 270 some extra. values!;
+#X text 729 284 X1 \, X2: 4 digits;
+#X text 729 298 X3 \, X4: 3 digits;
+#X text 729 312 X5~ X8: 2 digits;
+#X msg 355 498 devicename /dev/ttyACM0 \, baud 57600 \, pollintervall
+1 \, verbose 1;
 #X connect 0 0 3 0;
 #X connect 2 0 7 1;
 #X connect 3 0 11 0;
@@ -1202,3 +1206,4 @@ digits X5~ X8: 2 digits;
 #X connect 104 0 103 0;
 #X connect 108 0 106 0;
 #X connect 109 0 107 0;
+#X connect 114 0 60 1;
