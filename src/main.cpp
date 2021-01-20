@@ -71,11 +71,11 @@
 #define SET_ROOT
 #define SET_CONTAINSROOT
 // (2-1) osc client (non-ROOT)
-#elif 1
+#elif 0
 // #define SET_ROOT
 #define SET_CONTAINSROOT
 // (3) sampler client
-#elif 0
+#elif 1
 #define DISABLE_AP
 #define DISABLE_I2C_REQ
 //
@@ -100,6 +100,8 @@
 //    - + connected.
 //
 #if defined(ARDUINO_ESP8266_NODEMCU) // nodemcuv2
+#define LED_PIN 2
+#elif defined(ARDUINO_ESP8266_WEMOS_D1MINIPRO) // d1_mini
 #define LED_PIN 2
 #elif defined(ARDUINO_ESP8266_ESP12) // huzzah
 #define LED_PIN 2
