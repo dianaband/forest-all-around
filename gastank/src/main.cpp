@@ -44,6 +44,7 @@
 //============<gastank>============
 #define GASTANK_SIDE_KEY 100
 #define GASTANK_HEAD_KEY 101
+#define GASTANK_SIDE_MOVE_KEY 102
 //============</gastank>===========
 
 //============<parameters>============
@@ -157,9 +158,15 @@ Task nothappyalone_task(100, TASK_FOREVER, &nothappyalone); // by default, ENABL
 
 // my tasks
 
-// ring_side.
+// ring_side. - common
 static Servo side;
 extern Task side_release_task;
+void side_release() {
+  side.detach();
+}
+Task side_release_task(0, TASK_ONCE, &side_release);
+
+// ring_side. - act type #1 (hit)
 extern Task ring_side_task;
 int side_start_angle = 170;
 int side_hit_angle = 100;
@@ -180,23 +187,25 @@ void ring_side() {
     side_release_task.restartDelayed(100);
   }
   count++;
-  // int angle = random(80, 125);
-  // //
-  // Serial.print("ring_side go -> ");
-  // Serial.print(angle);
-  // Serial.println(" deg.");
-  // //
-  // side.attach(D6);
-  // side.write(angle);
-  // side_release_task.restartDelayed(100);
 }
 Task ring_side_task(100, 3, &ring_side);
-// Task ring_side_task(0, TASK_ONCE, &ring_side);
-void side_release() {
-  side.detach();
-}
-Task side_release_task(0, TASK_ONCE, &side_release);
 
+// ring_side. - act type #2 (set angle==move)
+extern Task ring_side_move_task;
+int side_set_angle = 50;
+void ring_side_move() {
+  //
+  Serial.print("ring_side_move go -> ");
+  Serial.print(side_set_angle);
+  Serial.println(" deg.");
+  //
+  side.attach(D6);
+  side.write(side_set_angle);
+  side_release_task.restartDelayed(100);
+}
+Task ring_side_move_task(0, TASK_ONCE, &ring_side_move);
+
+// ring_head.
 static Servo head;
 extern Task head_release_task;
 void ring_head() {
@@ -315,6 +324,7 @@ void receivedCallback(uint32_t from, String & msg) { // REQUIRED
   if (str_ext == "X") {
     side_start_angle = str_x1.toInt(); // ? ~ ?
     side_hit_angle = str_x2.toInt(); // ? ~ ?
+    side_set_angle = str_x3.toInt(); // ? ~ ?
   }
 
   //is it for me, the gastank?
@@ -323,6 +333,9 @@ void receivedCallback(uint32_t from, String & msg) { // REQUIRED
   }
   if (key == GASTANK_HEAD_KEY && gate == 1) {
     ring_head_task.restartDelayed(10);
+  }
+  if (key == GASTANK_SIDE_MOVE_KEY && gate == 1) {
+    ring_side_move_task.restartDelayed(10);
   }
 }
 void changedConnectionCallback() {
@@ -435,6 +448,7 @@ void setup() {
 
   //tasks
   runner.addTask(ring_side_task);
+  runner.addTask(ring_side_move_task);
   runner.addTask(side_release_task);
   //
   runner.addTask(ring_head_task);
