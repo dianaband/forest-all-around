@@ -65,6 +65,8 @@
 //
 #if defined(ARDUINO_ESP8266_NODEMCU) // nodemcuv2
 #define LED_PIN 2
+#elif defined(ARDUINO_ESP8266_WEMOS_D1MINIPRO) // d1_mini_pro
+#define LED_PIN 2
 #elif defined(ARDUINO_ESP8266_ESP12) // huzzah
 #define LED_PIN 2
 #elif defined(ARDUINO_FEATHER_ESP32) // featheresp32
