@@ -199,6 +199,10 @@ void stepping() {
   float velocity = steps / dur * 1000;   // unit conv.: (steps/msec) --> (steps/sec)
   float speed = fabs(velocity);
   //
+  Serial.print("target_step --> "); Serial.println(target_step);
+  Serial.print("dur --> "); Serial.println(dur);
+  Serial.print("cur_step --> "); Serial.println(cur_step);
+  //
   if (speed > STEPS_PER_SEC_MAX) {
     Serial.println("oh.. it might be TOO FAST for me..");
   } else {
@@ -411,10 +415,10 @@ void setup() {
   randomSeed(analogRead(0));
 
   //stepper
-  pinMode(D5, OUTPUT);
-  pinMode(D6, OUTPUT);
-  pinMode(D7, OUTPUT);
-  pinMode(D8, OUTPUT);
+  // pinMode(D1, OUTPUT);
+  // pinMode(D2, OUTPUT);
+  // pinMode(D3, OUTPUT);
+  // pinMode(D4, OUTPUT);
   /// "
   /// The fastest motor speed that can be reliably supported is about 4000 steps per
   /// second at a clock frequency of 16 MHz on Arduino such as Uno etc.
