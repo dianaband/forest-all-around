@@ -52,7 +52,7 @@
 //============</list of reserved keys>===========
 
 //============<identity key>============
-#define ID_KEY ROUNDLY_A_KEY
+#define ID_KEY ROUNDLY_E_KEY
 //============</identity key>===========
 
 //============<parameters>============
@@ -179,7 +179,7 @@ Task nothappyalone_task(100, TASK_FOREVER, &nothappyalone); // by default, ENABL
 #define RPM_MAX                 (STEPS_PER_SEC_MAX * STEPS_PER_SEC_TO_RPM)
 #define ACCELERATION_MAX        (500)
 //
-AccelStepper stepper(AccelStepper::FULL4WIRE, D5, D6, D7, D8); // N.B. - @esp8266, NEVER use "5, 6, 7, 8" -> do "D5, D6, D7, D8" !!
+AccelStepper stepper(AccelStepper::FULL4WIRE, D5, D6, D7, D8, false); // N.B. - @esp8266, NEVER use "5, 6, 7, 8" -> do "D5, D6, D7, D8" !!
 
 // my tasks
 extern Task stepping_task;
@@ -210,6 +210,7 @@ void stepping() {
   }
 
   //
+  stepper.enableOutputs();
   stepper.moveTo(target_step);
   stepper.setSpeed(velocity);
   //NOTE: 'setSpeed' should come LATER than 'moveTo'!
@@ -220,9 +221,13 @@ void stepping() {
 }
 Task stepping_task(0, TASK_ONCE, &stepping);
 
+//
 void rest() {
+  if (stepper.distanceToGo() == 0) {
+    stepper.disableOutputs();
+  }
 }
-Task rest_task(0, TASK_ONCE, &rest);
+Task rest_task(1000, TASK_FOREVER, &rest);
 
 // mesh callbacks
 void receivedCallback(uint32_t from, String & msg) { // REQUIRED
@@ -286,8 +291,9 @@ void receivedCallback(uint32_t from, String & msg) { // REQUIRED
   String str_x8 = msg.substring(29, 31);
 
   if (str_ext == "X") {
-    step_target = str_x1.toInt(); // 0 ~ 9999
-    step_duration = str_x2.toInt(); // 0 ~ 9999
+    int step_target_multiplier = str_x3.toInt(); // -99 ~ 999
+    step_target = str_x1.toInt() * step_target_multiplier; // -999 ~ 9999 * -99 ~ 999
+    step_duration = str_x2.toInt(); // -999 ~ 9999
   }
 
   //is it for me?
