@@ -144,7 +144,7 @@ Task sample_player_check_task(0, TASK_FOREVER, sample_player_check, &runner, tru
 
 //i2c
 #include <Wire.h>
-#include "../post_sampler.h"
+#include "../../post.h"
 // DISABLED.. due to bi-directional I2C hardship. ==> use UART.
 // void requestEvent() {
 //   Wire.write(" "); // no letter to send

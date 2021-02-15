@@ -52,7 +52,7 @@
 //============</list of reserved keys>===========
 
 //============<identity key>============
-#define ID_KEY ROUNDLY_E_KEY
+#define ID_KEY ROUNDLY_I_KEY
 //============</identity key>===========
 
 //============<parameters>============
@@ -229,81 +229,160 @@ void rest() {
 }
 Task rest_task(1000, TASK_FOREVER, &rest);
 
+//sendhello - with 4 int // up to 6 letters for each
+void sendhello (int hey0 = 0, int hey1 = 0, int hey2 = 0, int hey3 = 0) {
+  char msg_cstr[32+1] = "{/././././././././././././././.}";
+  snprintf(msg_cstr, 32+1, "{%03dA%06d%06d%06d%06d__}", ID_KEY, hey0,  hey1,  hey2,  hey3);
+  mesh.sendBroadcast(String(msg_cstr));
+}
+
+//
+String letter_ps = "00";
+
+//
+extern Task hello_task;
+void hello() {
+  //
+  sendhello(
+    stepper.currentPosition(),
+    stepper.distanceToGo(),
+    stepper.distanceToGo(),
+    stepper.distanceToGo()
+    );
+  //
+  int ps_int = letter_ps.toInt();
+  if (ps_int > 0) {
+    hello_task.restartDelayed(ps_int * 100);
+  }
+}
+Task hello_task(0, TASK_ONCE, &hello);
+
 // mesh callbacks
 void receivedCallback(uint32_t from, String & msg) { // REQUIRED
   Serial.print("got msg.: ");
   Serial.println(msg);
   //parse now.
 
-  //parse letter string.
+  String str_type = msg.substring(0, 1);
 
-  // letter frame ( '[' + 30 bytes + ']' )
-  //    : [123456789012345678901234567890]
+  // [letter...] >>> START
+  if (str_type == "[") {
 
-  // 'MIDI' letter frame
-  //    : [123456789012345678901234567890]
-  //    : [KKKVVVG.......................]
-  //    : KKK - Key
-  //      .substring(1, 4);
-  //    : VVV - Velocity (volume/amp.)
-  //      .substring(4, 7);
-  //    : G - Gate (note on/off)
-  //      .substring(7, 8);
+    //parse letter string.
 
-  String str_key = msg.substring(1, 4);
-  String str_velocity = msg.substring(4, 7);
-  String str_gate = msg.substring(7, 8);
+    // letter frame ( '[' + 30 bytes + ']' )
+    //    : [123456789012345678901234567890]
 
-  int key = str_key.toInt();
-  int velocity = str_velocity.toInt(); // 0 ~ 127
-  int gate = str_gate.toInt();
+    // 'MIDI' letter frame
+    //    : [123456789012345678901234567890]
+    //    : [KKKVVVG.......................]
+    //    : KKK - Key
+    //      .substring(1, 4);
+    //    : VVV - Velocity (volume/amp.)
+    //      .substring(4, 7);
+    //    : G - Gate (note on/off)
+    //      .substring(7, 8);
 
-  //    : [_______X......................]
-  //    : X - Extension starter 'X'
-  //      .substring(8, 9);
-  // Extension (X == 'X')
-  //    : [_______X1111222233344455667788]
-  //    : 1 - data of 4 letters
-  //      .substring(9, 13);
-  //    : 2 - data of 4 letters
-  //      .substring(13, 17);
-  //    : 3 - data of 3 letters
-  //      .substring(17, 20);
-  //    : 4 - data of 3 letters
-  //      .substring(20, 23);
-  //    : 5 - data of 2 letters
-  //      .substring(23, 25);
-  //    : 6 - data of 2 letters
-  //      .substring(25, 27);
-  //    : 7 - data of 2 letters
-  //      .substring(27, 29);
-  //    : 8 - data of 2 letters
-  //      .substring(29, 31);
+    String str_key = msg.substring(1, 4);
+    String str_velocity = msg.substring(4, 7);
+    String str_gate = msg.substring(7, 8);
 
-  String str_ext = msg.substring(8, 9);
-  String str_x1 = msg.substring(9, 13);
-  String str_x2 = msg.substring(13, 17);
-  String str_x3 = msg.substring(17, 20);
-  String str_x4 = msg.substring(20, 23);
-  String str_x5 = msg.substring(23, 25);
-  String str_x6 = msg.substring(25, 27);
-  String str_x7 = msg.substring(27, 29);
-  String str_x8 = msg.substring(29, 31);
+    int key = str_key.toInt();
+    int velocity = str_velocity.toInt();   // 0 ~ 127
+    int gate = str_gate.toInt();
 
-  if (str_ext == "X") {
-    int step_target_multiplier = str_x3.toInt(); // -99 ~ 999
-    step_target = str_x1.toInt() * step_target_multiplier; // -999 ~ 9999 * -99 ~ 999
-    step_duration = str_x2.toInt(); // -999 ~ 9999
-  }
+    //is it for me?
+    if (key == ID_KEY) {
 
-  //is it for me?
-  if (key == ID_KEY) {
-    if (gate == 1) {
-      stepping_task.restartDelayed(10);
-    } else if (gate == 0) {
-      rest_task.restartDelayed(10);
+      //    : [_______X......................]
+      //    : X - Extension starter 'X'
+      //      .substring(8, 9);
+      // Extension (X == 'X')
+      //    : [_______X11111222223333344444PS]
+      //    : 1 - data of 5 letters
+      //      .substring(9, 14);
+      //    : 2 - data of 5 letters
+      //      .substring(14, 19);
+      //    : 3 - data of 5 letters
+      //      .substring(19, 24);
+      //    : 4 - data of 5 letters
+      //      .substring(24, 29);
+      //    : PS - 2 letter
+      //      .substring(29, 31);
+
+      String str_ext = msg.substring(8, 9);
+      //
+      String str_x1 = msg.substring(9, 14);
+      String str_x2 = msg.substring(14, 19);
+      String str_x3 = msg.substring(19, 24);
+      String str_x4 = msg.substring(24, 29);
+      // p. s.
+      letter_ps = msg.substring(29, 31);
+      if (letter_ps.toInt() > 0) {
+        hello_task.restartDelayed(10);
+      }
+
+      if (str_ext == "X") {
+        int step_target_multiplier = str_x3.toInt();   // -99 ~ 999
+        step_target = str_x1.toInt() * step_target_multiplier;   // -999 ~ 9999 * -99 ~ 999
+        step_duration = str_x2.toInt();   // -999 ~ 9999
+      }
+
+      //
+      if (gate == 1) {
+        stepping_task.restartDelayed(10);
+      } else if (gate == 0) {
+        rest_task.restartDelayed(10);
+      }
     }
   }
+  //END <<< [letter...]
+
+  //{hello...} >>> START
+  else if (str_type == "{") {
+    // hello frame ( '{' + 30 bytes + '}' )
+    //    : {123456789012345678901234567890}
+
+    // hello frame
+    //    : {123456789012345678901234567890}
+    //    : {IIIA111111222222333333444444__}
+    //    : III - ID_KEY
+    //      .substring(1, 4);
+    //    : 1 - data of 6 letters
+    //      .substring(9, 14);
+    //    : 2 - data of 6 letters
+    //      .substring(14, 19);
+    //    : 3 - data of 6 letters
+    //      .substring(19, 24);
+    //    : 4 - data of 6 letters
+    //      .substring(24, 29);
+
+    // received a hello.
+    String str_id = msg.substring(1, 4);
+    int id = str_id.toInt();
+
+    //is it for me?
+    if (id == ID_KEY) {
+
+      //
+      String str_aa = msg.substring(4, 5);
+
+      //
+      String str_h1 = msg.substring(5, 11);
+      String str_h2 = msg.substring(11, 17);
+      String str_h3 = msg.substring(17, 23);
+      String str_h4 = msg.substring(23, 29);
+
+      //
+      if (str_aa == "A") {
+
+      }
+
+    }
+
+  }
+  //END <<< {hello...}
+
 }
 void changedConnectionCallback() {
   Serial.println(mesh.getNodeList().size());
@@ -437,6 +516,7 @@ void setup() {
   //tasks
   runner.addTask(stepping_task);
   runner.addTask(rest_task);
+  runner.addTask(hello_task);
 
   rest_task.restartDelayed(500);
 }

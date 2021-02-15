@@ -1,16 +1,13 @@
 //
 // wirelessly connected cloud (Wireless Mesh Networking)
-// MIDI-like
-// spacial
-// sampler keyboard
 //
 
 //
-// Forest all/around @ MMCA, Seoul
+// Conversation about the ROOT @ SEMA warehouses, Seoul
 //
 
 //
-// 2019 12 10
+// 2021 02 15
 //
 // (part-1) esp8266 : 'postman' (the mesh network nodes)
 //
@@ -26,15 +23,14 @@
 //   we can broadcast/unicast/recv. msg. w/ meshID and nodelist
 //   so, let's just use it.
 //
-//   but one specific thing is that we will use I2C comm. to feed this postman.
-//   and I2C is a FIXED-length msg.
-//   so, at least, we need to fix this length of the msg.
-//   otherwise, we need to do variable-length comm. like uart. to feed/fetch msg. from postman.
+//   but one specific thing is that we had used I2C comm. to feed this postman.
+//   and I2C was a FIXED-length msg.
 //
-//   well, okay. but, let's just do.. I2C. and fix a length.
-//   maybe, ... 32 bytes?
-//   so, then, this postman will read/write I2C channel. always.. 32 bytes.
-//   and then, this 32 bytes will be flying in the clouds.
+//   but we will use UART instead of I2C, because I2C was not feasible for true bi-directional comm. between teensy <-> esp8266
+//   that's a thing of board-specific. in general it should be ok. but this particular case, it was hard to solve.
+//
+//   yet, we were very satisfied with previous 'fixed length (32 bytes)' comm.
+//   so even though we are free to use variable-length messages, since using UART comm., we want to stick to that 'fixed-length' frame defs.
 //
 
 //==========<configurations>===========
@@ -46,12 +42,8 @@
 //     we need who can do AP..
 //     ==> TODO! just prepare some 'dummy' postmans around. w/ AP activated.
 //
-// 'DISABLE_I2C_REQ'
-// --> a quirk.. due to bi-directional I2C hardship.
-//     ideally, we want to make this sampler node also speak.
-//     but, I2C doesn't work. maybe middleware bug.. we later want to change to diff. proto.
-//     for example, UART or so.
-//     ==> BEWARE! yet, still we need to take off this.. for 'osc' node.
+// 'DISABLE_I2C_REQ' (DEPRECATED)
+// --> DEPRECATED: we are not using I2C anymore.
 //
 // 'SET_ROOT'
 // 'SET_CONTAINSROOT'
@@ -64,7 +56,6 @@
 //==========<preset>===========
 // (1) the backbone AP
 #if 0
-#define DISABLE_I2C_REQ
 #define SET_CONTAINSROOT
 // (2) osc client (the ROOT)
 #elif 0
@@ -77,7 +68,6 @@
 // (3) sampler client
 #elif 1
 #define DISABLE_AP
-#define DISABLE_I2C_REQ
 //
 #endif
 //==========</preset>==========
@@ -88,6 +78,7 @@
 #define MESH_PORT 5555
 #define MESH_CHANNEL 5
 #define LONELY_TO_DIE    (1000)
+#define MONITORING_SERIAL (Serial1) //you should use, external uart2usb converter to monitor messages...
 //============</parameters>===========
 
 //
@@ -116,8 +107,8 @@
 //arduino
 #include <Arduino.h>
 
-//i2c
-#include <Wire.h>
+//protocol
+// #include <Wire.h>
 #include "../post.h"
 
 //painlessmesh
@@ -165,14 +156,14 @@ void nothappyalone() {
   // oh.. i m lost the signal(==connection)
   if (isConnected_prev != isConnected && isConnected == false) {
     lonely_time_start = millis();
-    Serial.println("oh.. i m lost!");
+    MONITORING_SERIAL.println("oh.. i m lost!");
   }
   // .... how long we've been lonely?
   if (isConnected == false) {
     if (millis() - lonely_time_start > LONELY_TO_DIE) {
       // okay. i m fed up. bye the world.
-      Serial.println("okay. i m fed up. bye the world.");
-      Serial.println();
+      MONITORING_SERIAL.println("okay. i m fed up. bye the world.");
+      MONITORING_SERIAL.println();
 #if defined(ESP8266)
       ESP.reset();
 #elif defined(ESP32)
@@ -191,61 +182,58 @@ void nothappyalone() {
 Task nothappyalone_task(100, TASK_FOREVER, &nothappyalone); // by default, ENABLED.
 
 //task #2 : regular post collection
-#if !defined(DISABLE_I2C_REQ)
 void collect_post() {
   //
   static char letter_outro[POST_BUFF_LEN] = "................................";
-  // ask a letter and collect the feedback.
-  Wire.requestFrom(I2C_ADDR, POST_LENGTH);
   // error flag
   bool letter_is_good = false;
   // check the first byte
   char first = '.';
   // automatically match start byte.
-  while (Wire.available()) {
-    first = Wire.read();
-    if (first == '[') {
-      // client want to give me a letter.
+  while (Serial.available()) {
+    first = Serial.read();
+    if (first == '[' || first == '{') {
+      // client want to give me a letter or hello.
       letter_outro[0] = first;
       // matched!
       letter_is_good = true;
       break;
     } else if (first == ' ') {
       // client says nothing to send.
-      Serial.print("."); // nothing to send.
+      MONITORING_SERIAL.print("."); // nothing to send.
       return;
     }
   }
   //
   if (letter_is_good == false) {
     // no more letters, but no valid char.
-    Serial.print("?"); // wrong client.
+    MONITORING_SERIAL.print("?"); // wrong client.
     return;
   } else if (letter_is_good == true) {
     // get more contents
     for (int i = 1; i < (POST_LENGTH-1); i++) {
-      if (Wire.available()) {
-        letter_outro[i] = Wire.read();
+      if (Serial.available()) {
+        letter_outro[i] = Serial.read();
       } else {
         // hmm.. letter is too short.
         letter_outro[i] = '.'; // fill-out with dots.
-        Serial.print("$"); // too $hort msg.
+        MONITORING_SERIAL.print("$"); // too $hort msg.
         letter_is_good = false;
       }
     }
     // the last byte
     char last = '.';
-    if (Wire.available()) {
-      letter_outro[POST_LENGTH-1] = last = Wire.read();
-      if (last != ']') {
+    if (Serial.available()) {
+      letter_outro[POST_LENGTH-1] = last = Serial.read();
+      if (last != ']' && last != '}') {
         // hmm.. last byte is strange
-        Serial.print("#"); // last byte error.
+        MONITORING_SERIAL.print("#"); // last byte error.
         letter_is_good = false;
       }
     } else {
       // hmm.. letter is too short.
       letter_outro[POST_LENGTH-1] = '.'; // fill-out with dots.
-      Serial.print("$"); // too $hort msg.
+      MONITORING_SERIAL.print("$"); // too $hort msg.
       letter_is_good = false;
     }
     // terminal char.
@@ -258,33 +246,30 @@ void collect_post() {
   // or, post it.
   if (isConnected == true) {
     mesh.sendBroadcast(String(letter_outro));
-    Serial.print("sendBroadcast: ");
-    Serial.println(letter_outro);
+    MONITORING_SERIAL.print("sendBroadcast: ");
+    MONITORING_SERIAL.println(letter_outro);
   } else {
-    Serial.print("_"); // disconnected.
+    MONITORING_SERIAL.print("_"); // disconnected.
   }
 }
 Task collect_post_task(10, TASK_FOREVER, &collect_post, &runner, true); // by default, ENABLED
 //MAYBE... 10ms is too fast? move this to the loop() then?
-#endif
 
 // mesh callbacks
 void receivedCallback(uint32_t from, String & msg) { // REQUIRED
-  Serial.print("got msg.: ");
-  Serial.println(msg);
+  MONITORING_SERIAL.print("got msg.: ");
+  MONITORING_SERIAL.println(msg);
   // truncate any extra. letters.
   msg = msg.substring(0, POST_LENGTH); // (0) ~ (POST_LENGTH-1)
   // send whatever letter we postmans trust other postman.
-  Wire.beginTransmission(I2C_ADDR);
 #if defined(ARDUINO_NodeMCU_32S)
-  Wire.write((const uint8_t*)msg.c_str(), POST_LENGTH);
+  Serial.write((const uint8_t*)msg.c_str(), POST_LENGTH);
 #else
-  Wire.write(msg.c_str(), POST_LENGTH);
+  Serial.write(msg.c_str(), POST_LENGTH);
 #endif
-  Wire.endTransmission();
 }
 void changedConnectionCallback() {
-  Serial.println(mesh.getNodeList().size());
+  MONITORING_SERIAL.println(mesh.getNodeList().size());
   // check status -> modify status LED
   if (mesh.getNodeList().size() > 0) {
     // (still) connected.
@@ -292,7 +277,7 @@ void changedConnectionCallback() {
     statusblinks.set(LED_PERIOD, 2, &taskStatusBlink_slowblink_insync);
     // statusblinks.set(0, 1, &taskStatusBlink_steadyOff);
     statusblinks.enable();
-    Serial.println("connected!");
+    MONITORING_SERIAL.println("connected!");
     //
     isConnected = true;
     runner.addTask(nothappyalone_task);
@@ -305,13 +290,12 @@ void changedConnectionCallback() {
     //
     isConnected = false;
   }
-  // let I2C device know
-  /////
-  Serial.println("hi. client, we ve got a change in the net.");
+  //
+  MONITORING_SERIAL.println("hi. client, we ve got a change in the net.");
 }
 void newConnectionCallback(uint32_t nodeId) {
-  Serial.println(mesh.getNodeList().size());
-  Serial.println("newConnectionCallback.");
+  MONITORING_SERIAL.println(mesh.getNodeList().size());
+  MONITORING_SERIAL.println("newConnectionCallback.");
   changedConnectionCallback();
 }
 
@@ -344,7 +328,7 @@ void setup() {
   mesh.onReceive(&receivedCallback);
   mesh.onNewConnection(&newConnectionCallback);
   mesh.onChangedConnections(&changedConnectionCallback);
-  Serial.println(mesh.getNodeList().size());
+  MONITORING_SERIAL.println(mesh.getNodeList().size());
 
   //tasks
   runner.addTask(statusblinks);
@@ -388,8 +372,11 @@ void setup() {
   // nodeId (hex) : 2D370A07
   // MAC : B6, E6, 2D, 37, A, 7
 
-  //i2c master
-  Wire.begin();
+  //esp8266(serial.swap) <-> teensy(serial3)
+  delay(1000);
+  Serial.swap();
+  delay(100);
+  // Serial.println("hi, uart. ping?");
 }
 
 void loop() {
