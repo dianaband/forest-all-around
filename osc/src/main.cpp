@@ -1,5 +1,5 @@
 //
-// wirelessly connected cloud (Wireless Mesh Networking)
+// wirelessly connected cloud (based on ESP-NOW, a kind of LPWAN?)
 //
 
 //
@@ -9,7 +9,7 @@
 //
 // 2021 02 15
 //
-// (part-2) teensy35 : 'client:osc' (osc over slip --> mesh post)
+// (part-2) teensy35 : 'client:osc' (osc over slip <--> esp-now 'post')
 //
 
 //arduino
@@ -26,9 +26,6 @@ SLIPEncodedUSBSerial SLIPSerial(Serial);
 //postman's uart
 #define POSTMAN_SERIAL  (Serial3)
 
-// --[post]--> "sampler"
-#include "../../post.h"
-
 //
 void setup() {
   //osc
@@ -39,57 +36,37 @@ void setup() {
 }
 
 //
-void midinote(OSCMessage& msg, int offset) {
+void route_note(OSCMessage& msg, int offset) {
   // matches will happen in the order. that the bundle is packed.
-  static int pitch = 0;
-  static int velocity = 0;
-  static int onoff = 0;
-  static int x1 = 0;
-  static int x2 = 0;
-  static int x3 = 0;
-  static int x4 = 0;
-  static int ps = 0;
+  static Note note;
   // (1) --> /onoff
   if (msg.fullMatch("/onoff", offset)) {
     //
-    pitch = 0;
-    velocity = 0;
-    onoff = 0;
+    note.clear();
     //
-    onoff = msg.getInt(0);
-    if (onoff != 0) onoff = 1;
+    note.onoff = msg.getInt(0);
+    if (note.onoff != 0) note.onoff = 1;
   }
   // (2) --> /velocity
   if (msg.fullMatch("/velocity", offset)) {
-    velocity = msg.getInt(0);
-    if (velocity < 0) velocity = 0;
-    if (velocity > 999) velocity = 999;
+    note.velocity = msg.getInt(0);
   }
   // (3) --> /pitch
   if (msg.fullMatch("/pitch", offset)) {
-    pitch = msg.getInt(0);
-    if (pitch < 0) pitch = 0;
-    if (pitch > 999) pitch = 999;
+    note.pitch = msg.getInt(0);
   }
   // (4) --> /x
   if (msg.fullMatch("/x", offset)) {
-    x1 = msg.getInt(0);
-    x2 = msg.getInt(1);
-    x3 = msg.getInt(2);
-    x4 = msg.getInt(3);
-    ps = msg.getInt(4);
-
-    char letter[POST_BUFF_LEN] = "";
-    snprintf(letter, POST_BUFF_LEN, "[%03d%03d%01dX%05d%05d%05d%05d%02d]",
-             pitch,
-             velocity,
-             onoff,
-             x1,
-             x2,
-             x3,
-             x4,
-             ps);
-    POSTMAN_SERIAL.print(letter);
+    note.x1 = msg.getInt(0);
+    note.x2 = msg.getInt(1);
+    note.x3 = msg.getInt(2);
+    note.x4 = msg.getInt(3);
+    note.ps = msg.getInt(4);
+    //
+    POSTMAN_SERIAL.write('['); // start byte of 'Note'
+    POSTMAN_SERIAL.write((uint8_t *) &note, sizeof(Note));
+    POSTMAN_SERIAL.write(']'); // end byte of 'Note'
+    //
   }
 }
 
@@ -108,7 +85,8 @@ void loop() {
       }
     }
     if(!bundleIN.hasError()) {
-      bundleIN.route("/note", midinote);
+      // on '/note'
+      bundleIN.route("/note", route_note);
     }
   }
 
@@ -116,79 +94,58 @@ void loop() {
   static bool insync = false;
   if (insync == false) {
     while (POSTMAN_SERIAL.available() > 0) {
-      // check the last byte
+      // search the last byte
       char last = POSTMAN_SERIAL.read();
       // expectable last of the messages
       if (last == ']' || last == '}') {
         insync = true;
       }
     }
-  }
-  if (POSTMAN_SERIAL.available() > POST_LENGTH) {
-    char cstr[POST_BUFF_LEN] = "................................";
-    // fetch all the bytes
-    POSTMAN_SERIAL.readBytes(cstr, POST_LENGTH);
-    // protocol checks
-    char first = cstr[0];
-    char last = cstr[POST_LENGTH-1];
-    if (first != '[' && first != '{') {
-      insync = false;
-    }
-    if (last != ']' && last != '}') {
-      insync = false;
-    }
-
-    //// OK -> parse && compose & send OSC message!
-
-    String msg = String(cstr);
-
-    // hello frame ( '{' + 30 bytes + '}' )
-    //    : {123456789012345678901234567890}
-
-    // hello frame
-    //    : {123456789012345678901234567890}
-    //    : {IIIA111111222222333333444444__}
-    //    : III - ID_KEY
-    //      .substring(1, 4);
-    //    : 1 - data of 6 letters
-    //      .substring(9, 14);
-    //    : 2 - data of 6 letters
-    //      .substring(14, 19);
-    //    : 3 - data of 6 letters
-    //      .substring(19, 24);
-    //    : 4 - data of 6 letters
-    //      .substring(24, 29);
-
-    // received a hello.
-    String str_id = msg.substring(1, 4);
-    int id = str_id.toInt();
-
+  } else {
     //
-    OSCMessage hello("/hello");
-    hello.add(id);
-
-    //
-    String str_aa = msg.substring(4, 5);
-
-    //
-    if (str_aa == "A") {
+    if (POSTMAN_SERIAL.available() > 0) {
       //
-      String str_h1 = msg.substring(5, 11);
-      String str_h2 = msg.substring(11, 17);
-      String str_h3 = msg.substring(17, 23);
-      String str_h4 = msg.substring(23, 29);
-
+      char type = POSTMAN_SERIAL.peek();
       //
-      hello.add(str_h1.toInt());
-      hello.add(str_h2.toInt());
-      hello.add(str_h3.toInt());
-      hello.add(str_h4.toInt());
+      if (type == '{') {
+        //expecting a Hello message.
+        if (POSTMAN_SERIAL.available() > sizeof(Hello) + 1) {
+          Hello hello;
+          POSTMAN_SERIAL.readBytes((uint8_t *) &hello, sizeof(Hello));
+          char last = POSTMAN_SERIAL.read();
+          if (last == '}') {
+            //good.
+            //
+            OSCMessage osc("/hello");
+            osc.add(hello.id);
+            osc.add(hello.h1);
+            osc.add(hello.h2);
+            osc.add(hello.h3);
+            osc.add(hello.h4);
+            //
+            SLIPSerial.beginPacket();
+            osc.send(SLIPSerial);
+            SLIPSerial.endPacket();
+            osc.empty();
+            //
+          } else {
+            insync = false; //error!
+          }
+        }
+      } else if (type == '[') {
+        //expecting a Note message.
+        if (POSTMAN_SERIAL.available() > sizeof(Note) + 1) {
+          Note note;
+          POSTMAN_SERIAL.readBytes((uint8_t *) &note, sizeof(Note));
+          char last = POSTMAN_SERIAL.read();
+          if (last == ']') {
+            //good.
+          } else {
+            insync = false; //error!
+          }
+        }
+        //
+      }
     }
-
-    //
-    SLIPSerial.beginPacket();
-    hello.send(SLIPSerial);
-    SLIPSerial.endPacket();
-    hello.empty();
   }
 }

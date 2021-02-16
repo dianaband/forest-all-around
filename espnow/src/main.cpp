@@ -1,3 +1,8 @@
+// we want to first osc -> esp-now
+// then, esp-now based taak
+// then, let is save a value in EEPROM (object with memory)
+// no broadcast for now. if needed we can achieve that too.
+
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include <espnow.h>
