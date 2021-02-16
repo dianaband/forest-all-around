@@ -129,6 +129,10 @@ void onDataReceive(uint8_t * mac, uint8_t *incomingData, uint8_t len) {
     memcpy((uint8_t *) &note, incomingData + 1, sizeof(Note));
     //
     MONITORING_SERIAL.println(note.to_string());
+
+    //-*-*-*-*-*-*-*-*-*-
+    // use 'note' here...
+    //-*-*-*-*-*-*-*-*-*-
   }
 }
 
@@ -200,22 +204,12 @@ void collect_post() {
             //
             //good. ==> ok, post it.
             //
-            //pseudo-broadcast using addressbook!
+            //pseudo-broadcast using peer-list!
             //
-            for (uint32_t i = 0; i < members.size(); i++) {
-              esp_now_send(members[i].mac, frm, frm_size);
-              //
-              MONITORING_SERIAL.write(frm, frm_size);
-              MONITORING_SERIAL.print(" ==(esp_now_send)==> ");
-              //
-              MONITORING_SERIAL.print(members[i].mac[0], HEX);
-              for (int j = 1; j < 6; j++) {
-                MONITORING_SERIAL.print(":");
-                MONITORING_SERIAL.print(members[i].mac[j], HEX);
-              }
-              MONITORING_SERIAL.print(" ==> " + members[i].name);
-              //
-            }
+            esp_now_send(NULL, frm, frm_size);
+            //
+            MONITORING_SERIAL.write(frm, frm_size);
+            MONITORING_SERIAL.print(" ==(esp_now_send/0)==> ");
             //
           } else {
             insync = false; //error!
