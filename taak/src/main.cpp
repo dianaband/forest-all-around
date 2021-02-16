@@ -41,10 +41,20 @@
 #define SET_CONTAINSROOT
 //==========</preset>==========
 
-//============<this taak>============
-#include "taaks.h"
-#define TAAK_KEY TAAK_E_KEY // A-E-I-O-U-W-Y-N (up to 8 taaks) - KEY 150 ~ 157
-//============</this taak>===========
+//============<list of reserved keys>============
+#define TAAK_A_KEY 150 //solenoid
+#define TAAK_E_KEY 151 //valve
+#define TAAK_I_KEY 152
+#define TAAK_O_KEY 153
+#define TAAK_U_KEY 154
+#define TAAK_W_KEY 155
+#define TAAK_Y_KEY 156
+#define TAAK_N_KEY 157
+//============</list of reserved keys>===========
+
+//============<identity key>============
+#define ID_KEY TAAK_N_KEY
+//============</identity key>===========
 
 //============<parameters>============
 #define MESH_SSID "forest-all/around"
@@ -64,6 +74,8 @@
 //    - + connected.
 //
 #if defined(ARDUINO_ESP8266_NODEMCU) // nodemcuv2
+#define LED_PIN 2
+#elif defined(ARDUINO_ESP8266_WEMOS_D1MINIPRO) // d1_mini_pro
 #define LED_PIN 2
 #elif defined(ARDUINO_ESP8266_ESP12) // huzzah
 #define LED_PIN 2
@@ -195,7 +207,7 @@ void receivedCallback(uint32_t from, String & msg) { // REQUIRED
   int gate = str_gate.toInt();
 
   //is it for me, the gastank?
-  if (key == TAAK_KEY) {
+  if (key == ID_KEY) {
     //taak_on && taak_off
     if (velocity == 0) {
       if (gate == 1) {
@@ -315,6 +327,10 @@ void setup() {
   // nodeId (dec) : 758581767
   // nodeId (hex) : 2D370A07
   // MAC : B6, E6, 2D, 37, A, 7
+
+  //introduction
+  Serial.print("my ID Key --> ");
+  Serial.println(ID_KEY);
 
   //i2c master
   Wire.begin();
