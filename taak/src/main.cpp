@@ -81,7 +81,7 @@
 
 //============<parameters>============
 //
-#define LED_PERIOD (1111)
+#define LED_PERIOD (11111)
 #define LED_ONTIME (1)
 #define LED_GAPTIME (222)
 //

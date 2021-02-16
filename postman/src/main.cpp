@@ -49,9 +49,9 @@
 //==========<preset>===========
 //
 // (1) standalone
-#if 1
+#if 0
 // (2) osc client (the ROOT)
-#elif 0
+#elif 1
 #define SERIAL_SWAP
 #define HAVE_CLIENT
 // (3) sampler client
@@ -66,7 +66,7 @@
 
 //============<parameters>============
 //
-#define LED_PERIOD (1111)
+#define LED_PERIOD (11111)
 #define LED_ONTIME (1)
 #define LED_GAPTIME (222)
 //
