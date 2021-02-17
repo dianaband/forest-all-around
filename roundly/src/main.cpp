@@ -238,11 +238,12 @@ void onNoteHandler(Note & n) {
   //is it for me?
   if (n.pitch == ID_KEY) {
     //
-    step_target = n.x1 * n.x3;
+    step_target = n.x1;
     step_duration = n.x2;
+    if (step_duration < 1000) step_duration = 1000;
     //
     hello_delay = n.ps;
-    if (hello_delay != 0 && hello_task.isEnabled() == false) {
+    if (hello_delay > 0 && hello_task.isEnabled() == false) {
       hello_task.restart();
     }
     //

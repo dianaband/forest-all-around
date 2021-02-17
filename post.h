@@ -66,14 +66,14 @@ private:
 
 //message type Note : '[' + Note + ']'
 struct Note {
-  int32_t pitch;
-  int32_t velocity;
-  int32_t onoff;
-  int32_t x1;
-  int32_t x2;
-  int32_t x3;
-  int32_t x4;
-  int32_t ps;
+  float pitch;
+  float velocity;
+  float onoff;
+  float x1;
+  float x2;
+  float x3;
+  float x4;
+  float ps;
   //
   void clear() {
     pitch = 0;
@@ -104,10 +104,10 @@ struct Note {
 //message type Hello : '{' + Hello + '}'
 struct Hello {
   int32_t id;
-  int32_t h1;
-  int32_t h2;
-  int32_t h3;
-  int32_t h4;
+  float h1;
+  float h2;
+  float h3;
+  float h4;
   //
   void clear() {
     id = 0;

@@ -235,6 +235,8 @@ Task collect_post_task(1, TASK_FOREVER, &collect_post, &runner, true); // by def
 void onNoteHandler(Note & n) {
   //is it for me?
   if (n.pitch == ID_KEY) {
+    //
+    if (n.velocity < 0) n.velocity = 0;
     //taak_on && taak_off
     if (n.velocity == 0) {
       if (n.onoff == 1) {

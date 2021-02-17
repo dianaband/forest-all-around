@@ -44,24 +44,24 @@ void route_note(OSCMessage& msg, int offset) {
     //
     note.clear();
     //
-    note.onoff = msg.getInt(0);
+    note.onoff = msg.getFloat(0);
     if (note.onoff != 0) note.onoff = 1;
   }
   // (2) --> /velocity
   if (msg.fullMatch("/velocity", offset)) {
-    note.velocity = msg.getInt(0);
+    note.velocity = msg.getFloat(0);
   }
   // (3) --> /pitch
   if (msg.fullMatch("/pitch", offset)) {
-    note.pitch = msg.getInt(0);
+    note.pitch = msg.getFloat(0);
   }
   // (4) --> /x
   if (msg.fullMatch("/x", offset)) {
-    note.x1 = msg.getInt(0);
-    note.x2 = msg.getInt(1);
-    note.x3 = msg.getInt(2);
-    note.x4 = msg.getInt(3);
-    note.ps = msg.getInt(4);
+    note.x1 = msg.getFloat(0);
+    note.x2 = msg.getFloat(1);
+    note.x3 = msg.getFloat(2);
+    note.x4 = msg.getFloat(3);
+    note.ps = msg.getFloat(4);
     //
     POSTMAN_SERIAL.write('['); // start byte of 'Note'
     POSTMAN_SERIAL.write((uint8_t *) &note, sizeof(Note));
