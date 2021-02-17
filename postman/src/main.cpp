@@ -25,8 +25,6 @@
 //
 
 
-// we want to first osc -> esp-now
-// then, esp-now based taak
 // then, let is save a value in EEPROM (object with memory)
 // no broadcast for now. if needed we can achieve that too.
 
@@ -98,13 +96,9 @@
 //arduino
 #include <Arduino.h>
 
-//post
+//post & addresses
 #include "../../post.h"
-
-//addresses
-#include <Vector.h>
-Vector<Address> members;
-Address __members[MEMBER_COUNT_MAX]; //<-- the storage array of 'members'
+AddressBook members;
 
 //espnow
 #include <ESP8266WiFi.h>
@@ -132,6 +126,9 @@ void onDataReceive(uint8_t * mac, uint8_t *incomingData, uint8_t len) {
 
     //-*-*-*-*-*-*-*-*-*-
     // use 'note' here...
+    //   ==> N.B.: "callback function runs from a high-priority Wi-Fi task.
+    //              So, do not do lengthy operations in the callback function.
+    //              Instead, post the necessary data to a queue and handle it from a lower priority task."
     //-*-*-*-*-*-*-*-*-*-
   }
 }
@@ -232,14 +229,6 @@ void setup() {
   Serial.begin(115200);
   delay(100);
 
-  //members
-  members.setStorage(__members);
-
-  //
-  members.push_back(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB7, 0x21, "Enchovy"));
-  members.push_back(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB3, 0xC5, "Schpaarow"));
-  members.push_back(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB4, 0x28, "Taak157"));
-
   //info
   Serial.println();
   Serial.println();
@@ -261,14 +250,14 @@ void setup() {
 #endif
   Serial.println("-");
   Serial.println("- * addresses >>>");
-  for (uint32_t i = 0; i < members.size(); i++) {
+  for (uint32_t i = 0; i < members.list.size(); i++) {
     Serial.print("-      #" + String(i) + " : ");
-    Serial.print(members[i].mac[0], HEX);
+    Serial.print(members.list[i].mac[0], HEX);
     for (int j = 1; j < 6; j++) {
       Serial.print(":");
-      Serial.print(members[i].mac[j], HEX);
+      Serial.print(members.list[i].mac[j], HEX);
     }
-    Serial.print(" ==> " + members[i].name);
+    Serial.print(" ==> " + members.list[i].name);
     Serial.println();
   }
   Serial.println("-");
@@ -291,8 +280,8 @@ void setup() {
   esp_now_set_self_role(ESP_NOW_ROLE_COMBO);
   esp_now_register_send_cb(onDataSent);
   esp_now_register_recv_cb(onDataReceive);
-  for (uint32_t i = 0; i < members.size(); i++) {
-    esp_now_add_peer(members[i].mac, ESP_NOW_ROLE_COMBO, 1, NULL, 0); // <-- '1' : "Channel does not affect any function" ... *.-a
+  for (uint32_t i = 0; i < members.list.size(); i++) {
+    esp_now_add_peer(members.list[i].mac, ESP_NOW_ROLE_COMBO, 1, NULL, 0); // <-- '1' : "Channel does not affect any function" ... *.-a
     //
     // int esp_now_add_peer(u8 *mac_addr, u8 role, u8 channel, u8 *key, u8 key_len)
     //     - https://www.espressif.com/sites/default/files/documentation/2c-esp8266_non_os_sdk_api_reference_en.pdf

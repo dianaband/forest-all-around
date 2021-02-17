@@ -30,6 +30,39 @@ struct Address {
   }
 };
 
+#include <Vector.h>
+struct AddressBook {
+  Vector<Address> list;
+
+  //
+  AddressBook() {
+    //
+    list.setStorage(lst);
+    //
+    // list.push_back(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB7, 0x21, "Enchovy"));
+    // list.push_back(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB3, 0xC5, "Schpaarow"));
+    //
+    list.push_back(Address(0xB4, 0xE6, 0x2D, 0x37, 0x3B, 0x90, "root/osc"));
+    list.push_back(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB4, 0x28, "taak/157"));
+    //
+  }
+  //
+  AddressBook(String booktitle) {
+    //
+    // with a 'booktitle' to select which addressebook to get.
+    // UNIMPLEMENTED
+    //
+    //
+    list.setStorage(lst);
+    //
+    if (booktitle == "YELLOW") {
+      ;
+    }
+  }
+private:
+  Address lst[MEMBER_COUNT_MAX]; //<-- the storage array of 'list'
+};
+
 //message type Note : '[' + Note + ']'
 struct Note {
   int32_t pitch;
