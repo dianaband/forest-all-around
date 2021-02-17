@@ -113,6 +113,9 @@ void onDataSent(uint8_t *mac_addr, uint8_t sendStatus) {
 void onDataReceive(uint8_t * mac, uint8_t *incomingData, uint8_t len) {
 
   //
+  //MONITORING_SERIAL.write(incomingData, len);
+
+  //
 #if defined(HAVE_CLIENT)
   Serial.write(incomingData, len); // we pass it over to the client.
 #endif

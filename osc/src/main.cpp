@@ -109,7 +109,9 @@ void loop() {
       //
       if (type == '{') {
         //expecting a Hello message.
-        if (POSTMAN_SERIAL.available() > sizeof(Hello) + 1) {
+        if (POSTMAN_SERIAL.available() > sizeof(Hello) + 2) {
+          POSTMAN_SERIAL.read();
+          //
           Hello hello;
           POSTMAN_SERIAL.readBytes((uint8_t *) &hello, sizeof(Hello));
           char last = POSTMAN_SERIAL.read();
@@ -134,7 +136,9 @@ void loop() {
         }
       } else if (type == '[') {
         //expecting a Note message.
-        if (POSTMAN_SERIAL.available() > sizeof(Note) + 1) {
+        if (POSTMAN_SERIAL.available() > sizeof(Note) + 2) {
+          POSTMAN_SERIAL.read();
+          //
           Note note;
           POSTMAN_SERIAL.readBytes((uint8_t *) &note, sizeof(Note));
           char last = POSTMAN_SERIAL.read();
