@@ -44,6 +44,7 @@ struct AddressBook {
     //
     list.push_back(Address(0xB4, 0xE6, 0x2D, 0x37, 0x3B, 0x90, "root/osc"));
     list.push_back(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB4, 0x28, "taak/157"));
+    list.push_back(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB8, 0x1E, "roundly/202"));
     //
   }
   //
@@ -55,8 +56,8 @@ struct AddressBook {
     //
     list.setStorage(lst);
     //
-    if (booktitle == "YELLOW") {
-      ;
+    if (booktitle == "root") {
+      list.push_back(Address(0xB4, 0xE6, 0x2D, 0x37, 0x3B, 0x90, "root/osc"));
     }
   }
 private:
@@ -114,5 +115,16 @@ struct Hello {
     h2 = 0;
     h3 = 0;
     h4 = 0;
+  }
+  //
+  String to_string() {
+    String str = "";
+    str += "( id=" + String(id);
+    str += ", h1=" + String(h1);
+    str += ", h2=" + String(h2);
+    str += ", h3=" + String(h3);
+    str += ", h4=" + String(h4);
+    str += " )";
+    return str;
   }
 };
