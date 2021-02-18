@@ -76,7 +76,7 @@
 //============</list of reserved keys>===========
 
 //============<identity key>============
-#define ID_KEY 154
+#define ID_KEY 151
 //============</identity key>===========
 
 //============<parameters>============
