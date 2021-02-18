@@ -54,7 +54,7 @@
 //============</list of reserved keys>===========
 
 //============<identity key>============
-#define ID_KEY CRICKET_U_KEY
+#define ID_KEY 128
 //============</identity key>===========
 
 //============<parameters>============

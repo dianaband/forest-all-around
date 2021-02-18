@@ -76,7 +76,7 @@
 //============</list of reserved keys>===========
 
 //============<identity key>============
-#define ID_KEY TAAK_N_KEY
+#define ID_KEY TAAK_A_KEY
 //============</identity key>===========
 
 //============<parameters>============
