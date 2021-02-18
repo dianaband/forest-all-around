@@ -1,16 +1,14 @@
-# crickets for cosmo40 performance
+# Conversation about the ROOT @ SEMA warehouses, Seoul
 
 ## platformio
 
-## small IoT objects in the wireless mesh network
+## small IoT objects in the wireless network, LPWAN
 
-### wirelessly connected cloud (Wireless Mesh Networking)
+### wirelessly network
 ### MIDI-like
 ### spacial
-### sampler keyboard
 
-- 14 speakers (receives MIDI-like msg. AP-disabled)
-- 10 or more postmans (relaying nodes. AP-enabled)
+- 14 speakers
 - 1 gas-tank
 - 1 float
 
