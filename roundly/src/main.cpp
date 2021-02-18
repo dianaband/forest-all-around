@@ -43,18 +43,18 @@
 //==========</preset>==========
 
 //============<list of reserved keys>============
-#define ROUNDLY_A_KEY 200 // A-E-I-O-U-W-Y-N (up to 8 roundlys) - KEY 200 ~ 207
-#define ROUNDLY_E_KEY 201
-#define ROUNDLY_I_KEY 202
-#define ROUNDLY_O_KEY 203
-#define ROUNDLY_U_KEY 204
-#define ROUNDLY_W_KEY 205
-#define ROUNDLY_Y_KEY 206
-#define ROUNDLY_N_KEY 207
+#define ROUNDLY_A_KEY 2000 // A-E-I-O-U-W-Y-N (up to 8 roundlys) - KEY 200 ~ 207
+#define ROUNDLY_E_KEY 2001
+#define ROUNDLY_I_KEY 2002
+#define ROUNDLY_O_KEY 2003
+#define ROUNDLY_U_KEY 2004
+#define ROUNDLY_W_KEY 2005
+#define ROUNDLY_Y_KEY 2006
+#define ROUNDLY_N_KEY 2007
 //============</list of reserved keys>===========
 
 //============<identity key>============
-#define ID_KEY ROUNDLY_I_KEY
+#define ID_KEY ROUNDLY_E_KEY
 //============</identity key>===========
 
 //============<parameters>============
