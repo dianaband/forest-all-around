@@ -1,158 +1,104 @@
 //
-// wirelessly connected cloud (Wireless Mesh Networking)
-// MIDI-like
-// spacial
-// sampler keyboard
+// wirelessly connected cloud (based on ESP-NOW, a kind of LPWAN?)
 //
 
 //
-// Forest all/around @ MMCA, Seoul
+// Conversation about the ROOT @ SEMA warehouses, Seoul
 //
 
 //
-// 2020 10 14
+// 2021 02 15
 //
 
 //==========<configurations>===========
 //
+// 'HAVE_CLIENT'
+// --> i have a client. enable the client task.
+//
+// 'SERIAL_SWAP'
+// --> UART pin swapped.
+//     you want this, when you want a bi-directional comm. to external client boards (e.g. teensy).
+//
 // 'DISABLE_AP'
-// --> disabling AP is for teensy audio samplers.
-//     they need this to reduce noise from AP beacon signals.
-//     but, then they cannot build-up net. by themselves.
-//     we need who can do AP..
-//     ==> TODO! just prepare some 'dummy' postmans around. w/ AP activated.
-//
-// 'DISABLE_I2C_REQ'
-// --> a quirk.. due to bi-directional I2C hardship.
-//     ideally, we want to make this sampler node also speak.
-//     but, I2C doesn't work. maybe middleware bug.. we later want to change to diff. proto.
-//     for example, UART or so.
-//     ==> BEWARE! yet, still we need to take off this.. for 'osc' node.
-//
-// 'SET_ROOT'
-// 'SET_CONTAINSROOT'
-// --> for the network stability
-//     declare 1 root node and branches(constricted to 'contains the root')
-//     to improve the stability of the net
+// --> (questioning)...
 //
 //==========</configurations>==========
 
 //==========<preset>===========
-#define SET_CONTAINSROOT
+//
+// (1) standalone
+#if 1
+// (2) osc client (the ROOT)
+#elif 0
+#define SERIAL_SWAP
+#define HAVE_CLIENT
+// (3) sampler client
+#elif 0
+#define SERIAL_SWAP
+#define HAVE_CLIENT
+#define DISABLE_AP
+//
+#endif
+//
 //==========</preset>==========
 
-//============<gastank>============
-#define GASTANK_SIDE_KEY 100
-#define GASTANK_HEAD_KEY 101
-#define GASTANK_SIDE_MOVE_KEY 102
-//============</gastank>===========
+//============<gonggong>============
+#define GONG_SIDE_KEY      1000 // X1 = start angle, X2 = hit angle
+#define GONG_SIDE_MOVE_KEY 1001 // X3 = set angle
+#define GONG_HEAD_KEY      1002 // random (HEAD)
+//============</gonggong>===========
+
+//============<identity key>============
+#define ID_KEY GONG_SIDE_KEY
+//============</identity key>===========
 
 //============<parameters>============
-#define MESH_SSID "forest-all/around"
-#define MESH_PASSWORD "cc*vvvv/kkk"
-#define MESH_PORT 5555
-#define MESH_CHANNEL 5
-#define LONELY_TO_DIE    (1000)
+//
+#define LED_PERIOD (11111)
+#define LED_ONTIME (1)
+#define LED_GAPTIME (222)
+//
+#define WIFI_CHANNEL 5
+//
+// 'MONITORING_SERIAL'
+//
+// --> sometimes, the 'Serial' is in use (for example, 'osc' node)
+//     then,      use 'Serial1' - D4/GPIO2/TDX1 @ nodemcu (this is TX only.)
+//
+// --> otherwise, MONITORING_SERIAL == Serial.
+//
+#if defined(SERIAL_SWAP)
+#define MONITORING_SERIAL (Serial1)
+#else
+#define MONITORING_SERIAL (Serial)
+#endif
+//
 //============</parameters>===========
 
-//
-// LED status indication
-// phase 0
-//    - LED => steady on
-//    - booted. and running. no connection. scanning.
-// phase 1
-//    - LED => slow blinking (syncronized)
-//    - + connected.
-//
-#if defined(ARDUINO_ESP8266_NODEMCU) // nodemcuv2
-#define LED_PIN 2
-#elif defined(ARDUINO_ESP8266_ESP12) // huzzah
-#define LED_PIN 2
-#elif defined(ARDUINO_FEATHER_ESP32) // featheresp32
+//============<board-specifics>============
+#if defined(ARDUINO_FEATHER_ESP32) // featheresp32
 #define LED_PIN 13
-#elif defined(ARDUINO_NodeMCU_32S) // nodemcu-32s
+#else
 #define LED_PIN 2
 #endif
-#define LED_PERIOD (1111)
-#define LED_ONTIME (1)
+//============</board-specifics>===========
 
 //arduino
 #include <Arduino.h>
 
-//i2c
-#include <Wire.h>
+//post & addresses
 #include "../../post.h"
+AddressBook members;
 
-//painlessmesh
-#include <painlessMesh.h>
-painlessMesh mesh;
+//espnow
+#include <ESP8266WiFi.h>
+#include <espnow.h>
 
-//scheduler
+//task
+#include <TaskScheduler.h>
 Scheduler runner;
 
-//task #0 : connection indicator
-bool onFlag = false;
-bool isConnected = false;
-//prototypes
-void taskStatusBlink_steadyOn();
-void taskStatusBlink_slowblink_insync();
-void taskStatusBlink_steadyOff();
-//the task
-Task statusblinks(0, 1, &taskStatusBlink_steadyOn); // at start, steady on. default == disabled. ==> setup() will enable.
-// when disconnected, and trying, steadyon.
-void taskStatusBlink_steadyOn() {
-  onFlag = true;
-}
-// when connected, blink per 1s. sync-ed. (== default configuration)
-void taskStatusBlink_slowblink_insync() {
-  // toggler
-  onFlag = !onFlag;
-  // on-time
-  statusblinks.delay(LED_ONTIME);
-  // re-enable & sync.
-  if (statusblinks.isLastIteration()) {
-    statusblinks.setIterations(2); //refill iteration counts
-    statusblinks.enableDelayed(LED_PERIOD - (mesh.getNodeTime() % (LED_PERIOD*1000))/1000); //re-enable with sync-ed delay
-  }
-}
-// when connected, steadyoff. (== alternative configuration)
-void taskStatusBlink_steadyOff() {
-  onFlag = false;
-}
-
-//task #1 : happy or lonely
-//   --> automatic reset after some time of 'loneliness (disconnected from any node)'
-void nothappyalone() {
-  static bool isConnected_prev = false;
-  static unsigned long lonely_time_start = 0;
-  // oh.. i m lost the signal(==connection)
-  if (isConnected_prev != isConnected && isConnected == false) {
-    lonely_time_start = millis();
-    Serial.println("oh.. i m lost!");
-  }
-  // .... how long we've been lonely?
-  if (isConnected == false) {
-    if (millis() - lonely_time_start > LONELY_TO_DIE) {
-      // okay. i m fed up. bye the world.
-      Serial.println("okay. i m fed up. bye the world.");
-      Serial.println();
-#if defined(ESP8266)
-      ESP.reset();
-#elif defined(ESP32)
-      ESP.restart();
-      // esp32 doesn't support 'reset()' yet...
-      // (restart() is framework-supported, reset() is more forced hardware-reset-action)
-#else
-#error unknown esp.
-#endif
-    }
-  }
-  //
-  isConnected_prev = isConnected;
-}
-// Task nothappyalone_task(1000, TASK_FOREVER, &nothappyalone, &runner, true); // by default, ENABLED.
-Task nothappyalone_task(100, TASK_FOREVER, &nothappyalone); // by default, ENABLED.
-
+//-*-*-*-*-*-*-*-*-*-*-*-*-
 // servo
 #include <Servo.h>
 
@@ -174,7 +120,7 @@ void ring_side() {
   static int count = 0;
   if (ring_side_task.isFirstIteration()) {
     count = 0;
-    Serial.println("ring_side! start.");
+    MONITORING_SERIAL.println("ring_side! start.");
   }
   if (count % 3 == 0) {
     side.attach(D6);
@@ -195,9 +141,9 @@ extern Task ring_side_move_task;
 int side_set_angle = 50;
 void ring_side_move() {
   //
-  Serial.print("ring_side_move go -> ");
-  Serial.print(side_set_angle);
-  Serial.println(" deg.");
+  MONITORING_SERIAL.print("ring_side_move go -> ");
+  MONITORING_SERIAL.print(side_set_angle);
+  MONITORING_SERIAL.println(" deg.");
   //
   side.attach(D6);
   side.write(side_set_angle);
@@ -211,9 +157,9 @@ extern Task head_release_task;
 void ring_head() {
   int angle = random(0, 90);
   //
-  Serial.print("ring_head go -> ");
-  Serial.print(angle);
-  Serial.println(" deg.");
+  MONITORING_SERIAL.print("ring_head go -> ");
+  MONITORING_SERIAL.print(angle);
+  MONITORING_SERIAL.println(" deg.");
   //
   head.attach(D5);
   head.write(angle);
@@ -234,7 +180,7 @@ Task head_release_task(0, TASK_ONCE, &head_release);
 //   static int count = 0;
 //   if (ring_head_task.isFirstIteration()) {
 //     count = 0;
-//     Serial.println("ring_head! start.");
+//     MONITORING_SERIAL.println("ring_head! start.");
 //   }
 //   if (count % 3 == 0) {
 //     //
@@ -259,192 +205,247 @@ Task head_release_task(0, TASK_ONCE, &head_release);
 //   head.detach();
 // }
 // Task head_release_task(0, TASK_ONCE, &head_release);
+//*-*-*-*-*-*-*-*-*-*-*-*-*
 
-// mesh callbacks
-void receivedCallback(uint32_t from, String & msg) { // REQUIRED
-  Serial.print("got msg.: ");
-  Serial.println(msg);
-  //parse now.
-
-  //parse letter string.
-
-  // letter frame ( '[' + 30 bytes + ']' )
-  //    : [123456789012345678901234567890]
-
-  // 'MIDI' letter frame
-  //    : [123456789012345678901234567890]
-  //    : [KKKVVVG.......................]
-  //    : KKK - Key
-  //      .substring(1, 4);
-  //    : VVV - Velocity (volume/amp.)
-  //      .substring(4, 7);
-  //    : G - Gate (note on/off)
-  //      .substring(7, 8);
-
-  String str_key = msg.substring(1, 4);
-  String str_velocity = msg.substring(4, 7);
-  String str_gate = msg.substring(7, 8);
-
-  int key = str_key.toInt();
-  int velocity = str_velocity.toInt(); // 0 ~ 127
-  int gate = str_gate.toInt();
-
-  //    : [_______X......................]
-  //    : X - Extension starter 'X'
-  //      .substring(8, 9);
-  // Extension (X == 'X')
-  //    : [_______X1111222233344455667788]
-  //    : 1 - data of 4 letters
-  //      .substring(9, 13);
-  //    : 2 - data of 4 letters
-  //      .substring(13, 17);
-  //    : 3 - data of 3 letters
-  //      .substring(17, 20);
-  //    : 4 - data of 3 letters
-  //      .substring(20, 23);
-  //    : 5 - data of 2 letters
-  //      .substring(23, 25);
-  //    : 6 - data of 2 letters
-  //      .substring(25, 27);
-  //    : 7 - data of 2 letters
-  //      .substring(27, 29);
-  //    : 8 - data of 2 letters
-  //      .substring(29, 31);
-
-  String str_ext = msg.substring(8, 9);
-  String str_x1 = msg.substring(9, 13);
-  String str_x2 = msg.substring(13, 17);
-  String str_x3 = msg.substring(17, 20);
-  String str_x4 = msg.substring(20, 23);
-  String str_x5 = msg.substring(23, 25);
-  String str_x6 = msg.substring(25, 27);
-  String str_x7 = msg.substring(27, 29);
-  String str_x8 = msg.substring(29, 31);
-
-  if (str_ext == "X") {
-    side_start_angle = str_x1.toInt(); // ? ~ ?
-    side_hit_angle = str_x2.toInt(); // ? ~ ?
-    side_set_angle = str_x3.toInt(); // ? ~ ?
+//task #0 : blink led
+extern Task blink_task;
+void blink() {
+  //
+  static int count = 0;
+  count++;
+  //
+  switch (count % 4) {
+  case 0:
+    digitalWrite(LED_PIN, LOW); // first ON
+    blink_task.delay(LED_ONTIME);
+    break;
+  case 1:
+    digitalWrite(LED_PIN, HIGH); // first OFF
+    blink_task.delay(LED_GAPTIME);
+    break;
+  case 2:
+    digitalWrite(LED_PIN, LOW); // second ON
+    blink_task.delay(LED_ONTIME);
+    break;
+  case 3:
+    digitalWrite(LED_PIN, HIGH); // second OFF
+    blink_task.delay(LED_PERIOD - 2* LED_ONTIME - LED_GAPTIME);
+    break;
   }
+}
+Task blink_task(0, TASK_FOREVER, &blink, &runner, true); // -> ENABLED, at start-up.
 
-  //is it for me, the gastank?
-  if (key == GASTANK_SIDE_KEY && gate == 1) {
+//task #1 : regular post collection
+#if defined(HAVE_CLIENT)
+void collect_post() {
+  //
+  //postman (serial comm.)
+  static bool insync = false;
+  if (insync == false) {
+    while (Serial.available() > 0) {
+      // search the last byte
+      char last = Serial.read();
+      // expectable last of the messages
+      if (last == ']' || last == '}') {
+        insync = true;
+      }
+    }
+  } else {
+    //
+    if (Serial.available() > 0) {
+      //
+      char type = Serial.peek();
+      //
+      if (type == '[') {
+        //expecting a Note message.
+        uint8_t frm_size = sizeof(Note) + 2;
+        //
+        if (Serial.available() >= frm_size) {
+          //
+          uint8_t frm[frm_size];
+          //
+          Serial.readBytes(frm, frm_size);
+          char first = frm[0];
+          char last = frm[frm_size - 1];
+          if (first == '[' && last == ']') {
+            //
+            //good. ==> ok, post it.
+            //
+            //pseudo-broadcast using addressbook!
+            //
+            for (uint32_t i = 0; i < members.list.size(); i++) {
+              esp_now_send(members.list[i].mac, frm, frm_size);
+              //
+              MONITORING_SERIAL.write(frm, frm_size);
+              MONITORING_SERIAL.print(" ==(esp_now_send)==> ");
+              //
+              MONITORING_SERIAL.print(members.list[i].mac[0], HEX);
+              for (int j = 1; j < 6; j++) {
+                MONITORING_SERIAL.print(":");
+                MONITORING_SERIAL.print(members.list[i].mac[j], HEX);
+              }
+              MONITORING_SERIAL.print(" ==> " + members.list[i].name);
+              //
+            }
+            //
+          } else {
+            insync = false; //error!
+          }
+        }
+      }
+    }
+  }
+}
+Task collect_post_task(1, TASK_FOREVER, &collect_post, &runner, true); // by default, ENABLED
+#endif
+
+// on 'Note'
+void onNoteHandler(Note & n) {
+  //
+  if (n.pitch == GONG_SIDE_KEY && n.onoff == 1) {
+    side_start_angle = n.x1;
+    side_hit_angle = n.x2;
+    //
+    if (side_start_angle < 0) side_start_angle = 0;
+    if (side_start_angle > 180) side_start_angle = 180;
+    //
+    if (side_hit_angle < 0) side_hit_angle = 0;
+    if (side_hit_angle > 180) side_hit_angle = 180;
+    //
     ring_side_task.restartDelayed(10);
   }
-  if (key == GASTANK_HEAD_KEY && gate == 1) {
+  //
+  if (n.pitch == GONG_HEAD_KEY && n.onoff == 1) {
     ring_head_task.restartDelayed(10);
   }
-  if (key == GASTANK_SIDE_MOVE_KEY && gate == 1) {
+  //
+  if (n.pitch == GONG_SIDE_MOVE_KEY && n.onoff == 1) {
+    side_set_angle = n.x3;
+    //
+    if (side_set_angle < 0) side_set_angle = 0;
+    if (side_set_angle > 180) side_set_angle = 180;
+    //
     ring_side_move_task.restartDelayed(10);
   }
-}
-void changedConnectionCallback() {
-  Serial.println(mesh.getNodeList().size());
-  // check status -> modify status LED
-  if (mesh.getNodeList().size() > 0) {
-    // (still) connected.
-    onFlag = false; //reset flag stat.
-    statusblinks.set(LED_PERIOD, 2, &taskStatusBlink_slowblink_insync);
-    // statusblinks.set(0, 1, &taskStatusBlink_steadyOff);
-    statusblinks.enable();
-    Serial.println("connected!");
-    //
-    isConnected = true;
-    runner.addTask(nothappyalone_task);
-    nothappyalone_task.enable();
-  }
-  else {
-    // disconnected!!
-    statusblinks.set(0, 1, &taskStatusBlink_steadyOn);
-    statusblinks.enable();
-    //
-    isConnected = false;
-  }
-  // let I2C device know
-  /////
-  Serial.println("hi. client, we ve got a change in the net.");
-}
-void newConnectionCallback(uint32_t nodeId) {
-  Serial.println(mesh.getNodeList().size());
-  Serial.println("newConnectionCallback.");
-  changedConnectionCallback();
+  //
 }
 
+// on 'receive'
+void onDataReceive(uint8_t * mac, uint8_t *incomingData, uint8_t len) {
+
+  //
+#if defined(HAVE_CLIENT)
+  Serial.write(incomingData, len); // we share it w/ the client.
+#endif
+
+  // on 'Note'
+  if (incomingData[0] == '[' && incomingData[len - 1] == ']' && len == (sizeof(Note) + 2)) {
+    Note note;
+    memcpy((uint8_t *) &note, incomingData + 1, sizeof(Note));
+    //
+    MONITORING_SERIAL.println(note.to_string());
+    //
+    onNoteHandler(note);
+    //
+  }
+}
+
+// on 'sent'
+void onDataSent(uint8_t *mac_addr, uint8_t sendStatus) {
+  if (sendStatus != 0) MONITORING_SERIAL.println("Delivery failed!");
+}
+
+//
 void setup() {
+
   //led
   pinMode(LED_PIN, OUTPUT);
 
-  //mesh
+  //serial
+  Serial.begin(115200);
+  delay(100);
+
+  //info
+  Serial.println();
+  Serial.println();
+  Serial.println("\"hi, i m your postman.\"");
+  Serial.println("-");
+  Serial.println("- * info >>>");
+#if defined(ID_KEY)
+  Serial.println("-      identity (key): " + String(ID_KEY));
+#endif
+  Serial.println("-      mac address: " + WiFi.macAddress());
+  Serial.println("-      wifi channel: " + String(WIFI_CHANNEL));
+  Serial.println("-");
+  Serial.println("- * conf >>>");
+#if defined(HAVE_CLIENT)
+  Serial.println("-      ======== 'HAVE_CLIENT' ========");
+#endif
+#if defined(SERIAL_SWAP)
+  Serial.println("-      ======== 'SERIAL_SWAP' ========");
+#endif
+#if defined(DISABLE_AP)
+  Serial.println("-      ======== 'DISABLE_AP' ========");
+#endif
+  Serial.println("-");
+  Serial.println("- * addresses >>>");
+  for (uint32_t i = 0; i < members.list.size(); i++) {
+    Serial.print("-      #" + String(i) + " : ");
+    Serial.print(members.list[i].mac[0], HEX);
+    for (int j = 1; j < 6; j++) {
+      Serial.print(":");
+      Serial.print(members.list[i].mac[j], HEX);
+    }
+    Serial.print(" ==> " + members.list[i].name);
+    Serial.println();
+  }
+  Serial.println("-");
+  Serial.println("\".-.-.-. :)\"");
+  Serial.println();
+
+  //wifi
   WiFiMode_t node_type = WIFI_AP_STA;
 #if defined(DISABLE_AP)
   system_phy_set_max_tpw(0);
   node_type = WIFI_STA;
 #endif
-  // mesh.setDebugMsgTypes(ERROR | DEBUG | CONNECTION);
-  mesh.setDebugMsgTypes( ERROR | STARTUP );
-  mesh.init(MESH_SSID, MESH_PASSWORD, &runner, MESH_PORT, node_type, MESH_CHANNEL);
+  WiFi.mode(node_type);
 
-  //
-  // void init(String ssid, String password, Scheduler *baseScheduler, uint16_t port = 5555, WiFiMode_t connectMode = WIFI_AP_STA, uint8_t channel = 1, uint8_t hidden = 0, uint8_t maxconn = MAX_CONN);
-  // void init(String ssid, String password, uint16_t port = 5555, WiFiMode_t connectMode = WIFI_AP_STA, uint8_t channel = 1, uint8_t hidden = 0, uint8_t maxconn = MAX_CONN);
-  //
-
-#if defined(SET_ROOT)
-  mesh.setRoot(true);
-#endif
-#if defined(SET_CONTAINSROOT)
-  mesh.setContainsRoot(true);
-#endif
-  //callbacks
-  mesh.onReceive(&receivedCallback);
-  mesh.onNewConnection(&newConnectionCallback);
-  mesh.onChangedConnections(&changedConnectionCallback);
-  Serial.println(mesh.getNodeList().size());
-
-  //tasks
-  runner.addTask(statusblinks);
-  statusblinks.enable();
-
-  //serial
-  Serial.begin(115200);
-  delay(100);
-  Serial.println("hi, postman ready.");
-#if defined(DISABLE_AP)
-  Serial.println("!NOTE!: we are in the WIFI_STA mode!");
-#endif
-
-  //understanding what is 'the nodeId' ==> last 4 bytes of 'softAPmacAddress'
-  // uint32_t nodeId = tcp::encodeNodeId(MAC);
-  Serial.print("nodeId (dec) : ");
-  Serial.println(mesh.getNodeId(), DEC);
-  Serial.print("nodeId (hex) : ");
-  Serial.println(mesh.getNodeId(), HEX);
-  uint8_t MAC[] = {0, 0, 0, 0, 0, 0};
-  if (WiFi.softAPmacAddress(MAC) == 0) {
-    Serial.println("init(): WiFi.softAPmacAddress(MAC) failed.");
+  //esp-now
+  if (esp_now_init() != 0) {
+    Serial.println("Error initializing ESP-NOW");
+    return;
   }
-  Serial.print("MAC : ");
-  Serial.print(MAC[0], HEX); Serial.print(", ");
-  Serial.print(MAC[1], HEX); Serial.print(", ");
-  Serial.print(MAC[2], HEX); Serial.print(", ");
-  Serial.print(MAC[3], HEX); Serial.print(", ");
-  Serial.print(MAC[4], HEX); Serial.print(", ");
-  Serial.println(MAC[5], HEX);
+  esp_now_set_self_role(ESP_NOW_ROLE_COMBO);
+  esp_now_register_send_cb(onDataSent);
+  esp_now_register_recv_cb(onDataReceive);
+  for (uint32_t i = 0; i < members.list.size(); i++) {
+    esp_now_add_peer(members.list[i].mac, ESP_NOW_ROLE_COMBO, 1, NULL, 0); // <-- '1' : "Channel does not affect any function" ... *.-a
+    //
+    // int esp_now_add_peer(u8 *mac_addr, u8 role, u8 channel, u8 *key, u8 key_len)
+    //     - https://www.espressif.com/sites/default/files/documentation/2c-esp8266_non_os_sdk_api_reference_en.pdf
+    //
+    // "Channel does not affect any function, but only stores the channel information
+    // for the application layer. The value is defined by the application layer. For
+    // example, 0 means that the channel is not defined; 1 ~ 14 mean valid
+    // channels; all the rest values can be assigned functions that are specified
+    // by the application layer."
+    //     - https://www.espressif.com/sites/default/files/documentation/esp-now_user_guide_en.pdf
+  }
 
-  // for instance,
+#if defined(SERIAL_SWAP)
+  Serial.println("-      ======== 'SERIAL_SWAP' ========");
+  // a proper say goodbye.
+  Serial.println("\"bye, i will do 'swap' in 1 second. find me on alternative pins!\"");
+  Serial.println("\"    hint: osc wiring ==> esp8266(serial.swap) <-> teensy(serial3)\"");
+  Serial.println("-");
+  Serial.println("\".-.-.-. :)\"");
+  delay(1000);   // flush out unsent serial messages.
 
-  // a huzzah board
-  // nodeId (dec) : 3256120530
-  // nodeId (hex) : C21474D2
-  // MAC : BE, DD, C2, 14, 74, D2
-
-  // a esp8266 board (node mcu)
-  // nodeId (dec) : 758581767
-  // nodeId (hex) : 2D370A07
-  // MAC : B6, E6, 2D, 37, A, 7
-
-  //i2c master
-  Wire.begin();
+  // moving...
+  Serial.swap(); // use RXD2/TXD2 pins, afterwards.
+  delay(100);    // wait re-initialization of the 'Serial'
+#endif
 
   //tasks
   runner.addTask(ring_side_task);
@@ -456,11 +457,7 @@ void setup() {
 }
 
 void loop() {
+  //
   runner.execute();
-  mesh.update();
-#if defined(ESP32)
-  digitalWrite(LED_PIN, onFlag); // value == true is ON.
-#else
-  digitalWrite(LED_PIN, !onFlag); // value == false is ON. so onFlag == true is ON. (pull-up)
-#endif
+  //
 }
