@@ -9,6 +9,12 @@
 //
 // 2021 02 15
 //
+//   this module will be an esp-now node in a group.
+//       like, a bird in a group of birds.
+//
+//   esp-now @ esp8266 w/ broadcast address (FF:FF:FF:FF:FF:FF)
+//       always broadcasting. everyone is 'talkative'.
+//
 
 //==========<configurations>===========
 //
@@ -32,38 +38,16 @@
 #elif 0
 #define SERIAL_SWAP
 #define HAVE_CLIENT
-// (3) sampler client
-#elif 0
-#define SERIAL_SWAP
-#define HAVE_CLIENT
-#define DISABLE_AP
 //
 #endif
 //
 //==========</preset>==========
-
-//============<list of reserved keys>============
-#define CRICKET_A_KEY 120 // geared (esp8266)
-#define CRICKET_E_KEY 121 // geared (esp8266)
-#define CRICKET_I_KEY 122 // geared (esp8266)
-#define CRICKET_O_KEY 123 // geared (esp8266) // servo pin is different (D7)
-#define CRICKET_U_KEY 124
-#define CRICKET_W_KEY 125
-#define CRICKET_Y_KEY 126
-#define CRICKET_N_KEY 127 // fishing-fly (esp32)
-//============</list of reserved keys>===========
 
 //============<identity key>============
 #define ID_KEY 126
 //============</identity key>===========
 
 //============<parameters>============
-//
-#define MY_BOOK ("root")
-// #define MY_BOOK ("friend")
-// #define MY_BOOK ("sampler")
-//
-#define PEER_COUNT_MAX (20)
 //
 #define LED_PERIOD (11111)
 #define LED_ONTIME (1)
@@ -99,7 +83,6 @@
 
 //post & addresses
 #include "../../post.h"
-AddressLibrary library;
 
 //espnow
 #include <ESP8266WiFi.h>
@@ -145,12 +128,10 @@ void hello() {
   memcpy(frm + 1, (uint8_t *) &hello, sizeof(Hello));
   frm[frm_size - 1] = '}';
   //
-  //pseudo-broadcast using peer-list!
-  //
-  esp_now_send(AddressBook("root").list[0].mac, frm, frm_size);
+  esp_now_send(NULL, frm, frm_size); // just broadcast.
   //
   MONITORING_SERIAL.write(frm, frm_size);
-  MONITORING_SERIAL.println(" ==(esp_now_send/\"root\")==> ");
+  MONITORING_SERIAL.println(" ==(esp_now_send/BROADCAST)==> ");
   //
   if (hello_delay > 0) {
     if (hello_delay < 100) hello_delay = 100;
@@ -259,16 +240,6 @@ void setup() {
   Serial.println("-      ======== 'DISABLE_AP' ========");
 #endif
   Serial.println("-");
-  Serial.println("- * address library >>>");
-  for (uint32_t j = 0; j < library.lib.size(); j++) {
-    Serial.println("-");
-    Serial.println("-    * (" + String(j + 1) + ") - \"" + library.lib[j].title + "\" >>>");
-    Serial.println("-");
-    for (uint32_t i = 0; i < library.lib[j].list.size(); i++) {
-      Serial.println("-          " + library.lib[j].list[i].to_string());
-    }
-  }
-  Serial.println("-");
   Serial.println("\".-.-.-. :)\"");
   Serial.println();
 
@@ -288,43 +259,13 @@ void setup() {
   esp_now_set_self_role(ESP_NOW_ROLE_COMBO);
   esp_now_register_send_cb(onDataSent);
   esp_now_register_recv_cb(onDataReceive);
+  //
+  Serial.println("-");
+  Serial.println("- we will broadcast everything. ==> add only the 'broadcast peer' (FF:FF:FF:FF:FF:FF).");
+  uint8_t broadcastmac[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+  esp_now_add_peer(broadcastmac, ESP_NOW_ROLE_COMBO, 1, NULL, 0);
 
   //
-  AddressBook* members = library.getBookByTitle(MY_BOOK);
-  Serial.println("! registering peers in the book titled: \"" + String(MY_BOOK) + "\"");
-
-  //
-  if (members == NULL) {
-    //oh, no such book!
-    Serial.println("---- :( oh, no such book! ===> " + String(MY_BOOK));
-    Serial.println("        .... no peer will be registered. come back with different 'title' !");
-  } else {
-    Serial.println("---- :) oki-doki, found it!");
-    Serial.println();
-    //
-    for (uint32_t i = 0; i < members->list.size(); i++) {
-      if (i >= PEER_COUNT_MAX) {
-        Serial.println("(!) @@@@ Hey, no more free-slot. @@@@ ==> " + members->list[i].to_string() + " ==> IGNORED :(");
-      } else {
-        //some decoration?
-        Serial.print("" + String((i + 1)%10) + "_ ");
-        for (uint32_t k = 0; k < i; k++) Serial.print(" ");
-        //
-        Serial.println("~~>> 'esp_now_add_peer' with ... " + members->list[i].to_string());
-        esp_now_add_peer(members->list[i].mac, ESP_NOW_ROLE_COMBO, 1, NULL, 0); // <-- '1' : "Channel does not affect any function" ... *.-a
-        //
-        // int esp_now_add_peer(u8 *mac_addr, u8 role, u8 channel, u8 *key, u8 key_len)
-        //     - https://www.espressif.com/sites/default/files/documentation/2c-esp8266_non_os_sdk_api_reference_en.pdf
-        //
-        // "Channel does not affect any function, but only stores the channel information
-        // for the application layer. The value is defined by the application layer. For
-        // example, 0 means that the channel is not defined; 1 ~ 14 mean valid
-        // channels; all the rest values can be assigned functions that are specified
-        // by the application layer."
-        //     - https://www.espressif.com/sites/default/files/documentation/esp-now_user_guide_en.pdf
-      }
-    }
-  }
   Serial.println("-");
   Serial.println("\".-.-.-. :)\"");
   Serial.println();
