@@ -1,6 +1,6 @@
 #pragma once
 
-//obsolete (@sampler still ues this)
+//obsolete (@postman|@sampler still ues this)
 #define I2C_ADDR 3
 #define POST_LENGTH 32
 #define POST_BUFF_LEN (POST_LENGTH + 1)
@@ -122,6 +122,8 @@ struct AddressLibrary {
 
 //message type Note : '[' + Note + ']'
 struct Note {
+  //
+  int32_t id;
   float pitch;
   float velocity;
   float onoff;
@@ -132,6 +134,7 @@ struct Note {
   float ps;
   //
   void clear() {
+    id = 0;
     pitch = 0;
     velocity = 0;
     onoff = 0;
@@ -144,7 +147,8 @@ struct Note {
   //
   String to_string() {
     String str = "";
-    str += "( pitch=" + String(pitch);
+    str += "( id=" + String(id);
+    str += ", pitch=" + String(pitch);
     str += ", velocity=" + String(velocity);
     str += ", onoff=" + String(onoff);
     str += ", x1=" + String(x1);
@@ -158,24 +162,41 @@ struct Note {
 };
 
 //message type Hello : '{' + Hello + '}'
+#define SIGNATURE_LENGTH   (20)
+#define SIGNATURE_BUFF_LEN (SIGNATURE_LENGTH + 1)
 struct Hello {
+  char sign[SIGNATURE_BUFF_LEN];
   int32_t id;
+  uint32_t mac32;
   float h1;
   float h2;
   float h3;
   float h4;
   //
+  Hello(String sign_, int32_t id_ = 0, uint32_t mac32_ = 0, float h1_ = 0, float h2_ = 0, float h3_ = 0, float h4_ = 0) {
+    id = id_;
+    mac32 = mac32_;
+    h1 = h1_;
+    h2 = h2_;
+    h3 = h3_;
+    h4 = h4_;
+    sign_.toCharArray(sign, SIGNATURE_BUFF_LEN);
+  }
   void clear() {
     id = 0;
+    mac32 = 0;
     h1 = 0;
     h2 = 0;
     h3 = 0;
     h4 = 0;
+    sign[0] = '\0';
   }
   //
   String to_string() {
     String str = "";
     str += "( id=" + String(id);
+    str += ", mac32=0x" + String(mac32, HEX);
+    str += ", sign=\"" + String(sign) + "\"";
     str += ", h1=" + String(h1);
     str += ", h2=" + String(h2);
     str += ", h3=" + String(h3);

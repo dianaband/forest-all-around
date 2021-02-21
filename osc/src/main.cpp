@@ -55,7 +55,11 @@ void route_note(OSCMessage& msg, int offset) {
   if (msg.fullMatch("/pitch", offset)) {
     note.pitch = msg.getFloat(0);
   }
-  // (4) --> /x
+  // (4) --> /id
+  if (msg.fullMatch("/id", offset)) {
+    note.id = msg.getInt(0);
+  }
+  // (5) --> /x
   if (msg.fullMatch("/x", offset)) {
     note.x1 = msg.getFloat(0);
     note.x2 = msg.getFloat(1);
@@ -112,7 +116,7 @@ void loop() {
         if (POSTMAN_SERIAL.available() > sizeof(Hello) + 2) {
           POSTMAN_SERIAL.read();
           //
-          Hello hello;
+          Hello hello("");
           POSTMAN_SERIAL.readBytes((uint8_t *) &hello, sizeof(Hello));
           char last = POSTMAN_SERIAL.read();
           if (last == '}') {
