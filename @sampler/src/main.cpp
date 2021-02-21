@@ -1,16 +1,13 @@
 //
-// wirelessly connected cloud (Wireless Mesh Networking)
-// MIDI-like
-// spacial
-// sampler keyboard
+// wirelessly connected cloud (based on ESP-NOW, a kind of LPWAN?)
 //
 
 //
-// Forest all/around @ MMCA, Seoul
+// Conversation about the ROOT @ SEMA warehouses, Seoul
 //
 
 //
-// 2019 12 11
+// 2021 02 15
 //
 // (part-3) teensy35 : 'client:sampler' (mesh post --> play sounds)
 //
