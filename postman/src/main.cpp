@@ -52,17 +52,18 @@
 #elif 1
 #define SERIAL_SWAP
 #define HAVE_CLIENT
-// (3) sampler client
-#elif 0
-#define SERIAL_SWAP
-#define HAVE_CLIENT
-#define DISABLE_AP
 //
 #endif
 //
 //==========</preset>==========
 
 //============<parameters>============
+//
+// #define MY_BOOK ("root")
+// #define MY_BOOK ("friend")
+#define MY_BOOK ("sampler")
+//
+#define PEER_COUNT_MAX (20)
 //
 #define LED_PERIOD (11111)
 #define LED_ONTIME (1)
@@ -98,7 +99,7 @@
 
 //post & addresses
 #include "../../post.h"
-AddressBook members;
+AddressLibrary library;
 
 //espnow
 #include <ESP8266WiFi.h>
@@ -252,16 +253,14 @@ void setup() {
   Serial.println("-      ======== 'DISABLE_AP' ========");
 #endif
   Serial.println("-");
-  Serial.println("- * addresses >>>");
-  for (uint32_t i = 0; i < members.list.size(); i++) {
-    Serial.print("-      #" + String(i) + " : ");
-    Serial.print(members.list[i].mac[0], HEX);
-    for (int j = 1; j < 6; j++) {
-      Serial.print(":");
-      Serial.print(members.list[i].mac[j], HEX);
+  Serial.println("- * address library >>>");
+  for (uint32_t j = 0; j < library.lib.size(); j++) {
+    Serial.println("-");
+    Serial.println("-    * (" + String(j + 1) + ") - \"" + library.lib[j].title + "\" >>>");
+    Serial.println("-");
+    for (uint32_t i = 0; i < library.lib[j].list.size(); i++) {
+      Serial.println("-          " + library.lib[j].list[i].to_string());
     }
-    Serial.print(" ==> " + members.list[i].name);
-    Serial.println();
   }
   Serial.println("-");
   Serial.println("\".-.-.-. :)\"");
@@ -283,19 +282,46 @@ void setup() {
   esp_now_set_self_role(ESP_NOW_ROLE_COMBO);
   esp_now_register_send_cb(onDataSent);
   esp_now_register_recv_cb(onDataReceive);
-  for (uint32_t i = 0; i < members.list.size(); i++) {
-    esp_now_add_peer(members.list[i].mac, ESP_NOW_ROLE_COMBO, 1, NULL, 0); // <-- '1' : "Channel does not affect any function" ... *.-a
+
+  //
+  AddressBook* members = library.getBookByTitle(MY_BOOK);
+  Serial.println("! registering peers in the book titled: \"" + String(MY_BOOK) + "\"");
+
+  //
+  if (members == NULL) {
+    //oh, no such book!
+    Serial.println("---- :( oh, no such book! ===> " + String(MY_BOOK));
+    Serial.println("        .... no peer will be registered. come back with different 'title' !");
+  } else {
+    Serial.println("---- :) oki-doki, found it!");
+    Serial.println();
     //
-    // int esp_now_add_peer(u8 *mac_addr, u8 role, u8 channel, u8 *key, u8 key_len)
-    //     - https://www.espressif.com/sites/default/files/documentation/2c-esp8266_non_os_sdk_api_reference_en.pdf
-    //
-    // "Channel does not affect any function, but only stores the channel information
-    // for the application layer. The value is defined by the application layer. For
-    // example, 0 means that the channel is not defined; 1 ~ 14 mean valid
-    // channels; all the rest values can be assigned functions that are specified
-    // by the application layer."
-    //     - https://www.espressif.com/sites/default/files/documentation/esp-now_user_guide_en.pdf
+    for (uint32_t i = 0; i < members->list.size(); i++) {
+      if (i >= PEER_COUNT_MAX) {
+        Serial.println("(!) @@@@ Hey, no more free-slot. @@@@ ==> " + members->list[i].to_string() + " ==> IGNORED :(");
+      } else {
+        //some decoration?
+        Serial.print("" + String((i + 1)%10) + "_ ");
+        for (uint32_t k = 0; k < i; k++) Serial.print(" ");
+        //
+        Serial.println("~~>> 'esp_now_add_peer' with ... " + members->list[i].to_string());
+        esp_now_add_peer(members->list[i].mac, ESP_NOW_ROLE_COMBO, 1, NULL, 0); // <-- '1' : "Channel does not affect any function" ... *.-a
+        //
+        // int esp_now_add_peer(u8 *mac_addr, u8 role, u8 channel, u8 *key, u8 key_len)
+        //     - https://www.espressif.com/sites/default/files/documentation/2c-esp8266_non_os_sdk_api_reference_en.pdf
+        //
+        // "Channel does not affect any function, but only stores the channel information
+        // for the application layer. The value is defined by the application layer. For
+        // example, 0 means that the channel is not defined; 1 ~ 14 mean valid
+        // channels; all the rest values can be assigned functions that are specified
+        // by the application layer."
+        //     - https://www.espressif.com/sites/default/files/documentation/esp-now_user_guide_en.pdf
+      }
+    }
   }
+  Serial.println("-");
+  Serial.println("\".-.-.-. :)\"");
+  Serial.println();
 
 #if defined(SERIAL_SWAP)
   Serial.println("-      ======== 'SERIAL_SWAP' ========");

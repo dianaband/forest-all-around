@@ -1,12 +1,14 @@
 #pragma once
 
-//obsolete
+//obsolete (@sampler still ues this)
 #define I2C_ADDR 3
 #define POST_LENGTH 32
 #define POST_BUFF_LEN (POST_LENGTH + 1)
 
 //esp-now
-#define MEMBER_COUNT_MAX (20)
+#include <vector>
+
+// 'address'
 struct Address {
   String name;
   uint8_t mac[6];
@@ -28,74 +30,94 @@ struct Address {
     mac[5] = f;
     name = n;
   }
+  //
+  String to_string() {
+    char mac_cstr[18]; // "AA:BB:CC:AA:BB:CC"
+    snprintf(mac_cstr, 18, "%02X:%02X:%02X:%02X:%02X:%02X", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+    return (String(mac_cstr) + " ==> " + name);
+  }
 };
 
-#include <Vector.h>
 struct AddressBook {
-  Vector<Address> list;
+  String title;
+  std::vector<Address> list;
 
   //
-  AddressBook() {
-    //
-    list.setStorage(lst);
-    //
-    // list.push_back(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB7, 0x21, "Enchovy"));
-    // list.push_back(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB3, 0xC5, "Schpaarow"));
-    //
-
-    //roots
-    list.push_back(Address(0xB4, 0xE6, 0x2D, 0x37, 0x3B, 0x90, "root/osc"));
-    list.push_back(Address(0x68, 0xC6, 0x3A, 0xD7, 0x4D, 0x97, "root(2)/osc"));
-
-    //green suitcase
-    list.push_back(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB4, 0x47, "cricket/124"));
-    list.push_back(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB7, 0x32, "cricket/127"));
-
-    //gastank
-    list.push_back(Address(0x84, 0xCC, 0xA8, 0xAA, 0x56, 0x11, "taak/150"));
-    list.push_back(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB7, 0xCC, "cricket/128"));
-
-    //roundlys
-    list.push_back(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB4, 0x64, "roundly/2000"));
-    list.push_back(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB8, 0x1E, "roundly/2001"));
-
-    //buoyflys
-    list.push_back(Address(0x80, 0x7D, 0x3A, 0x58, 0x80, 0x30, "cricket/121"));
-    list.push_back(Address(0x84, 0xCC, 0xA8, 0xAA, 0x4A, 0xCC, "cricket/122"));
-    list.push_back(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB3, 0xD4, "cricket/123"));
-
-    //blue drummer
-    list.push_back(Address(0x98, 0xF4, 0xAB, 0xB3, 0xB4, 0xB8, "cricket/120"));
-    list.push_back(Address(0x84, 0xCC, 0xA8, 0xA3, 0x83, 0x80, "taak/154"));
-
-    //frog eyes
-    list.push_back(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB7, 0xCF, "taak/151"));
-
-    //untitled - yet
-    list.push_back(Address(0x98, 0xF4, 0xAB, 0xB3, 0xB9, 0xB4, "gonggong/1000"));
-    list.push_back(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB4, 0x28, "taak/157"));
-
-    //yellow
-    list.push_back(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB3, 0xEF, "cricket/125"));
-    list.push_back(Address(0x84, 0xCC, 0xA8, 0xAA, 0x78, 0x87, "cricket/126"));
-
+  AddressBook (String title_ = "") {
+    title = title_;
   }
   //
-  AddressBook(String booktitle) {
-    //
-    // with a 'booktitle' to select which addressebook to get.
-    // UNIMPLEMENTED
-    //
-    //
-    list.setStorage(lst);
-    //
-    if (booktitle == "root") {
-      list.push_back(Address(0xB4, 0xE6, 0x2D, 0x37, 0x3B, 0x90, "root/osc"));
-      list.push_back(Address(0x68, 0xC6, 0x3A, 0xD7, 0x4D, 0x97, "root(2)/osc"));
+  void add(Address addr) {
+    list.push_back(addr);
+  }
+};
+
+//
+struct AddressLibrary {
+  //
+  std::vector<AddressBook> lib;
+  //
+  AddressLibrary() {
+
+    // book #1
+    {
+      AddressBook book = AddressBook("root");
+      //
+      book.add(Address(0xB4, 0xE6, 0x2D, 0x37, 0x3B, 0x90, "root/osc"));
+      book.add(Address(0x68, 0xC6, 0x3A, 0xD7, 0x4D, 0x97, "root(2)/osc"));
+      //
+      lib.push_back(book);
+    }
+    // book #2
+    {
+      AddressBook book = AddressBook("friend");
+      //
+      // 01 - 10
+      book.add(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB4, 0x47, "green suitcase - cricket/124"));
+      book.add(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB7, 0x32, "green suitcase - cricket/127"));
+      book.add(Address(0x84, 0xCC, 0xA8, 0xAA, 0x56, 0x11, "gastank - taak/150"));
+      book.add(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB7, 0xCC, "gastank - cricket/128"));
+      book.add(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB4, 0x64, "roundlys - roundly/2000"));
+      book.add(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB8, 0x1E, "roundlys - roundly/2001"));
+      book.add(Address(0x80, 0x7D, 0x3A, 0x58, 0x80, 0x30, "buoyfly - cricket/121"));
+      book.add(Address(0x84, 0xCC, 0xA8, 0xAA, 0x4A, 0xCC, "buoyfly - cricket/122"));
+      book.add(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB3, 0xD4, "buoyfly - cricket/123"));
+      book.add(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB3, 0xE2, "buoyfly - cricket/129"));
+      // 11 - 20
+      book.add(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB6, 0xC6, "buoyfly - cricket/130"));
+      book.add(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB7, 0xA3, "buoyfly - cricket/131"));
+      book.add(Address(0x98, 0xF4, 0xAB, 0xB3, 0xB4, 0xB8, "blue drummer - cricket/120"));
+      book.add(Address(0x84, 0xCC, 0xA8, 0xA3, 0x83, 0x80, "blue drummer - taak/154"));
+      book.add(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB7, 0xCF, "blue drummer - taak/153"));
+      book.add(Address(0x84, 0xCC, 0xA8, 0xAA, 0x17, 0x8D, "frog eyes - taak/151"));
+      book.add(Address(0x98, 0xF4, 0xAB, 0xB3, 0xB9, 0xB4, "untitled - gonggong/1000"));
+      book.add(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB4, 0x28, "beak - taak/157"));
+      book.add(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB3, 0xEF, "yellow - cricket/125"));
+      book.add(Address(0x84, 0xCC, 0xA8, 0xAA, 0x78, 0x87, "yellow - cricket/126"));
+      //
+      lib.push_back(book);
+    }
+    // book #3
+    {
+      AddressBook book = AddressBook("sampler");
+      //
+      // samplers don't have ID_KEY, they will just get all messages,
+      // then open the content to get **midi** 'key' in the 'note' message.
+      book.add(Address(0xBC, 0xDD, 0xC2, 0xB2, 0xAF, 0xD4, "@postman for @sampler"));
+      //
+      lib.push_back(book);
     }
   }
-private:
-  Address lst[MEMBER_COUNT_MAX]; //<-- the storage array of 'list'
+  //
+  AddressBook* getBookByTitle(String title_) {
+    for (uint32_t i = 0; i < lib.size(); i++) {
+      if (lib[i].title == title_) {
+        return &(lib[i]);
+      }
+    }
+    //
+    return NULL;
+  }
 };
 
 //message type Note : '[' + Note + ']'
