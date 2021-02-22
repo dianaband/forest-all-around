@@ -21,7 +21,7 @@
 //============<identities>============
 //
 #define MY_GROUP_ID   (3000)
-#define MY_ID         (MY_GROUP_ID + 1)
+#define MY_ID         (MY_GROUP_ID + 20)
 #define MY_SIGN       ("CRICKET")
 //
 //============</identities>============
@@ -179,7 +179,7 @@ void onNoteHandler(Note & n) {
   //is it for me?
   if (n.id == MY_GROUP_ID || n.id == MY_ID) {
     //
-    if (n.pitch == 1) {
+    if (n.pitch == 0) {
       speed = n.velocity;
       // if (speed < 0) speed = 0;
       //
