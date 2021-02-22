@@ -24,7 +24,7 @@
 //
 #define MY_GROUP_ID   (0)
 #define MY_ID         (MY_GROUP_ID + 1)
-#define MY_SIGN       ("POSTMAN|OSC(Pd) a.k.a. @@@ ROOT @@@")
+#define MY_SIGN       ("POSTMAN|OSC(Pd)")
 //
 //============</identities>============
 
@@ -115,7 +115,7 @@ void hello() {
   memcpy(frm + 1, (uint8_t *) &hello, sizeof(Hello));
   frm[frm_size - 1] = '}';
   //
-  esp_now_send(NULL, frm, frm_size); // to all peers. (== broadcast, by default)
+  esp_now_send(NULL, frm, frm_size); // to all peers in the list.
   //
   MONITORING_SERIAL.write(frm, frm_size);
   MONITORING_SERIAL.println(" ==(esp_now_send/0)==> ");
@@ -289,7 +289,7 @@ void setup() {
   esp_now_register_send_cb(onDataSent);
   esp_now_register_recv_cb(onDataReceive);
   //
-  Serial.println("- i broadcast everything. ==> add 'broadcast peer' (FF:FF:FF:FF:FF:FF).");
+  Serial.println("- ! (esp_now_add_peer) ==> add a 'broadcast peer' (FF:FF:FF:FF:FF:FF).");
   uint8_t broadcastmac[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
   esp_now_add_peer(broadcastmac, ESP_NOW_ROLE_COMBO, 1, NULL, 0);
 

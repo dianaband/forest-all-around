@@ -87,7 +87,6 @@
 
 //post & addresses
 #include "../../post.h"
-AddressLibrary library;
 
 //espnow
 #include <ESP8266WiFi.h>
@@ -121,24 +120,13 @@ void hello() {
   memcpy(frm + 1, (uint8_t *) &hello, sizeof(Hello));
   frm[frm_size - 1] = '}';
   //
-  AddressBook* book = library.getBookByTitle("root");
-  if (book == NULL) {
-    // error!
-  } else {
-    //
-    for (uint32_t i = 0; i < book->list.size(); i++) {
-      esp_now_add_peer(book->list[i].mac, ESP_NOW_ROLE_COMBO, 1, NULL, 0);
-      esp_now_send(book->list[i].mac, frm, frm_size); // to all peers. (== broadcast, by default)
-      esp_now_del_peer(book->list[i].mac);
-    }
-    // esp_now_send(NULL, frm, frm_size); // to all peers. (== broadcast, by default)
-    //
-    MONITORING_SERIAL.write(frm, frm_size);
-    MONITORING_SERIAL.println(" ==(esp_now_send/0)==> ");
-  }
+  esp_now_send(NULL, frm, frm_size); // to all peers in the list.
+  //
+  MONITORING_SERIAL.write(frm, frm_size);
+  MONITORING_SERIAL.println(" ==(esp_now_send/0)==> ");
   //
   if (hello_delay > 0) {
-    if (hello_delay < 100) hello_delay = 100;
+    if (hello_delay < 20) hello_delay = 20;
     hello_task.restartDelayed(hello_delay);
   }
 }
@@ -307,9 +295,9 @@ void setup() {
   esp_now_register_send_cb(onDataSent);
   esp_now_register_recv_cb(onDataReceive);
   //
-  // Serial.println("- i broadcast everything. ==> add 'broadcast peer' (FF:FF:FF:FF:FF:FF).");
-  // uint8_t broadcastmac[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
-  // esp_now_add_peer(broadcastmac, ESP_NOW_ROLE_COMBO, 1, NULL, 0);
+  Serial.println("- ! (esp_now_add_peer) ==> add a 'broadcast peer' (FF:FF:FF:FF:FF:FF).");
+  uint8_t broadcastmac[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+  esp_now_add_peer(broadcastmac, ESP_NOW_ROLE_COMBO, 1, NULL, 0);
 
   //
   Serial.println("-");
@@ -335,10 +323,6 @@ void setup() {
   //i2c master
   Wire.begin();
 #endif
-
-  //
-  // hello_delay = 1000;
-  // hello_task.restart();
 }
 
 void loop() {
