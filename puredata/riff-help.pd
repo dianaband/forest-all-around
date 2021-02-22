@@ -1,0 +1,44 @@
+#N canvas 503 141 450 419 12;
+#N canvas 0 23 450 278 (subpatch) 0;
+#X array \$0-riff2 50 float 3;
+#A 0 0.285714 0.304762 0.328572 0.457144 0.504763 0.514287 0.542858
+0.542858 0.533335 0.533335 0.514287 0.495239 0.476191 0.428572 0.380953
+0.361905 0.342857 0.333333 0.333333 0.361905 0.4 0.466667 0.466667
+0.552382 0.57143 0.580954 0.590478 0.590478 0.580954 0.523811 0.457144
+0.409524 0.361905 0.304762 0.27619 0.266666 0.257142 0.180951 0.123808
+0.0761888 0.0571411 0.0571411 0.0571411 0.0476172 0.0476172 0.0380933
+0.0380933 0.0380937 0.0380937 0.333333;
+#X coords 0 1 50 0 150 105 1 0 0;
+#X restore 18 46 graph;
+#X obj 18 178 tgl 20 0 empty empty empty 17 7 0 10 -262130 -1 -1 0
+1;
+#X obj 212 163 tgl 20 0 empty empty 3001 17 7 0 10 -257985 -1 -1 0
+1;
+#X text 42 160 buoyfly2;
+#X obj 18 237 riff \$0-riff2 800 3001;
+#X text 258 193 <-- append key;
+#X obj 142 163 tgl 20 0 empty empty 3001 17 7 0 10 -257985 -1 -1 0
+1;
+#X text 218 233 if you don't append key \,;
+#X text 218 253 key might be 0 \,;
+#X text 185 95 <--- this graphic riff;
+#X text 49 368 use it to fill up attaching numbers (e.g. X1~X4 & PS)
+;
+#X text 202 114 will be sent as 'velocity' values;
+#X text 218 273 if no one changed;
+#X text 168 344 ^--2nd outlet acts before 1st outlet;
+#X obj 18 342 print RIFF;
+#X msg 212 194 \$1 10;
+#X floatatom 205 316 5 0 0 0 - - -;
+#X obj 18 203 metro 1000;
+#X text 226 14 arguments:;
+#X text 236 28 (1) table name;
+#X text 236 42 (2) multiplier;
+#X text 236 56 (3) id value;
+#X connect 1 0 17 0;
+#X connect 2 0 15 0;
+#X connect 4 0 14 0;
+#X connect 4 1 16 0;
+#X connect 6 0 4 1;
+#X connect 15 0 4 1;
+#X connect 17 0 4 0;
