@@ -104,7 +104,9 @@ void hello() {
   //
   Hello hello(String(MY_SIGN), MY_ID, mac32); // the most basic 'hello'
   // and you can append some floats
-  // hello.h1 = 0;
+  static int count = 0;
+  count++;
+  hello.h1 = (count % 1000);
   // hello.h2 = 0;
   // hello.h3 = 0;
   // hello.h4 = 0;
@@ -221,10 +223,27 @@ void onDataReceive(uint8_t * mac, uint8_t *incomingData, uint8_t len) {
 #endif
 
   // open => identify => use.
+  if (incomingData[0] == '{' && incomingData[len - 1] == '}' && len == (sizeof(Hello) + 2)) {
+    Hello hello("");
+    memcpy((uint8_t *) &hello, incomingData + 1, sizeof(Hello));
+    //
+    MONITORING_SERIAL.println(hello.to_string());
+    //
+  }
+
+  // open => identify => use.
   if (incomingData[0] == '[' && incomingData[len - 1] == ']' && len == (sizeof(Note) + 2)) {
     Note note;
     memcpy((uint8_t *) &note, incomingData + 1, sizeof(Note));
-    //
+
+    //is it for me?
+    if (note.id == MY_GROUP_ID || note.id == MY_ID) {
+      hello_delay = note.ps;
+      if (hello_delay > 0 && hello_task.isEnabled() == false) {
+        hello_task.restart();
+      }
+    }
+
     MONITORING_SERIAL.println(note.to_string());
 
     //-*-*-*-*-*-*-*-*-*-

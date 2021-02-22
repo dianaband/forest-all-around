@@ -884,7 +884,7 @@
 #X connect 369 0 82 0;
 #X connect 370 0 165 0;
 #X restore 57 368 pd crickets nanokontrol2;
-#N canvas 133 398 1214 393 roundly 1;
+#N canvas 133 398 1214 393 roundly 0;
 #X msg 354 139 \$1 5000;
 #X obj 354 162 unpack f f;
 #X obj 354 185 s X1;
@@ -1071,7 +1071,7 @@
 #X obj 79 64 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0 1
 ;
 #X obj 408 177 s OSC;
-#N canvas 713 396 706 244 SAMPLER_NOTE-to-OSC 1;
+#N canvas 627 525 706 244 SAMPLER_NOTE-to-OSC 0;
 #X obj 35 142 spigot;
 #X obj 84 127 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;

@@ -126,7 +126,7 @@ void hello() {
   MONITORING_SERIAL.println(" ==(esp_now_send/0)==> ");
   //
   if (hello_delay > 0) {
-    if (hello_delay < 20) hello_delay = 20;
+    if (hello_delay < 100) hello_delay = 100;
     hello_task.restartDelayed(hello_delay);
   }
 }

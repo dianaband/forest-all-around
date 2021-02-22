@@ -16,7 +16,17 @@
 //       always broadcasting. everyone is 'talkative'.
 //
 
-//==========<configurations>===========
+// then, let it save a value in EEPROM (object with memory=mind?)
+
+//============<identities>============
+//
+#define MY_GROUP_ID   (4000)
+#define MY_ID         (MY_GROUP_ID + 1)
+#define MY_SIGN       ("GONGGONG")
+//
+//============</identities>============
+
+//==========<list-of-configurations>===========
 //
 // 'HAVE_CLIENT'
 // --> i have a client. enable the client task.
@@ -28,35 +38,18 @@
 // 'DISABLE_AP'
 // --> (questioning)...
 //
-//==========</configurations>==========
-
-//==========<preset>===========
+// 'HAVE_CLIENT_I2C'
+// --> i have a client w/ I2C i/f. enable the I2C client task.
 //
-// (1) standalone
-#if 1
-// (2) osc client (the ROOT)
-#elif 0
-#define SERIAL_SWAP
-#define HAVE_CLIENT
-// (3) sampler client
-#elif 0
-#define SERIAL_SWAP
-#define HAVE_CLIENT
-#define DISABLE_AP
+//==========</list-of-configurations>==========
 //
-#endif
-//
-//==========</preset>==========
+// (EMPTY)
 
 //============<gonggong>============
 #define GONG_SIDE_KEY      1000 // X1 = start angle, X2 = hit angle
 #define GONG_SIDE_MOVE_KEY 1001 // X3 = set angle
 #define GONG_HEAD_KEY      1002 // random (HEAD)
 //============</gonggong>===========
-
-//============<identity key>============
-#define ID_KEY GONG_SIDE_KEY
-//============</identity key>===========
 
 //============<parameters>============
 //
@@ -217,9 +210,18 @@ extern Task hello_task;
 static int hello_delay = 0;
 void hello() {
   //
-  Hello hello = {
-    ID_KEY
-  };
+  byte mac[6];
+  WiFi.macAddress(mac);
+  uint32_t mac32 = (((((mac[2] << 8) + mac[3]) << 8) + mac[4]) << 8) + mac[5];
+  //
+  Hello hello(String(MY_SIGN), MY_ID, mac32); // the most basic 'hello'
+  // and you can append some floats
+  static int count = 0;
+  count++;
+  hello.h1 = (count % 1000);
+  // hello.h2 = 0;
+  // hello.h3 = 0;
+  // hello.h4 = 0;
   //
   uint8_t frm_size = sizeof(Hello) + 2;
   uint8_t frm[frm_size];
@@ -227,17 +229,17 @@ void hello() {
   memcpy(frm + 1, (uint8_t *) &hello, sizeof(Hello));
   frm[frm_size - 1] = '}';
   //
-  esp_now_send(NULL, frm, frm_size); // just broadcast.
+  esp_now_send(NULL, frm, frm_size); // to all peers in the list.
   //
   MONITORING_SERIAL.write(frm, frm_size);
-  MONITORING_SERIAL.println(" ==(esp_now_send/BROADCAST)==> ");
+  MONITORING_SERIAL.println(" ==(esp_now_send/0)==> ");
   //
   if (hello_delay > 0) {
     if (hello_delay < 100) hello_delay = 100;
     hello_task.restartDelayed(hello_delay);
   }
 }
-Task hello_task(0, TASK_ONCE, &hello);
+Task hello_task(0, TASK_ONCE, &hello, &runner, false);
 
 //task #0 : blink led
 extern Task blink_task;
@@ -270,51 +272,71 @@ Task blink_task(0, TASK_FOREVER, &blink, &runner, true); // -> ENABLED, at start
 // on 'Note'
 void onNoteHandler(Note & n) {
   //
-  if (n.pitch == GONG_SIDE_KEY && n.onoff == 1) {
-    side_start_angle = n.x1;
-    side_hit_angle = n.x2;
+  if (n.id == MY_GROUP_ID || n.id == MY_ID) {
+    if (n.pitch == GONG_SIDE_KEY && n.onoff == 1) {
+      side_start_angle = n.x1;
+      side_hit_angle = n.x2;
+      //
+      if (side_start_angle < 0) side_start_angle = 0;
+      if (side_start_angle > 180) side_start_angle = 180;
+      //
+      if (side_hit_angle < 0) side_hit_angle = 0;
+      if (side_hit_angle > 180) side_hit_angle = 180;
+      //
+      ring_side_task.restartDelayed(10);
+    }
     //
-    if (side_start_angle < 0) side_start_angle = 0;
-    if (side_start_angle > 180) side_start_angle = 180;
+    if (n.pitch == GONG_HEAD_KEY && n.onoff == 1) {
+      ring_head_task.restartDelayed(10);
+    }
     //
-    if (side_hit_angle < 0) side_hit_angle = 0;
-    if (side_hit_angle > 180) side_hit_angle = 180;
-    //
-    ring_side_task.restartDelayed(10);
+    if (n.pitch == GONG_SIDE_MOVE_KEY && n.onoff == 1) {
+      side_set_angle = n.x3;
+      //
+      if (side_set_angle < 0) side_set_angle = 0;
+      if (side_set_angle > 180) side_set_angle = 180;
+      //
+      ring_side_move_task.restartDelayed(10);
+      //
+    }
   }
-  //
-  if (n.pitch == GONG_HEAD_KEY && n.onoff == 1) {
-    ring_head_task.restartDelayed(10);
-  }
-  //
-  if (n.pitch == GONG_SIDE_MOVE_KEY && n.onoff == 1) {
-    side_set_angle = n.x3;
-    //
-    if (side_set_angle < 0) side_set_angle = 0;
-    if (side_set_angle > 180) side_set_angle = 180;
-    //
-    ring_side_move_task.restartDelayed(10);
-  }
-  //
 }
 
 // on 'receive'
 void onDataReceive(uint8_t * mac, uint8_t *incomingData, uint8_t len) {
 
   //
+  //MONITORING_SERIAL.write(incomingData, len);
+
+  //
 #if defined(HAVE_CLIENT)
-  Serial.write(incomingData, len); // we share it w/ the client.
+  Serial.write(incomingData, len); // we pass it over to the client.
 #endif
 
-  // on 'Note'
+  // open => identify => use.
+  if (incomingData[0] == '{' && incomingData[len - 1] == '}' && len == (sizeof(Hello) + 2)) {
+    Hello hello("");
+    memcpy((uint8_t *) &hello, incomingData + 1, sizeof(Hello));
+    //
+    MONITORING_SERIAL.println(hello.to_string());
+    //
+  }
+
+  // open => identify => use.
   if (incomingData[0] == '[' && incomingData[len - 1] == ']' && len == (sizeof(Note) + 2)) {
     Note note;
     memcpy((uint8_t *) &note, incomingData + 1, sizeof(Note));
-    //
-    MONITORING_SERIAL.println(note.to_string());
-    //
     onNoteHandler(note);
-    //
+
+    //is it for me?
+    if (note.id == MY_GROUP_ID || note.id == MY_ID) {
+      hello_delay = note.ps;
+      if (hello_delay > 0 && hello_task.isEnabled() == false) {
+        hello_task.restart();
+      }
+    }
+
+    MONITORING_SERIAL.println(note.to_string());
   }
 }
 
@@ -338,26 +360,21 @@ void setup() {
   Serial.println();
   Serial.println("\"hi, i m your postman.\"");
   Serial.println("-");
-  Serial.println("- * info >>>");
-#if defined(ID_KEY)
-  Serial.println("-      identity (key): " + String(ID_KEY));
-#endif
-  Serial.println("-      mac address: " + WiFi.macAddress());
-  Serial.println("-      wifi channel: " + String(WIFI_CHANNEL));
-  Serial.println("-");
-  Serial.println("- * conf >>>");
+  Serial.println("- my id: " + String(MY_ID) + ", gid: " + String(MY_GROUP_ID) + ", call me ==> \"" + String(MY_SIGN) + "\"");
+  Serial.println("- mac address: " + WiFi.macAddress() + ", channel: " + String(WIFI_CHANNEL));
 #if defined(HAVE_CLIENT)
-  Serial.println("-      ======== 'HAVE_CLIENT' ========");
+  Serial.println("- ======== 'HAVE_CLIENT' ========");
 #endif
 #if defined(SERIAL_SWAP)
-  Serial.println("-      ======== 'SERIAL_SWAP' ========");
+  Serial.println("- ======== 'SERIAL_SWAP' ========");
 #endif
 #if defined(DISABLE_AP)
-  Serial.println("-      ======== 'DISABLE_AP' ========");
+  Serial.println("- ======== 'DISABLE_AP' ========");
+#endif
+#if defined(HAVE_CLIENT_I2C)
+  Serial.println("- ======== 'HAVE_CLIENT_I2C' ========");
 #endif
   Serial.println("-");
-  Serial.println("\".-.-.-. :)\"");
-  Serial.println();
 
   //wifi
   WiFiMode_t node_type = WIFI_AP_STA;
@@ -376,8 +393,7 @@ void setup() {
   esp_now_register_send_cb(onDataSent);
   esp_now_register_recv_cb(onDataReceive);
   //
-  Serial.println("-");
-  Serial.println("- we will broadcast everything. ==> add only the 'broadcast peer' (FF:FF:FF:FF:FF:FF).");
+  Serial.println("- ! (esp_now_add_peer) ==> add a 'broadcast peer' (FF:FF:FF:FF:FF:FF).");
   uint8_t broadcastmac[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
   esp_now_add_peer(broadcastmac, ESP_NOW_ROLE_COMBO, 1, NULL, 0);
 
@@ -404,7 +420,6 @@ void setup() {
   randomSeed(analogRead(0));
 
   //tasks
-  runner.addTask(hello_task);
   runner.addTask(ring_side_task);
   runner.addTask(ring_side_move_task);
   runner.addTask(side_release_task);
