@@ -1,4 +1,4 @@
-#N canvas 503 141 450 419 12;
+#N canvas 503 141 446 566 12;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array \$0-riff2 50 float 3;
 #A 0 0.285714 0.304762 0.328572 0.457144 0.504763 0.514287 0.542858
@@ -9,36 +9,59 @@
 0.0761888 0.0571411 0.0571411 0.0571411 0.0476172 0.0476172 0.0380933
 0.0380933 0.0380937 0.0380937 0.333333;
 #X coords 0 1 50 0 150 105 1 0 0;
-#X restore 18 46 graph;
-#X obj 18 178 tgl 20 0 empty empty empty 17 7 0 10 -262130 -1 -1 0
+#X restore 20 185 graph;
+#X obj 20 307 tgl 20 0 empty empty empty 17 7 0 10 -262130 -1 -1 1
 1;
-#X obj 212 163 tgl 20 0 empty empty 3001 17 7 0 10 -257985 -1 -1 0
-1;
-#X text 42 160 buoyfly2;
-#X obj 18 237 riff \$0-riff2 800 3001;
-#X text 258 193 <-- append key;
-#X obj 142 163 tgl 20 0 empty empty 3001 17 7 0 10 -257985 -1 -1 0
-1;
-#X text 218 233 if you don't append key \,;
-#X text 218 253 key might be 0 \,;
-#X text 185 95 <--- this graphic riff;
-#X text 49 368 use it to fill up attaching numbers (e.g. X1~X4 & PS)
+#X obj 163 327 tgl 20 0 empty empty gate_(onoff) 17 7 0 10 -257985
+-1 -1 0 1;
+#X text 177 114 <--- this graphic riff;
+#X text 51 507 use it to fill up attaching numbers (e.g. X1~X4 & PS)
 ;
-#X text 202 114 will be sent as 'velocity' values;
-#X text 218 273 if no one changed;
-#X text 168 344 ^--2nd outlet acts before 1st outlet;
-#X obj 18 342 print RIFF;
-#X msg 212 194 \$1 10;
-#X floatatom 205 316 5 0 0 0 - - -;
-#X obj 18 203 metro 1000;
-#X text 226 14 arguments:;
-#X text 236 28 (1) table name;
-#X text 236 42 (2) multiplier;
-#X text 236 56 (3) id value;
-#X connect 1 0 17 0;
-#X connect 2 0 15 0;
-#X connect 4 0 14 0;
-#X connect 4 1 16 0;
-#X connect 6 0 4 1;
-#X connect 15 0 4 1;
-#X connect 17 0 4 0;
+#X text 194 133 will be sent as 'velocity' values;
+#X text 163 483 ^--2nd outlet acts before 1st outlet;
+#X obj 20 481 print RIFF;
+#X floatatom 115 481 5 0 0 0 - - -;
+#X text 208 53 arguments:;
+#N canvas 1 89 450 278 (subpatch) 0;
+#X array \$0-riff1 50 float 3;
+#A 0 0.219048 0.228572 0.266667 0.276191 0.285715 0.295239 0.32381
+0.333334 0.361906 0.37143 0.380953 0.400001 0.414287 0.428573 0.447621
+0.466668 0.476192 0.485716 0.504764 0.514288 0.51905 0.523811 0.533335
+0.542859 0.547621 0.552383 0.571431 0.580955 0.590479 0.59524 0.600002
+0.609526 0.61905 0.623812 0.628574 0.638098 0.647622 0.657146 0.676193
+0.680955 0.685717 0.695241 0.704765 0.709527 0.714289 0.74286 0.752384
+0.761908 0.771432 0.895242;
+#X coords 0 1 50 0 150 105 1 0 0;
+#X restore 20 55 graph;
+#X obj 20 376 riff 800 3001;
+#X text 164 421 <-- onoff indicator.;
+#X text 165 446 <-- key == 0 \, unless you change.;
+#X text 300 53 (1) multiplier;
+#X text 300 67 (2) id value;
+#X obj 285 290 f \$0;
+#X obj 261 350 f \$0;
+#X obj 245 235 hradio 15 1 0 8 empty empty empty 0 -8 0 10 -262144
+-1 -1 0;
+#X obj 245 255 sel 0 1 2 3 4 5 6 7;
+#X msg 285 315 symbol \$1-riff1;
+#X floatatom 115 318 5 0 0 2 key_(pitch) - -;
+#X text 6 2 <<<;
+#X text 416 2 >>>;
+#X text 6 542 <<<;
+#X text 416 542 >>>;
+#X text 197 206 choose/change array on the fly;
+#X msg 261 375 symbol \$1-riff2;
+#X obj 20 332 metro 100;
+#X connect 1 0 28 0;
+#X connect 2 0 11 3;
+#X connect 11 0 7 0;
+#X connect 11 1 8 0;
+#X connect 16 0 20 0;
+#X connect 17 0 27 0;
+#X connect 18 0 19 0;
+#X connect 19 0 16 0;
+#X connect 19 1 17 0;
+#X connect 20 0 11 1;
+#X connect 21 0 11 2;
+#X connect 27 0 11 1;
+#X connect 28 0 11 0;
