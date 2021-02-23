@@ -28,9 +28,15 @@
 - @sampler
     == @sampler x N ~ 5001, 5002, 5003, ...
 
-- (new)
-    == cricket x 1 ~ 3087
-    == cricket x 1 ~ 3107
+- cri
+    == cricket x 1 ~ 3201
+    == cricket x 1 ~ 3202
+    == cricket x 1 ~ 3203
+    == cricket x 1 ~ 3204
+    == cricket x 1 ~ 3205
 
 - unused
     == gonggong x 1 ~ 4001
+
+- (new)
+    == cricket x 1 ~ 3087
