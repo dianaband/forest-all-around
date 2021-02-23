@@ -1,0 +1,32 @@
+- root x 2 ~ 0, 1
+
+- green suitcase
+    == cricket x 2 ~ 3011, 3012
+
+- yellow
+    == cricket x 2 ~ 3021, 3022
+
+- blue drummer
+    == cricket x 1 ~ 3031
+       taak x 2    ~ 1031, 1032
+
+- gastank
+    == cricket x 1 ~ 3041
+       taak x 1    ~ 1041
+
+- buoyfly x 6
+    == cricket x 6 ~ 3051, 3052, 3053, 3054, 3055, 3056
+
+- frog x 1
+    == taak x 1    ~ 1061
+
+- roundly x 2 ~ 20001, 20002
+
+- beak
+    == taak x 1    ~ 1071
+
+- @sampler
+    == @sampler x N ~ 5001, 5002, 5003, ...
+
+- unused
+    == gonggong x 1 ~ 4001
