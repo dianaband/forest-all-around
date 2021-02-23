@@ -21,7 +21,7 @@
 //============<identities>============
 //
 #define MY_GROUP_ID   (3000)
-#define MY_ID         (MY_GROUP_ID + 20)
+#define MY_ID         (MY_GROUP_ID + 53)
 #define MY_SIGN       ("CRICKET")
 //
 //============</identities>============
@@ -241,6 +241,9 @@ void setup() {
 
   //led
   pinMode(LED_PIN, OUTPUT);
+
+  //pwm freq.
+  analogWriteFreq(40000);
 
   //serial
   Serial.begin(115200);
