@@ -225,78 +225,9 @@
 #X connect 25 0 0 0;
 #X coords 0 244 1 243 200 200 0;
 #X restore 287 370 pd samplers;
-#N canvas 1 89 425 447 bt-keyboard 0;
-#X obj 20 126 unpackOSC;
-#X obj 107 18 loadbang;
-#X msg 147 91 devices;
-#X obj 20 147 routeOSC /note;
-#X floatatom 20 189 5 0 0 0 - - -;
-#X floatatom 77 189 5 0 0 0 - - -;
-#X floatatom 135 189 5 0 0 0 - - -;
-#X obj 20 105 o.io.slipserial;
-#X msg 215 108 close;
-#X obj 20 209 pack f f f;
-#X obj 20 168 routeOSC /pitch /velocity /onoff /oncnt;
-#X floatatom 193 189 5 0 0 0 - - -;
-#X obj 135 245 tgl 100 0 empty empty empty 17 7 0 10 -262144 -1 -1
-0 1;
-#N canvas 1 119 255 233 midi-in 0;
-#X obj 17 14 notein 1;
-#X floatatom 17 35 5 0 0 0 - - -;
-#X floatatom 55 35 5 0 0 0 - - -;
-#X obj 55 55 t a a;
-#X floatatom 17 113 5 0 0 0 - - -;
-#X floatatom 55 113 5 0 0 0 - - -;
-#X floatatom 89 113 5 0 0 0 - - -;
-#X obj 17 133 pack f f f;
-#X obj 17 154 s NOTE;
-#X obj 89 76 != 0;
-#X obj 89 154 outlet;
-#X connect 0 0 1 0;
-#X connect 0 1 2 0;
-#X connect 1 0 4 0;
-#X connect 2 0 3 0;
-#X connect 3 0 5 0;
-#X connect 3 1 9 0;
-#X connect 4 0 7 0;
-#X connect 5 0 7 1;
-#X connect 6 0 7 2;
-#X connect 6 0 10 0;
-#X connect 7 0 8 0;
-#X connect 9 0 6 0;
-#X restore 172 223 pd midi-in;
-#X msg 20 52 devicename /dev/tty.HC-06-DevB-1 \, baud 57600 \, pollintervall
-1 \, verbose 1;
-#X text 1 2 <<<;
-#X text 401 2 >>>;
-#X text 1 422 <<<;
-#X text 401 422 >>>;
-#X obj 20 230 s SAMPLER_NOTE;
-#X floatatom 185 349 8 0 0 0 pitch - -;
-#X floatatom 185 369 8 0 0 0 velocity - -;
-#X connect 0 0 3 0;
-#X connect 2 0 7 1;
-#X connect 3 0 10 0;
-#X connect 4 0 9 0;
-#X connect 4 0 20 0;
-#X connect 5 0 9 1;
-#X connect 5 0 21 0;
-#X connect 6 0 9 2;
-#X connect 6 0 12 0;
-#X connect 7 0 0 0;
-#X connect 8 0 7 1;
-#X connect 9 0 19 0;
-#X connect 10 0 4 0;
-#X connect 10 1 5 0;
-#X connect 10 2 6 0;
-#X connect 10 3 11 0;
-#X connect 13 0 12 0;
-#X connect 14 0 7 1;
-#X coords 0 -1 1 1 110 170 1 130 220;
-#X restore 76 246 pd bt-keyboard;
 #X text 109 24 * a wireless "field synth" - based on 'esp now' protocol
 ;
-#N canvas 91 184 1440 855 crickets 1;
+#N canvas 0 23 1440 855 crickets 1;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array riff11 10 float 3;
 #A 0 0.342857 0.67619 0.371429 0.685714 0.352381 0.638095 0.352381
@@ -518,9 +449,9 @@
 0.457142 0.438095 0.361904;
 #X coords 0 1 50 0 150 105 1 0 0;
 #X restore 189 161 graph;
-#X obj 29 293 tgl 20 0 empty empty empty 17 7 0 10 -204786 -1 -1 1
+#X obj 29 293 tgl 20 0 empty empty empty 17 7 0 10 -204786 -1 -1 0
 1;
-#X obj 159 321 tgl 20 0 empty empty empty 17 7 0 10 -4034 -1 -1 1 1
+#X obj 159 321 tgl 20 0 empty empty empty 17 7 0 10 -4034 -1 -1 0 1
 ;
 #X obj 189 293 tgl 20 0 empty empty empty 17 7 0 10 -204786 -1 -1 0
 1;
@@ -582,9 +513,9 @@
 0.447619 0.447619 0.457143;
 #X coords 0 1 50 0 150 105 1 0 0;
 #X restore 27 58 graph;
-#X obj 27 190 tgl 20 0 empty empty empty 17 7 0 10 -262130 -1 -1 1
+#X obj 27 190 tgl 20 0 empty empty empty 17 7 0 10 -262130 -1 -1 0
 1;
-#X obj 157 218 tgl 20 0 empty empty empty 17 7 0 10 -257985 -1 -1 1
+#X obj 157 218 tgl 20 0 empty empty empty 17 7 0 10 -257985 -1 -1 0
 1;
 #X obj 27 215 metro 2000;
 #X obj 27 354 s NOTE;
@@ -618,13 +549,13 @@
 0 0 0;
 #X coords 0 1 100 0 150 105 1 0 0;
 #X restore 347 58 graph;
-#X obj 187 190 tgl 20 0 empty empty empty 17 7 0 10 -262130 -1 -1 1
+#X obj 187 190 tgl 20 0 empty empty empty 17 7 0 10 -262130 -1 -1 0
 1;
-#X obj 294 197 tgl 20 0 empty empty empty 17 7 0 10 -257985 -1 -1 1
+#X obj 294 197 tgl 20 0 empty empty empty 17 7 0 10 -257985 -1 -1 0
 1;
-#X obj 347 190 tgl 20 0 empty empty empty 17 7 0 10 -262130 -1 -1 1
+#X obj 347 190 tgl 20 0 empty empty empty 17 7 0 10 -262130 -1 -1 0
 1;
-#X obj 505 217 tgl 20 0 empty empty empty 17 7 0 10 -257985 -1 -1 1
+#X obj 505 217 tgl 20 0 empty empty empty 17 7 0 10 -257985 -1 -1 0
 1;
 #X text 29 9 * blue drummer;
 #X msg 91 177 symbol riff0;
@@ -670,9 +601,9 @@
 #X connect 29 0 16 0;
 #X restore 94 103 pd blue drummer;
 #N canvas 97 145 1017 569 green 0;
-#X obj 136 343 tgl 20 0 empty empty empty 17 7 0 10 -262130 -1 -1 1
+#X obj 136 343 tgl 20 0 empty empty empty 17 7 0 10 -262130 -1 -1 0
 1;
-#X obj 296 343 tgl 20 0 empty empty empty 17 7 0 10 -262130 -1 -1 1
+#X obj 296 343 tgl 20 0 empty empty empty 17 7 0 10 -262130 -1 -1 0
 1;
 #X obj 136 507 s NOTE;
 #X obj 296 507 s NOTE;
@@ -1016,9 +947,9 @@
 0.0190476 0.0190476 0.0190476 0.0190476;
 #X coords 0 1 50 0 150 105 1 0 0;
 #X restore 201 8 graph;
-#X obj 201 211 tgl 20 0 empty empty empty 17 7 0 10 -262130 -1 -1 1
+#X obj 201 211 tgl 20 0 empty empty empty 17 7 0 10 -262130 -1 -1 0
 1;
-#X obj 314 221 tgl 20 0 empty empty 3001 17 7 0 10 -257985 -1 -1 1
+#X obj 314 221 tgl 20 0 empty empty 3001 17 7 0 10 -257985 -1 -1 0
 1;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array riff18 50 float 3;
@@ -1075,10 +1006,10 @@
 #X connect 18 1 10 0;
 #X connect 19 1 18 0;
 #X restore 283 53 pd gastank;
-#N canvas 0 23 516 656 frog 1;
+#N canvas 0 23 516 656 frog 0;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array riff8 12 float 3;
-#A 0 0 0 0.390476 0.199999 0.580948 -0.00951159 0 0 0 0 1.49523 1.49523
+#A 0 0 0 0.390476 0.199999 0.580948 -0.00951159 0 0 0 0 1.5238 1.5238
 ;
 #X coords 0 1 12 0 150 105 1 0 0;
 #X restore 35 111 graph;
@@ -1093,17 +1024,17 @@
 #X obj 229 498 s NOTE;
 #X floatatom 229 436 5 0 0 0 - - -;
 #X obj 229 456 pack f f;
-#X obj 178 415 moses 1;
 #X msg 229 477 1061 0 \$1 \$2;
+#X obj 178 415 moses 10;
 #X connect 1 0 2 0;
 #X connect 2 0 5 0;
 #X connect 3 0 9 1;
-#X connect 5 1 10 0;
+#X connect 5 1 11 0;
 #X connect 6 0 5 1;
 #X connect 8 0 9 0;
-#X connect 9 0 11 0;
-#X connect 10 1 8 0;
-#X connect 11 0 7 0;
+#X connect 9 0 10 0;
+#X connect 10 0 7 0;
+#X connect 11 1 8 0;
 #X restore 414 54 pd frog;
 #X msg 68 229 3087;
 #N canvas 0 23 450 278 (subpatch) 0;
@@ -1186,8 +1117,8 @@
 #X coords 0 1 50 0 150 105 1 0 0;
 #X restore 1518 190 graph;
 #X obj 1358 322 tgl 20 0 empty empty empty 17 7 0 10 -204786 -1 -1
-1 1;
-#X obj 1488 350 tgl 20 0 empty empty empty 17 7 0 10 -4034 -1 -1 1
+0 1;
+#X obj 1488 350 tgl 20 0 empty empty empty 17 7 0 10 -4034 -1 -1 0
 1;
 #X obj 1518 322 tgl 20 0 empty empty empty 17 7 0 10 -204786 -1 -1
 0 1;
@@ -1374,6 +1305,73 @@
 #X msg 210 58 devicename /dev/tty.usbmodem4871051 \, baud 57600 \,
 pollintervall 1 \, verbose 1;
 #X msg 500 315 2000;
+#N canvas 1 89 443 470 keyboard 0;
+#X obj 20 126 unpackOSC;
+#X obj 107 18 loadbang;
+#X msg 147 103 devices;
+#X obj 20 147 routeOSC /note;
+#X floatatom 20 189 5 0 0 0 - - -;
+#X floatatom 77 189 5 0 0 0 - - -;
+#X floatatom 135 189 5 0 0 0 - - -;
+#X obj 20 105 o.io.slipserial;
+#X msg 147 127 close;
+#X obj 20 235 pack f f f;
+#X obj 20 168 routeOSC /pitch /velocity /onoff /oncnt;
+#X floatatom 193 189 5 0 0 0 - - -;
+#X obj 135 245 tgl 100 0 empty empty empty 17 7 0 10 -262144 -1 -1
+0 1;
+#X msg 20 52 devicename /dev/tty.HC-06-DevB-1 \, baud 57600 \, pollintervall
+1 \, verbose 1;
+#X text 1 2 <<<;
+#X text 401 2 >>>;
+#X text 1 422 <<<;
+#X text 401 422 >>>;
+#X obj 20 258 s SAMPLER_NOTE;
+#X floatatom 185 349 8 0 0 0 pitch - -;
+#X floatatom 185 369 8 0 0 0 velocity - -;
+#X obj 259 230 notein 1;
+#X floatatom 259 259 5 0 0 0 - - -;
+#X floatatom 304 259 5 0 0 0 - - -;
+#X obj 304 287 t a a;
+#X floatatom 259 321 5 0 0 0 - - -;
+#X floatatom 304 321 5 0 0 0 - - -;
+#X floatatom 361 332 5 0 0 0 - - -;
+#X obj 259 349 pack f f f;
+#X obj 361 305 != 0;
+#X obj 259 372 s SAMPLER_NOTE;
+#X text 260 205 * from midi master keybrd;
+#X text 180 25 * from bt-keybrd made w/ teensy;
+#X connect 0 0 3 0;
+#X connect 2 0 7 1;
+#X connect 3 0 10 0;
+#X connect 4 0 9 0;
+#X connect 4 0 19 0;
+#X connect 5 0 9 1;
+#X connect 5 0 20 0;
+#X connect 6 0 9 2;
+#X connect 6 0 12 0;
+#X connect 7 0 0 0;
+#X connect 8 0 7 1;
+#X connect 9 0 18 0;
+#X connect 10 0 4 0;
+#X connect 10 1 5 0;
+#X connect 10 2 6 0;
+#X connect 10 3 11 0;
+#X connect 13 0 7 1;
+#X connect 21 0 22 0;
+#X connect 21 1 23 0;
+#X connect 22 0 25 0;
+#X connect 23 0 24 0;
+#X connect 24 0 26 0;
+#X connect 24 1 29 0;
+#X connect 25 0 28 0;
+#X connect 26 0 28 1;
+#X connect 27 0 28 2;
+#X connect 27 0 12 0;
+#X connect 28 0 30 0;
+#X connect 29 0 27 0;
+#X coords 0 -1 1 1 110 170 1 130 220;
+#X restore 76 246 pd keyboard ctrlr;
 #X connect 0 0 18 0;
 #X connect 1 0 0 1;
 #X connect 4 0 16 0;
@@ -1394,10 +1392,10 @@ pollintervall 1 \, verbose 1;
 #X connect 25 0 28 0;
 #X connect 26 0 27 0;
 #X connect 27 0 25 0;
-#X connect 28 0 38 0;
+#X connect 28 0 37 0;
 #X connect 28 1 23 0;
 #X connect 29 0 31 0;
 #X connect 30 0 29 1;
+#X connect 35 0 5 1;
 #X connect 36 0 5 1;
-#X connect 37 0 5 1;
-#X connect 38 0 23 0;
+#X connect 37 0 23 0;
