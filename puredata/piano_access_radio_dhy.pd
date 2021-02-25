@@ -59,7 +59,7 @@
 #X obj 123 190 s HELLO;
 #X obj 40 120 print OSC;
 #X obj 40 93 spigot;
-#X obj 89 58 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1 1
+#X obj 89 58 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0 1
 ;
 #X obj 418 217 s OSC;
 #X obj 418 155 r NOTE;
@@ -71,7 +71,7 @@
 #X floatatom 549 325 5 0 0 0 - - -;
 #X obj 549 347 s PS;
 #X obj 500 236 tgl 25 0 empty empty hello 32 7 0 15 -159808 -257985
--159808 0 1;
+-159808 1 1;
 #X obj 549 263 loadbang;
 #X msg 549 286 1;
 #X obj 500 286 sel 1;
@@ -227,9 +227,9 @@
 #X restore 287 370 pd samplers;
 #X text 109 24 * a wireless "field synth" - based on 'esp now' protocol
 ;
-#N canvas 527 163 766 615 crickets 1;
+#N canvas 527 163 766 615 crickets 0;
 #X text 722 577 >>>;
-#N canvas 109 89 980 662 buoyfly 1;
+#N canvas 293 319 980 662 buoyfly 0;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array riff2 50 float 3;
 #A 0 0.285714 0.304762 0.328572 0.457144 0.504763 0.514287 0.542858
@@ -425,7 +425,7 @@
 #X connect 50 0 51 0;
 #X connect 51 0 52 0;
 #X restore 442 136 pd buoyfly;
-#N canvas 277 89 439 542 yellow 1;
+#N canvas 277 89 439 542 yellow 0;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array riff5 50 float 3;
 #A 0 0.485714 0.466667 0.466667 0.466667 0.466667 0.466667 0.457143
@@ -489,7 +489,7 @@
 #X connect 15 0 6 0;
 #X connect 16 0 7 0;
 #X restore 117 242 pd yellow;
-#N canvas 347 346 526 412 blue 1;
+#N canvas 347 346 526 412 blue 0;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array riff0 50 float 3;
 #A 0 0.371428 0.352381 0.323809 0.295237 0.247618 0.180951 0.142856
@@ -557,7 +557,7 @@
 #X connect 20 0 13 0;
 #X connect 21 0 14 0;
 #X restore 117 271 pd blue drummer;
-#N canvas 97 145 486 569 green 1;
+#N canvas 97 145 486 569 green 0;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array riff4 50 float 3;
 #A 0 0.247619 0.247619 0.252381 0.257143 0.266667 0.27619 0.27619 0.380952
@@ -825,7 +825,7 @@
 #X connect 17 0 18 1;
 #X connect 18 1 14 0;
 #X restore 441 96 pd gastank;
-#N canvas 1 119 264 485 frog 1;
+#N canvas 1 149 264 485 frog 1;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array riff8 12 float 3;
 #A 0 1.02857 1.02857 1.02857 1.02857 1.00952 1.00952 0.999999 0.999999
@@ -861,12 +861,46 @@
 #X restore 255 195 graph;
 #X obj 255 367 tgl 20 0 empty empty empty 17 7 0 10 -262130 -1 -1 0
 1;
-#X obj 385 395 tgl 20 0 empty empty empty 17 7 0 10 -257985 -1 -1 1
+#X obj 385 395 tgl 20 0 empty empty empty 17 7 0 10 -257985 -1 -1 0
 1;
 #X obj 255 531 s NOTE;
 #X msg 316 358 symbol roller;
 #X obj 255 392 metro 20;
 #X obj 255 426 riff 800 4002;
+#N canvas 1 89 450 430 ar 0;
+#N canvas 0 23 450 278 (subpatch) 0;
+#X array metroooo 50 float 3;
+#A 0 0.619047 0.75238 0.857141 1.01904 1.25714 1.27619 1.01904 0.752381
+0.647618 0.666666 0.780951 0.533333 0.628571 0.723808 0.942855 1.02857
+1.17142 1.09524 0.857143 0.69524 0.638097 0.647621 0.961902 1.12381
+0.942855 0.990473 1.11428 1.21904 1.01904 0.866665 0.704763 1.04762
+0.933331 1.03809 0.961904 0.923809 0.809524 0.885714 0.971426 0.933331
+0.90476 1.3238 1.26666 1.22857 0.761903 0.666666 0.923807 0.895236
+0.895236 0.876188;
+#X coords 0 1 50 0 150 105 1 0 0;
+#X restore 164 86 graph;
+#X msg 202 206 symbol metroooo;
+#X obj 155 233 riff 1000 1031;
+#X obj 70 226 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 298 333 del;
+#X obj 70 351 outlet;
+#X obj 298 354 spigot;
+#X obj 110 118 tgl 15 0 empty empty empty 17 7 0 10 -4034 -1 -1 0 1
+;
+#X obj 70 188 t b f b;
+#X connect 1 0 2 1;
+#X connect 2 1 4 0;
+#X connect 3 0 2 0;
+#X connect 3 0 5 0;
+#X connect 4 0 6 0;
+#X connect 6 0 3 0;
+#X connect 7 0 8 0;
+#X connect 8 0 3 0;
+#X connect 8 1 6 1;
+#X connect 8 2 1 0;
+#X coords 0 -1 1 1 35 35 1 100 100;
+#X restore 103 74 pd ar;
 #X connect 14 0 18 0;
 #X connect 15 0 19 3;
 #X connect 17 0 19 1;
