@@ -21,7 +21,7 @@
 //============<identities>============
 //
 #define MY_GROUP_ID   (1000)
-#define MY_ID         (MY_GROUP_ID + 1)
+#define MY_ID         (MY_GROUP_ID + 100)
 #define MY_SIGN       ("TAAK")
 //
 //============</identities>============
@@ -44,6 +44,7 @@
 //==========</list-of-configurations>==========
 //
 // (EMPTY)
+#define DISABLE_AP
 
 //============<parameters>============
 //
