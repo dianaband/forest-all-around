@@ -1,20 +1,19 @@
 #N canvas 1102 89 337 730 12;
 #X declare -path ofelia/abs;
-#X obj 17 61 loadbang;
-#X obj 17 111 ofWindow;
-#X obj 104 496 ofDraw;
-#X obj 121 36 declare -path ofelia/abs;
-#X text 7 10 <<<;
-#X text 307 10 >>>;
-#X text 7 690 <<<;
-#X text 307 690 >>>;
-#X floatatom 136 598 5 0 0 0 delta - -;
-#X obj 147 577 hsl 128 15 0 0.03 0 0 empty empty empty -2 -8 0 10 -262144
+#X obj 9 55 loadbang;
+#X obj 9 105 ofWindow;
+#X obj 158 506 ofDraw;
+#X obj 113 30 declare -path ofelia/abs;
+#X text 3 4 <<<;
+#X text 295 4 >>>;
+#X text 3 684 <<<;
+#X text 295 684 >>>;
+#X floatatom 158 552 5 0 0 0 delta - -;
+#X obj 169 531 hsl 128 15 0 0.03 0 0 empty empty empty -2 -8 0 10 -262144
 -1 -1 0 1;
-#X obj 55 553 loadbang;
-#X msg 55 578 0.01;
-#X obj 104 521 t b a;
-#X obj 145 551 bng 15 250 50 0 \$0-ondraw empty s:0-ondraw 17 7 0 10
+#X obj 77 507 loadbang;
+#X msg 77 532 0.01;
+#X obj 158 646 bng 15 250 50 0 \$0-ondraw empty s:0-ondraw 17 7 0 10
 -262144 -1 -1;
 #N canvas 386 529 1053 366 graph 0;
 #N canvas 0 50 450 250 (subpatch) 0;
@@ -32,7 +31,6 @@
 #X obj 202 48 t b b;
 #X floatatom 18 92 5 0 0 0 - - -;
 #X obj 18 23 loadbang;
-#X msg 18 48 1;
 #X obj 534 108 f;
 #X obj 564 108 + 1;
 #X obj 502 18 bng 15 250 50 0 empty \$0-ondraw r:0-ondraw 17 7 0 10
@@ -43,9 +41,10 @@
 #X floatatom 318 92 5 0 0 0 - - -;
 #X obj 318 23 loadbang;
 #X obj 418 182 tabwrite \$0-graph1;
-#X msg 318 48 2;
 #X obj 18 118 ofelia f \; return _bin.planets[a].pos.x;
 #X obj 318 118 ofelia f \; return _bin.planets[a].pos.x;
+#X msg 18 48 set 1;
+#X msg 318 48 set 2;
 #X connect 0 0 1 0;
 #X connect 0 0 5 0;
 #X connect 1 0 0 1;
@@ -54,90 +53,494 @@
 #X connect 5 0 3 0;
 #X connect 6 0 7 0;
 #X connect 6 1 0 0;
-#X connect 7 0 20 0;
-#X connect 8 0 9 0;
-#X connect 9 0 7 0;
-#X connect 10 0 11 0;
-#X connect 10 0 14 0;
-#X connect 11 0 10 1;
-#X connect 12 0 15 0;
-#X connect 13 0 18 1;
-#X connect 14 0 13 0;
-#X connect 15 0 16 0;
-#X connect 15 1 10 0;
+#X connect 7 0 18 0;
+#X connect 8 0 20 0;
+#X connect 9 0 10 0;
+#X connect 9 0 13 0;
+#X connect 10 0 9 1;
+#X connect 11 0 14 0;
+#X connect 12 0 17 1;
+#X connect 13 0 12 0;
+#X connect 14 0 15 0;
+#X connect 14 1 9 0;
+#X connect 15 0 19 0;
 #X connect 16 0 21 0;
-#X connect 17 0 19 0;
-#X connect 19 0 16 0;
-#X connect 20 0 4 0;
-#X connect 21 0 18 0;
+#X connect 18 0 4 0;
+#X connect 19 0 17 0;
+#X connect 20 0 7 0;
+#X connect 21 0 15 0;
 #X restore 959 14 pd probe;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array \$0-graph1 1000 float 2;
 #X coords 0 300 1000 -300 1000 140 1 0 0;
 #X restore 19 208 graph;
-#X restore 236 135 pd graph;
-#X obj 17 161 ofSetup;
-#X msg 17 186 bang;
-#X msg 17 211 dir 0 data/DejaVuSansMono.ttf;
-#X obj 17 236 pdcontrol;
-#X obj 17 461 bng 15 250 50 0 empty empty setup_done 17 7 0 10 -262144
+#X restore 228 129 pd graph;
+#X obj 9 155 ofSetup;
+#X msg 9 180 bang;
+#X msg 9 205 dir 0 data/DejaVuSansMono.ttf;
+#X obj 9 230 pdcontrol;
+#X obj 9 455 bng 15 250 50 0 empty empty setup_done 17 7 0 10 -262144
 -1 -1;
-#X obj 17 331 t b b;
-#X msg 49 356 read -c sim.lua;
-#X obj 17 406 ofelia f \; ofSetFrameRate(30) \; return nil \;;
-#X obj 17 261 ofelia f \; font = ofTrueTypeFont() \; font:load(a \,
+#X obj 9 325 t b b;
+#X msg 41 350 read -c sim.lua;
+#X obj 9 400 ofelia f \; ofSetFrameRate(30) \; return nil \;;
+#X obj 9 255 ofelia f \; font = ofTrueTypeFont() \; font:load(a \,
 8) \; return nil \;;
-#X obj 17 381 ofelia f;
-#X msg 17 86 setPosition 500 0 \, setSize 600 600 \, create;
-#X obj 17 661 print -n;
-#X msg 17 636 setup done!;
-#X obj 136 622 ofelia f -c21 \; _bin.simulate(a[1]) \; _bin.display()
-\;;
-#N canvas 1 89 450 300 test 0;
-#X obj 35 193 osc~;
-#X obj 35 218 dac~ 1;
-#X floatatom 35 144 5 0 0 0 - - -;
-#X obj 35 42 bng 15 250 50 0 empty \$0-ondraw r:0-ondraw 17 7 0 10
+#X obj 9 375 ofelia f;
+#X msg 9 80 setPosition 500 0 \, setSize 600 600 \, create;
+#X obj 9 655 print -n;
+#X msg 9 630 setup done!;
+#N canvas 176 105 836 747 test 0;
+#X obj 25 193 osc~;
+#X floatatom 25 144 5 0 0 0 - - -;
+#X obj 25 42 bng 15 250 50 0 empty \$0-ondraw r:0-ondraw 17 7 0 10
 -262144 -1 -1;
-#X floatatom 35 62 5 0 0 0 - - -;
-#X obj 35 168 + 300;
-#X obj 137 17 loadbang;
-#X msg 137 42 1;
-#X obj 92 163 skip 50;
-#X floatatom 116 194 5 0 0 0 - - -;
-#X floatatom 116 243 5 0 0 0 - - -;
-#X obj 116 218 + 300;
-#X obj 35 88 ofelia f \; return _bin.planets[a].pos.x;
-#X connect 0 0 1 0;
-#X connect 2 0 5 0;
-#X connect 2 0 8 0;
-#X connect 3 0 4 0;
-#X connect 4 0 12 0;
-#X connect 5 0 0 0;
+#X floatatom 25 62 5 0 0 0 - - -;
+#X obj 25 168 + 300;
+#X obj 127 17 loadbang;
+#X obj 82 163 skip 50;
+#X floatatom 106 194 5 0 0 0 - - -;
+#X floatatom 106 243 5 0 0 0 - - -;
+#X obj 106 218 + 300;
+#X obj 25 88 ofelia f \; return _bin.planets[a].pos.x;
+#X msg 127 42 set 1;
+#X obj 25 368 ofelia f \; _bin.constellations.summon(a);
+#X obj 25 299 hradio 15 1 0 8 empty empty empty 0 -8 0 10 -262144 -1
+-1 1;
+#X obj 25 319 + 1;
+#X floatatom 25 344 5 0 0 0 - - -;
+#X obj 25 618 bng 15 250 50 0 empty \$0-ondraw r:0-ondraw 17 7 0 10
+-262144 -1 -1;
+#X obj 25 638 ofelia f -c12 \; local bb = _bin.planets[2].pos - _bin.planets[1].pos
+\; return ofTable(bb.x \, bb.y);
+#X floatatom 25 693 8 0 0 0 - - -;
+#X floatatom 393 693 8 0 0 0 - - -;
+#X obj 277 33 bng 15 250 50 0 empty \$0-ondraw r:0-ondraw 17 7 0 10
+-262144 -1 -1;
+#X floatatom 277 123 15 0 0 0 - - -;
+#X obj 460 522 ead~;
+#X obj 277 566 dac~ 1;
+#X obj 277 516 osc~;
+#X obj 277 541 *~;
+#X floatatom 472 482 5 0 0 0 - - -;
+#X floatatom 518 483 5 0 0 0 - - -;
+#X obj 460 383 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 277 147 > 0;
+#X floatatom 277 172 5 0 0 0 - - -;
+#X obj 277 196 change;
+#X floatatom 277 221 5 0 0 0 - - -;
+#X obj 277 245 sel 1 0;
+#X obj 472 425 loadbang;
+#X msg 472 456 20;
+#X msg 518 456 300;
+#X obj 12 452 bng 15 250 50 0 empty \$0-ondraw r:0-ondraw 17 7 0 10
+-262144 -1 -1;
+#X floatatom 12 542 15 0 0 0 - - -;
+#X obj 563 317 bng 15 250 50 0 empty \$0-ondraw r:0-ondraw 17 7 0 10
+-262144 -1 -1;
+#X floatatom 563 407 15 0 0 0 - - -;
+#X obj 563 337 ofelia f \; local bb = _bin.planets[2].pos \; local
+u = ofVec2f(1 \, 0) \; return bb.angle(bb \, u);
+#X obj 12 472 ofelia f \; local bb = _bin.planets[1].pos \; local u
+= ofVec2f(1 \, 0) \; return bb.angle(bb \, u);
+#X obj 277 491 +;
+#X msg 323 389 1500;
+#X msg 486 310 350;
+#X obj 277 333 t b b b;
+#X obj 440 285 t b b b;
+#X obj 21 266 inlet;
+#X obj 278 52 ofelia f \; local bb = _bin.planets[2].pos - _bin.planets[1].pos
+\; local u = ofVec2f(0 \, 1) \; return bb.angle(bb \, u);
+#X obj 409 127 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 409 147 ofelia f \; _bin.planets[3] = _bin.pl.new(200 \, 250
+\, 50 \, 0 \, 0 \, _col.red \, 10 \, true) \;;
+#X obj 409 203 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 409 223 ofelia f \; _bin.planets[4] = _bin.pl.new(200 \, -250
+\, 50 \, 0 \, 0 \, _col.green \, 10 \, true) \;;
+#X obj 482 592 ofelia f \; table.remove(_bin.planets \, a);
+#X floatatom 482 562 5 0 0 0 - - -;
+#X connect 1 0 4 0;
+#X connect 1 0 6 0;
+#X connect 2 0 3 0;
+#X connect 3 0 10 0;
+#X connect 4 0 0 0;
+#X connect 5 0 11 0;
 #X connect 6 0 7 0;
-#X connect 7 0 4 0;
+#X connect 7 0 9 0;
+#X connect 9 0 8 0;
+#X connect 10 0 1 0;
+#X connect 11 0 3 0;
+#X connect 13 0 14 0;
+#X connect 14 0 15 0;
+#X connect 15 0 12 0;
+#X connect 16 0 17 0;
+#X connect 17 0 18 0;
+#X connect 17 1 19 0;
+#X connect 20 0 49 0;
+#X connect 21 0 29 0;
+#X connect 22 0 25 1;
+#X connect 24 0 25 0;
+#X connect 25 0 23 0;
+#X connect 26 0 22 1;
+#X connect 27 0 22 2;
+#X connect 28 0 22 0;
+#X connect 29 0 30 0;
+#X connect 30 0 31 0;
+#X connect 31 0 32 0;
+#X connect 32 0 33 0;
+#X connect 33 0 46 0;
+#X connect 33 1 47 0;
+#X connect 34 0 35 0;
+#X connect 34 0 36 0;
+#X connect 35 0 26 0;
+#X connect 36 0 27 0;
+#X connect 37 0 42 0;
+#X connect 38 0 43 0;
+#X connect 39 0 41 0;
+#X connect 41 0 40 0;
+#X connect 42 0 38 0;
+#X connect 43 0 24 0;
+#X connect 44 0 43 1;
+#X connect 45 0 43 1;
+#X connect 46 0 28 0;
+#X connect 46 1 38 0;
+#X connect 46 2 44 0;
+#X connect 47 0 28 0;
+#X connect 47 1 38 0;
+#X connect 47 2 45 0;
+#X connect 48 0 13 0;
+#X connect 49 0 21 0;
+#X connect 50 0 51 0;
+#X connect 52 0 53 0;
+#X connect 55 0 54 0;
+#X restore 90 139 pd test;
+#X obj 158 576 ofelia f \; _bin.simulate(a) \; _bin.display() \; return
+nil \;;
+#X obj 90 119 hradio 15 1 0 8 empty empty empty 0 -8 0 10 -262144 -1
+-1 1;
+#N canvas 1 89 1099 787 crickets 0;
+#N canvas 0 23 450 278 (subpatch) 0;
+#X array riff5 50 float 3;
+#A 0 0.295238 0.27619 0.247619 0.219047 0.190475 0.161904 0.142856
+0.123808 0.104761 0.0857129 0.076189 0.0666652 0.0666652 0.0666652
+0.0666652 0.0666652 0.076189 0.0857129 0.0857129 0.285715 0.276191
+0.266667 0.257143 0.257143 0.247619 0.247619 0.247619 0.238095 0.238095
+0.228571 0.228571 0.219048 0.209524 0.209524 0.209524 0.219048 0.228571
+0.238095 0.238095 0.228571 0.209524 0.171428 0.142857 0.0380955 0.0285716
+0.0190477 0.0190477 0.0190477 0.0190477 0.00952387;
+#X coords 0 1 50 0 150 105 1 0 0;
+#X restore 253 325 graph;
+#N canvas 0 23 450 278 (subpatch) 0;
+#X array riff6-3 50 float 3;
+#A 0 0.685715 0.723811 0.800002 0.485714 0.519047 0.552381 0.580953
+0.609524 0.626191 0.642858 0.659525 0.676191 0.685715 0.399999 0.495238
+0.533333 0.571429 0.604762 0.638096 0.653969 0.669842 0.685715 0.695239
+0.704763 0.561905 0.666667 0.704763 0.714287 0.266665 0.323808 0.35238
+0.366666 0.380951 0.399999 0.423809 0.933336 0.952384 0.957145 0.961907
+0.609524 0.628572 0.47619 0.523809 0.523809 0.523809 0.438095 0.457142
+0.457142 0.438095 0.361904;
+#X coords 0 1 50 0 150 105 1 0 0;
+#X restore 863 419 graph;
+#X obj 253 457 tgl 20 0 empty empty empty 17 7 0 10 -204786 -1 -1 0
+1;
+#X obj 383 485 tgl 20 0 empty empty empty 17 7 0 10 -4034 -1 -1 0 1
+;
+#X obj 253 621 s NOTE;
+#X text 250 279 * yellow;
+#X obj 253 482 metro 500;
+#N canvas 0 23 450 278 (subpatch) 0;
+#X array riff6-1 50 float 3;
+#A 0 0.142857 0.12381 0.12381 0.12381 0.114286 0.266666 0.304761 0.338094
+0.371428 0.371428 0.0952383 0.0952383 0.0952383 0.0952383 0.0952383
+0.0952383 0.0952383 0.209524 0.247619 0.380951 0.0952383 0.0952383
+0.0952383 0.0952383 0.133333 0.133333 0.133333 0.133333 0.133333 0.133333
+0.133333 0.209524 0.209524 0.209524 0.209524 0.133333 0.133333 0.133333
+0.133333 0.314286 0.142857 0.142857 0.142857 0.142857 0.142857 0.142857
+0.438095 0.142857 0.142857 0.142857;
+#X coords 0 1 50 0 150 105 1 0 0;
+#X restore 863 279 graph;
+#X msg 315 441 symbol riff5;
+#X obj 253 516 riff 800 3020;
+#N canvas 0 23 450 278 (subpatch) 0;
+#X array riff6-2 50 float 3;
+#A 0 0.742857 0.580951 0.466664 0.352378 0.276187 0.223806 0.114281
+0.552379 0.409521 0.352378 0.257139 0.20952 0.123805 0.0857093 0.0476138
+0.599998 0.523807 0.447616 0.390473 0.323806 0.257139 0.20952 0.133329
+0.771428 0.723808 0.647618 0.561903 0.485712 0.371425 0.323806 0.247615
+0.223805 0.171424 0.114281 0.0857093 0.0285661 0.742857 0.62857 0.552379
+0.371426 0.304759 0.238092 0.123805 0.67619 0.657142 0.542856 0.476189
+0.409522 0.376188 0.0952342;
+#X coords 0 1 50 0 150 105 1 0 0;
+#X restore 703 419 graph;
+#X obj 328 198 spigot;
+#X obj 377 183 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#N canvas 676 408 512 395 buildOSC 0;
+#X obj 319 66 t a b;
+#X msg 456 84 [;
+#X msg 34 327 ];
+#X obj 68 236 r X1;
+#X obj 98 236 r X2;
+#X obj 128 236 r X3;
+#X obj 158 236 r X4;
+#X obj 53 266 f;
+#X obj 34 126 t b b a;
+#X obj 254 345 outlet;
+#X obj 140 17 inlet;
+#X obj 188 236 r PS;
+#X obj 88 284 pack f f f f f;
+#X msg 319 112 sendtyped /note/onoff f \$1;
+#X msg 254 141 sendtyped /note/velocity f \$1;
+#X msg 88 307 sendtyped /note/x fffff \$1 \$2 \$3 \$4 \$5;
+#X msg 73 199 sendtyped /note/id i \$1;
+#X msg 167 170 sendtyped /note/pitch f \$1;
+#X obj 140 39 unpack f f f f;
+#X connect 0 0 13 0;
+#X connect 0 1 1 0;
+#X connect 1 0 9 0;
+#X connect 2 0 9 0;
+#X connect 3 0 7 1;
+#X connect 4 0 12 1;
+#X connect 5 0 12 2;
+#X connect 6 0 12 3;
+#X connect 7 0 12 0;
+#X connect 8 0 2 0;
+#X connect 8 1 7 0;
+#X connect 8 2 16 0;
+#X connect 10 0 18 0;
+#X connect 11 0 12 4;
+#X connect 12 0 15 0;
+#X connect 13 0 9 0;
+#X connect 14 0 9 0;
+#X connect 15 0 9 0;
+#X connect 16 0 9 0;
+#X connect 17 0 9 0;
+#X connect 18 0 8 0;
+#X connect 18 1 17 0;
+#X connect 18 2 14 0;
+#X connect 18 3 0 0;
+#X restore 418 194 pd buildOSC for all;
+#X obj 123 121 o.io.slipserial;
+#X msg 249 142 devices;
+#X msg 249 165 close;
+#X obj 123 80 packOSC;
+#X obj 123 55 r OSC;
+#X obj 123 144 unpackOSC;
+#X obj 123 167 routeOSC /hello;
+#X obj 123 190 s HELLO;
+#X obj 40 120 print OSC;
+#X obj 40 93 spigot;
+#X obj 89 58 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0 1
+;
+#X obj 418 217 s OSC;
+#X obj 418 155 r NOTE;
+#X obj 328 225 print NOTE;
+#X text 419 134 /id /pitch /velocity /onoff;
+#X floatatom 93 342 5 0 0 0 - - -;
+#X obj 93 364 s PS;
+#X obj 44 253 tgl 25 0 empty empty hello 32 7 0 15 -159808 -257985
+-159808 1 1;
+#X obj 93 280 loadbang;
+#X msg 93 303 1;
+#X obj 44 303 sel 1;
+#X obj 40 163 spigot;
+#X obj 89 148 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 40 190 print HELLO;
+#X text 109 24 * a wireless "field synth" - based on 'esp now' protocol
+;
+#X msg 249 98 devicename /dev/ttyACM0 \, baud 57600 \, pollintervall
+1 \, verbose 1;
+#X msg 210 58 devicename /dev/tty.usbmodem4871051 \, baud 57600 \,
+pollintervall 1 \, verbose 1;
+#X msg 44 332 2000;
+#N canvas 0 23 450 278 (subpatch) 0;
+#X array riff6-0 50 float 3;
+#A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0;
+#X coords 0 1 50 0 150 105 1 0 0;
+#X restore 703 279 graph;
+#X obj 534 452 s NOTE;
+#X obj 587 377 tgl 20 0 empty empty empty 17 7 0 10 -4034 -1 -1 0 1
+;
+#X obj 534 402 pack f f;
+#X obj 498 458 tgl 20 0 empty empty empty 17 7 0 10 -204786 -1 -1 0
+1;
+#X obj 498 483 metro 500;
+#X obj 488 537 riff 800 3021;
+#X msg 579 311 \; riff6-0 const 0;
+#X text 1005 1093 comment;
+#X obj 102 590 ofMouseMoved;
+#X obj 49 564 ofDraw;
+#X obj 49 615 list 0 0;
+#X obj 49 667 ofelia f \; ofPushMatrix() \; ofTranslate(ofGetWidth()/2
+\, ofGetHeight()/2 + 70) \; local u = ofVec2f(a[1]-ofGetWidth()/2 \,
+a[2]-ofGetHeight()/2-70) \; ofDrawCircle(u.x \, u.y \, 10) \; local
+c1 = ofVec2f(0 \, -ofGetHeight()/2) \; local c2 = c1.getRotated(c1
+\, 120) \; local c3 = c2.getRotated(c2 \, 120) \; ofSetHexColor(0xffffff)
+\; ofDrawLine(c1.x \, c1.y \, c2.x \, c2.y) \; ofDrawLine(c2.x \, c2.y
+\, c3.x \, c3.y) \; ofDrawLine(c3.x \, c3.y \, c1.x \, c1.y) \; font:drawString("c1"
+\, c1.x \, c1.y) \; font:drawString("c2" \, c2.x \, c2.y) \; font:drawString("c3"
+\, c3.x \, c3.y) \; local c1_r = 1 / math.max(u.distance(u \, c1) \,
+0.00001) \; local c2_r = 1 / math.max(u.distance(u \, c2) \, 0.00001)
+\; local c3_r = 1 / math.max(u.distance(u \, c3) \, 0.00001) \; local
+sum = c1_r + c2_r + c3_r \; ofPopMatrix() \; return ofTable(c1_r/sum
+\, c2_r/sum \, c3_r/sum) \;;
+#X f 66;
+#X obj 49 992 unpack f f f;
+#X obj 49 1022 vsl 15 64 0 1 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 3156 1;
+#X obj 89 1022 vsl 15 64 0 1 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 1877 1;
+#X obj 130 1022 vsl 15 64 0 1 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 1267 1;
+#X msg 528 694 mix \$1 \$2 \$3;
+#X msg 787 591 array_in1 riff6-0;
+#X obj 807 728 ofelia set \$0-mix2;
+#X msg 878 680 array_out riff6-o2;
+#X msg 805 622 array_in2 riff6-1;
+#X msg 815 653 array_in3 riff6-2;
+#X obj 528 776 ofelia d \$0-mix2 \; \; M.array_in1 = "" \; M.array_in2
+= "" \; M.array_in3 = "" \; M.array_out = "" \; \; function M.mix(r)
+\; local in1 = ofArray(M.array_in1) \; local in2 = ofArray(M.array_in2)
+\; local in3 = ofArray(M.array_in3) \; local out = ofArray(M.array_out)
+\; local size = in1:getSize() \; for i = 1 \, size do \; out:setAt(i
+\, in1:getAt(i)*r[1] + in2:getAt(i)*r[2] + in3:getAt(i)*r[3]) \; end
+\; end \;;
+#X f 73;
+#X msg 535 512 symbol riff6-o2;
+#X msg 534 427 3020 0 \$1 \$2;
+#X msg 447 400 0;
+#X obj 447 375 moses 10;
+#N canvas 1 89 520 775 mix 0;
+#X obj 35 216 ofelia set \$0-mix;
+#X msg 28 52 array_in1 riff6-1;
+#X msg 101 140 array_out riff6-o;
+#X msg 38 83 array_in2 riff6-2;
+#X msg 169 187 ratio \$1;
+#X obj 189 212 hsl 128 15 0 1 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X obj 186 232 t b a;
+#X msg 10 21 array_in1 riff6-0;
+#X msg 94 264 mix;
+#X obj 63 332 ofelia d \$0-mix \; \; M.array_in1 = "" \; M.array_in2
+= "" \; M.array_in3 = "" \; M.array_out = "" \; M.ratio = 0.5 \; \;
+function M.mix() \; local in1 = ofArray(M.array_in1) \; local in2 =
+ofArray(M.array_in2) \; local out = ofArray(M.array_out) \; local size
+= in1:getSize() \; for i = 1 \, size do \; out:setAt(i \, in1:getAt(i)
+* (1 - M.ratio) + in2:getAt(i) * M.ratio) \; end \; end \;;
+#X msg 48 113 array_in2 riff6-3;
+#N canvas 0 23 450 278 (subpatch) 0;
+#X array riff6-o 50 float 3;
+#A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0;
+#X coords 0 1 50 0 150 105 1 0 0;
+#X restore 318 53 graph;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X connect 3 0 0 0;
+#X connect 4 0 0 0;
+#X connect 5 0 6 0;
+#X connect 6 0 8 0;
+#X connect 6 1 4 0;
+#X connect 7 0 0 0;
 #X connect 8 0 9 0;
-#X connect 9 0 11 0;
-#X connect 11 0 10 0;
-#X connect 12 0 2 0;
-#X restore 229 333 pd test;
-#X connect 0 0 25 0;
-#X connect 2 0 12 0;
+#X connect 10 0 0 0;
+#X restore 871 53 pd mix old version BACKUP;
+#X obj 825 544 loadbang;
+#X connect 2 0 6 0;
+#X connect 3 0 9 3;
+#X connect 6 0 9 0;
+#X connect 8 0 9 1;
+#X connect 9 0 4 0;
+#X connect 11 0 27 0;
+#X connect 12 0 11 1;
+#X connect 13 0 25 0;
+#X connect 14 0 19 0;
+#X connect 15 0 14 1;
+#X connect 16 0 14 1;
+#X connect 17 0 14 0;
+#X connect 18 0 17 0;
+#X connect 18 0 23 0;
+#X connect 19 0 20 0;
+#X connect 20 0 21 0;
+#X connect 20 0 35 0;
+#X connect 23 0 22 0;
+#X connect 24 0 23 1;
+#X connect 26 0 11 0;
+#X connect 26 0 13 0;
+#X connect 29 0 30 0;
+#X connect 31 0 34 0;
+#X connect 32 0 33 0;
+#X connect 33 0 31 0;
+#X connect 34 0 41 0;
+#X connect 34 1 29 0;
+#X connect 35 0 37 0;
+#X connect 36 0 35 1;
+#X connect 39 0 14 1;
+#X connect 40 0 14 1;
+#X connect 41 0 29 0;
+#X connect 44 0 45 1;
+#X connect 45 0 67 0;
+#X connect 46 0 47 0;
+#X connect 47 0 48 0;
+#X connect 48 1 69 0;
+#X connect 51 0 53 1;
+#X connect 52 0 53 0;
+#X connect 53 0 54 0;
+#X connect 54 0 55 0;
+#X connect 54 0 59 0;
+#X connect 55 0 56 0;
+#X connect 55 1 57 0;
+#X connect 55 2 58 0;
+#X connect 59 0 65 0;
+#X connect 60 0 61 0;
+#X connect 62 0 61 0;
+#X connect 63 0 61 0;
+#X connect 64 0 61 0;
+#X connect 66 0 48 1;
+#X connect 67 0 43 0;
+#X connect 68 0 45 0;
+#X connect 69 0 68 0;
+#X connect 69 1 45 0;
+#X connect 71 0 60 0;
+#X connect 71 0 64 0;
+#X connect 71 0 63 0;
+#X connect 71 0 62 0;
+#X coords 0 787 1 786 200 200 0;
+#X restore 216 252 pd crickets;
+#N canvas 0 23 450 278 (subpatch) 0;
+#X array riff6-o2 50 float 3;
+#A 0 0 0.154149 0.131139 0.10813 0.0899303 0.125152 0.114543 0.212757
+0.194007 0.182502 0.0803744 0.0707873 0.0535304 0.0458606 0.0381909
+0.149402 0.134063 0.153049 0.152986 0.17961 0.0803744 0.0707873 0.0554479
+0.183916 0.18577 0.170431 0.153174 0.137835 0.114825 0.105238 0.0898987
+0.107989 0.0974432 0.0859386 0.0801863 0.0457977 0.189605 0.166596
+0.151257 0.169175 0.104264 0.090842 0.0678327 0.179044 0.175209 0.1522
+0.227453 0.125356 0.118645 0.0620805;
+#X coords 0 1 50 0 150 105 1 0 0;
+#X restore 169 376 graph;
+#X connect 0 0 24 0;
+#X connect 2 0 8 0;
 #X connect 8 0 28 0;
 #X connect 9 0 8 0;
 #X connect 10 0 11 0;
 #X connect 11 0 8 0;
-#X connect 12 1 8 0;
+#X connect 14 0 15 0;
 #X connect 15 0 16 0;
 #X connect 16 0 17 0;
-#X connect 17 0 18 0;
-#X connect 18 0 23 0;
-#X connect 19 0 27 0;
-#X connect 20 0 24 0;
-#X connect 20 1 21 0;
-#X connect 21 0 24 0;
+#X connect 17 0 22 0;
+#X connect 18 0 26 0;
+#X connect 19 0 23 0;
+#X connect 19 1 20 0;
+#X connect 20 0 23 0;
+#X connect 21 0 18 0;
 #X connect 22 0 19 0;
-#X connect 23 0 20 0;
-#X connect 24 0 22 0;
-#X connect 25 0 1 0;
-#X connect 27 0 26 0;
+#X connect 23 0 21 0;
+#X connect 24 0 1 0;
+#X connect 26 0 25 0;
+#X connect 28 0 12 0;
+#X connect 29 0 27 0;
