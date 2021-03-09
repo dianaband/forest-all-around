@@ -1,0 +1,166 @@
+#N canvas 603 89 568 730 12;
+#X declare -path ofelia/abs;
+#X obj 22 61 loadbang;
+#X obj 22 111 ofWindow;
+#X obj 189 416 ofDraw;
+#X obj 126 36 declare -path ofelia/abs;
+#X text 12 10 <<<;
+#X text 532 10 >>>;
+#X text 2 690 <<<;
+#X text 522 690 >>>;
+#X floatatom 221 518 5 0 0 0 delta - -;
+#X obj 232 497 hsl 128 15 0 0.03 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X obj 140 473 loadbang;
+#X msg 140 498 0.01;
+#X obj 189 441 t b a;
+#X obj 230 471 bng 15 250 50 0 \$0-ondraw empty s:0-ondraw 17 7 0 10
+-262144 -1 -1;
+#N canvas 386 529 1053 366 graph 0;
+#N canvas 0 50 450 250 (subpatch) 0;
+#X array \$0-graph 1000 float 2;
+#X coords 0 300 1000 -300 1000 140 1 0 0;
+#X restore 19 18 graph;
+#N canvas 487 89 613 270 probe 0;
+#X obj 239 118 f;
+#X obj 269 118 + 1;
+#X obj 207 28 bng 15 250 50 0 empty \$0-ondraw r:0-ondraw 17 7 0 10
+-262144 -1 -1;
+#X floatatom 239 168 5 0 0 0 - - -;
+#X obj 123 192 tabwrite \$0-graph;
+#X obj 239 143 mod 1000;
+#X obj 207 58 t b b;
+#X floatatom 53 102 5 0 0 0 - - -;
+#X obj 53 33 loadbang;
+#X msg 53 58 1;
+#X obj 499 118 f;
+#X obj 529 118 + 1;
+#X obj 467 28 bng 15 250 50 0 empty \$0-ondraw r:0-ondraw 17 7 0 10
+-262144 -1 -1;
+#X floatatom 499 168 5 0 0 0 - - -;
+#X obj 499 143 mod 1000;
+#X obj 467 58 t b b;
+#X floatatom 313 102 5 0 0 0 - - -;
+#X obj 313 33 loadbang;
+#X obj 383 192 tabwrite \$0-graph1;
+#X msg 313 58 2;
+#X obj 53 128 ofelia f \; return _planets[a].pos.x;
+#X obj 313 128 ofelia f \; return _planets[a].pos.x;
+#X connect 0 0 1 0;
+#X connect 0 0 5 0;
+#X connect 1 0 0 1;
+#X connect 2 0 6 0;
+#X connect 3 0 4 1;
+#X connect 5 0 3 0;
+#X connect 6 0 7 0;
+#X connect 6 1 0 0;
+#X connect 7 0 20 0;
+#X connect 8 0 9 0;
+#X connect 9 0 7 0;
+#X connect 10 0 11 0;
+#X connect 10 0 14 0;
+#X connect 11 0 10 1;
+#X connect 12 0 15 0;
+#X connect 13 0 18 1;
+#X connect 14 0 13 0;
+#X connect 15 0 16 0;
+#X connect 15 1 10 0;
+#X connect 16 0 21 0;
+#X connect 17 0 19 0;
+#X connect 19 0 16 0;
+#X connect 20 0 4 0;
+#X connect 21 0 18 0;
+#X restore 959 -6 pd probe;
+#N canvas 0 50 450 250 (subpatch) 0;
+#X array \$0-graph1 1000 float 2;
+#X coords 0 300 1000 -300 1000 140 1 0 0;
+#X restore 19 188 graph;
+#X restore 451 39 pd graph;
+#X obj 316 293 osc~;
+#X obj 316 318 dac~ 1;
+#X floatatom 316 244 5 0 0 0 - - -;
+#X obj 316 142 bng 15 250 50 0 empty \$0-ondraw r:0-ondraw 17 7 0 10
+-262144 -1 -1;
+#X floatatom 316 162 5 0 0 0 - - -;
+#X obj 316 268 + 300;
+#X obj 418 117 loadbang;
+#X msg 418 142 1;
+#X obj 373 263 skip 50;
+#X floatatom 397 294 5 0 0 0 - - -;
+#X floatatom 397 343 5 0 0 0 - - -;
+#X obj 397 318 + 300;
+#X obj 22 161 ofSetup;
+#X msg 22 186 bang;
+#X msg 22 211 dir 0 data/DejaVuSansMono.ttf;
+#X obj 22 236 pdcontrol;
+#X obj 22 461 bng 15 250 50 0 empty empty setup_done 17 7 0 10 -262144
+-1 -1;
+#X obj 22 331 t b b;
+#X msg 54 356 read -c sim.lua;
+#X obj 22 406 ofelia f \; ofSetFrameRate(30) \; return nil \;;
+#X obj 22 261 ofelia f \; font = ofTrueTypeFont() \; font:load(a \,
+8) \; return nil \;;
+#X obj 22 381 ofelia f;
+#X obj 221 542 ofelia f -c21 \; _ss.simulate(a[1]) \; ofPushMatrix()
+\; ofTranslate(ofGetWidth()/2 \, ofGetHeight()/2) \; for i = 1 \, #_planets
+do \; _planets[i].display() \; end \; ofPopMatrix() \;;
+#X obj 316 188 ofelia f \; return _planets[a].pos.x;
+#X msg 22 86 setPosition 500 0 \, setSize 600 600 \, create;
+#N canvas 1 469 721 426 presets 0;
+#X obj 20 25 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 20 82 ofelia f \; _planets = nil \; _planets = ofTable() \;
+_planets[1] = _pl.new(100 \, -100 \, 0 \, 0 \, -93.9325 \, _col.blue
+\, 10 \, false) \; _planets[2] = _pl.new(100 \, 50 \, -64.7584 \, -50.5328
+\, 46.9666 \, _col.yellow \, 10 \, false) \; _planets[3] = _pl.new(100
+\, 50 \, 64.7584 \, 50.5328 \, 46.9666 \, _col.green \, 10 \, false)
+\;;
+#X f 97;
+#X obj 20 225 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 20 282 ofelia f \; _planets = nil \; _planets = ofTable() \;
+_planets[1] = _pl.new(70 \, -50 \, 0 \, 1 \, 50 \, _col.blue \, 10
+\, false) \; _planets[2] = _pl.new(70 \, 50 \, 0 \, -1 \, -50 \, _col.yellow
+\, 10 \, false) \;;
+#X f 97;
+#X obj 133 11 inlet;
+#X connect 0 0 1 0;
+#X connect 2 0 3 0;
+#X connect 4 0 0 0;
+#X restore 55 554 pd presets;
+#X obj 22 661 print -n;
+#X msg 22 636 setup done!;
+#X connect 0 0 39 0;
+#X connect 2 0 12 0;
+#X connect 8 0 37 0;
+#X connect 9 0 8 0;
+#X connect 10 0 11 0;
+#X connect 11 0 8 0;
+#X connect 12 0 13 0;
+#X connect 12 1 8 0;
+#X connect 15 0 16 0;
+#X connect 17 0 20 0;
+#X connect 17 0 23 0;
+#X connect 18 0 19 0;
+#X connect 19 0 38 0;
+#X connect 20 0 15 0;
+#X connect 21 0 22 0;
+#X connect 22 0 19 0;
+#X connect 23 0 24 0;
+#X connect 24 0 26 0;
+#X connect 26 0 25 0;
+#X connect 27 0 28 0;
+#X connect 28 0 29 0;
+#X connect 29 0 30 0;
+#X connect 30 0 35 0;
+#X connect 31 0 40 0;
+#X connect 31 0 42 0;
+#X connect 32 0 36 0;
+#X connect 32 1 33 0;
+#X connect 33 0 36 0;
+#X connect 34 0 31 0;
+#X connect 35 0 32 0;
+#X connect 36 0 34 0;
+#X connect 38 0 17 0;
+#X connect 39 0 1 0;
+#X connect 42 0 41 0;
