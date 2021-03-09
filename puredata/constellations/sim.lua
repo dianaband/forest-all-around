@@ -24,7 +24,7 @@ function bin.new()
     l.color = hexcolor
     l.r = r
     l.fixed = fixed
-    l.name = "newplanet"
+    l.name = "just a planet"
 
     function l.display()
       ofPushMatrix()
@@ -39,25 +39,46 @@ function bin.new()
       local jerk = math.sqrt(l.acc.x*l.acc.x + l.acc.y*l.acc.y)
       -- font:drawString(string.format("(%5.1f %5.1f %2.1f)", spd, jerk, l.mass), 12, 0)
       -- font:drawString(string.format("%06x", l.color), 12, 0)
-      font:drawString(string.format("%.0f", l.mass), 12, 0)
+      -- font:drawString(string.format("%.0f", l.mass), 12, 0)
+      local ang = l.pos.angle(l.pos, ofVec2f(1, 0))
+      font:drawString(string.format("%.0f", ang), 12, 0)
       ofPopMatrix()
     end
 
     return l
   end
 
-  -- planets
-  o.planets = ofTable()
-  o.planets[1] = o.pl.new(70, -50,  0,  1,  50,  _col.blue, 10, false)
-  o.planets[2] = o.pl.new(70,  50,  0, -1, -50,  _col.yellow, 10, false)
-  --
-  -- o.planets[1] = o.pl.new(100, -100, 0, 0, -93.9325, _col.blue, 10, false);
-  -- o.planets[2] = o.pl.new(100, 50, -64.7584, -50.5328, 46.9666, _col.yellow, 10, false);
-  -- o.planets[3] = o.pl.new(100, 50, 64.7584, 50.5328, 46.9666, _col.green, 10, false);
+  -- constellations (initial state of planets)
+  o.constellations = ofTable()
+  function o.constellations.summon(i)
+    o.planets = nil --needed? for garbage collection?
+    o.planets = ofTable()
+    if i == 1 then
+      o.planets[1] = o.pl.new(70, -50,  0,  1,  50,  _col.blue, 10, false)
+      o.planets[2] = o.pl.new(70,  50,  0, -1, -50,  _col.yellow, 10, false)
+    elseif i == 2 then
+      o.planets[1] = o.pl.new(100, -100, 0, 0, -93.9325, _col.blue, 10, false)
+      o.planets[2] = o.pl.new(100, 50, -64.7584, -50.5328, 46.9666, _col.yellow, 10, false)
+      o.planets[3] = o.pl.new(100, 50, 64.7584, 50.5328, 46.9666, _col.green, 10, false)
+    elseif i == 3 then
+      o.planets[1] = o.pl.new(60, -115, -3, 0, -155, _col.blue, 10, false)
+      o.planets[2] = o.pl.new(70, 102, 0, 1, 150, _col.yellow, 10, false)
+      o.planets[3] = o.pl.new(55, -77, -2, -1, 42, _col.green, 10, false)
+      o.planets[4] = o.pl.new(62, 135, 0, -1, -52, _col.cyan, 10, false)
+    end
+  end
+  o.constellations.summon(1)
 
+  -- gravitation constant (fake)
   o.G = 10000
+
+  -- max. delta : small delta is helpful to get stable simulation.
   -- o.MAX_DELTA = 0.03
+
+  -- steps : for you to fine grain 'delta' further, simulate many more times before display. --> higher load, better result.
   -- o.STEPS = 50
+
+  -- this 'bin' (=world) is bounded? (bouncing @ outlining edges?)
   o.BOUNDED = true
 
   function o.getPositions()
@@ -116,6 +137,7 @@ function bin.new()
     for i = 1, #o.planets do
       if o.planets[i].fixed == false then
         o.planets[i].vel = vel[i]
+        -- bouncing @ edges?
         if o.BOUNDED then
           if o.planets[i].pos.x < -ofGetWidth()/2 or o.planets[i].pos.x > ofGetWidth()/2 then
             o.planets[i].vel.x = -o.planets[i].vel.x
@@ -136,6 +158,7 @@ function bin.new()
     end
   end
 
+  -- Runge-Kutta 4th-order
   function o.simulate(delta)
     local v1 = o.getVelocities()
     local p1 = o.getPositions()
@@ -156,9 +179,8 @@ function bin.new()
     local acc = ofTable()
     local vel = ofTable()
     for i = 1, #o.planets do
-      acc[i] = (a1[i] / 6 + a2[i] / 3 + a3[i] / 3 + a4[i] / 6) * 1
-      vel[i] = (v1[i] / 6 + v2[i] / 3 + v3[i] / 3 + v4[i] / 6) * 1
-      -- acc[i] = acc[i] - 1;
+      acc[i] = a1[i] / 6 + a2[i] / 3 + a3[i] / 3 + a4[i] / 6
+      vel[i] = v1[i] / 6 + v2[i] / 3 + v3[i] / 3 + v4[i] / 6
     end
 
     o.updatePositions(o.calculatePositions(vel, delta))
@@ -171,6 +193,11 @@ function bin.new()
     for i = 1, #o.planets do;
       o.planets[i].display();
     end;
+    ofSetHexColor(0x000000)
+    ofDrawLine(o.planets[1].pos.x, o.planets[1].pos.y, o.planets[2].pos.x, o.planets[2].pos.y)
+    ofNoFill()
+    ofDrawRectangle(o.planets[1].pos.x - 5, o.planets[1].pos.y - 5, 10, 10)
+    ofDrawCircle(o.planets[2].pos.x, o.planets[2].pos.y, 5)
     ofPopMatrix();
   end
 
