@@ -40,8 +40,8 @@ function bin.new()
       -- font:drawString(string.format("(%5.1f %5.1f %2.1f)", spd, jerk, l.mass), 12, 0)
       -- font:drawString(string.format("%06x", l.color), 12, 0)
       -- font:drawString(string.format("%.0f", l.mass), 12, 0)
-      local ang = l.pos.angle(l.pos, ofVec2f(1, 0))
-      font:drawString(string.format("%.0f", ang), 12, 0)
+      -- local ang = l.pos.angle(l.pos, ofVec2f(1, 0))
+      -- font:drawString(string.format("%.0f", ang), 12, 0)
       ofPopMatrix()
     end
 
@@ -193,11 +193,11 @@ function bin.new()
     for i = 1, #o.planets do;
       o.planets[i].display();
     end;
-    ofSetHexColor(0x000000)
-    ofDrawLine(o.planets[1].pos.x, o.planets[1].pos.y, o.planets[2].pos.x, o.planets[2].pos.y)
-    ofNoFill()
-    ofDrawRectangle(o.planets[1].pos.x - 5, o.planets[1].pos.y - 5, 10, 10)
-    ofDrawCircle(o.planets[2].pos.x, o.planets[2].pos.y, 5)
+    -- ofSetHexColor(0x000000)
+    -- ofDrawLine(o.planets[1].pos.x, o.planets[1].pos.y, o.planets[2].pos.x, o.planets[2].pos.y)
+    -- ofNoFill()
+    -- ofDrawRectangle(o.planets[1].pos.x - 5, o.planets[1].pos.y - 5, 10, 10)
+    -- ofDrawCircle(o.planets[2].pos.x, o.planets[2].pos.y, 5)
     ofPopMatrix();
   end
 
