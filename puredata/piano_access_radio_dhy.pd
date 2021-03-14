@@ -299,7 +299,7 @@ pollintervall 1 \, verbose 1;
 #X connect 29 0 27 0;
 #X coords 0 -1 1 1 110 170 1 130 220;
 #X restore 76 246 pd keyboard ctrlr;
-#N canvas 333 764 1440 811 birds 1;
+#N canvas 0 89 1440 811 birds 0;
 #X obj 52 406 tgl 20 0 empty empty empty 17 7 0 10 -262130 -1 -1 0
 1;
 #X obj 182 434 tgl 20 0 empty empty empty 17 7 0 10 -257985 -1 -1 0
@@ -895,12 +895,12 @@ pollintervall 1 \, verbose 1;
 #X connect 93 0 95 0;
 #X connect 94 0 93 0;
 #X restore 298 399 pd birds;
-#N canvas -1 89 1084 612 crickets 1;
+#N canvas 1 89 1084 612 crickets 0;
 #X text 1042 577 >>>;
 #X text 1042 17 >>>;
 #X text 12 17 <<<;
 #X text 12 577 <<<;
-#N canvas 1 89 1174 566 save 1;
+#N canvas 1 89 1174 566 save 0;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array riff11 10 float 3;
 #A 0 0.342857 0.67619 0.371429 0.685714 0.352381 0.638095 0.352381
@@ -1793,7 +1793,7 @@ pollintervall 1 \, verbose 1;
 #X msg 244 295 symbol riff10;
 #X msg 404 295 symbol riff11;
 #X msg 564 295 symbol riff15;
-#N canvas 437 24 766 832 yellow 0;
+#N canvas 437 89 766 806 yellow 0;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array riff94 100 float 3;
 #A 0 0.00952381 0.00476211 0.00476211 0.514286 0.480954 0.504762 0.509524
@@ -1809,13 +1809,13 @@ pollintervall 1 \, verbose 1;
 0.00952381 0.00952381 0.00952381 0.00952381 0 0 0.395222 0.419031 0.419031
 0.428554 0.490456 0.461886 0 0 0 0 0 0;
 #X coords 0 1 100 0 150 105 1 0 0;
-#X restore -320 191 graph;
-#X obj -319 405 tgl 20 0 empty empty empty 17 7 0 10 -204786 -1 -1
-0 1;
-#X obj -189 433 tgl 20 0 empty empty empty 17 7 0 10 -4034 -1 -1 0
+#X restore 68 387 graph;
+#X obj 69 601 tgl 20 0 empty empty empty 17 7 0 10 -204786 -1 -1 0
 1;
-#X obj -319 569 s NOTE;
-#X obj -319 430 metro 500;
+#X obj 199 629 tgl 20 0 empty empty empty 17 7 0 10 -4034 -1 -1 0 1
+;
+#X obj 69 765 s NOTE;
+#X obj 69 626 metro 500;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array riff94-1 50 float 3;
 #A 0 0.638095 0.580953 0.514287 0.457144 0.361907 0.314288 0.228574
@@ -1826,8 +1826,8 @@ pollintervall 1 \, verbose 1;
 0.104765 0.0761942 0.0476229 0.0285754 0.533334 0.390477 0.266669 0.152384
 0.0666699 0.0380987 0.0380987;
 #X coords 0 1 50 0 150 105 1 0 0;
-#X restore -321 67 graph;
-#X msg -259 410 symbol riff94-1;
+#X restore 67 263 graph;
+#X msg 129 606 symbol riff94-1;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array riff94-2 50 float 3;
 #A 0 0.333334 0.333334 0.333334 0.333334 0.32381 0.32381 0.304762 0.285715
@@ -1838,7 +1838,7 @@ pollintervall 1 \, verbose 1;
 0.228571 0.228571 0.228571 0.228571 0.238095 0.238095 0.247619 0.257143
 0.266667 0.276191;
 #X coords 0 1 50 0 150 105 1 0 0;
-#X restore -321 -57 graph;
+#X restore 67 139 graph;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array riff94-3 50 float 3;
 #A 0 0.161905 0.342857 0.161905 0.161905 0.780952 0.161905 0.161905
@@ -1849,10 +1849,10 @@ pollintervall 1 \, verbose 1;
 0.161905 0.152381 0.152381 0.152381 0.514286 0.152381 0.152381 0.152381
 0.390476 0.152381 0.152381;
 #X coords 0 1 50 0 150 105 1 0 0;
-#X restore -320 -177 graph;
-#X msg -267 367 symbol riff94-2;
-#X msg -255 346 symbol riff94-3;
-#X msg -218 324 symbol riff94-4;
+#X restore 68 19 graph;
+#X msg 121 563 symbol riff94-2;
+#X msg 133 542 symbol riff94-3;
+#X msg 170 520 symbol riff94-4;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array riff94-5 100 float 3;
 #A 0 0.347619 0.4 0.390476 0.404762 0.433333 0.457143 0.485715 0.233333
@@ -1869,10 +1869,10 @@ pollintervall 1 \, verbose 1;
 0.200004 0.161911 0.152381 0.380952 0.361904 0.504762 0.366667 0.371429
 0.385714 0.257142 0.257142 0.266666;
 #X coords 0 1 100 0 150 105 1 0 0;
-#X restore -161 458 graph;
-#X obj -319 464 riff 400 3204;
-#X msg -206 303 symbol riff94-5;
-#X msg -247 389 symbol riff94-5;
+#X restore 227 654 graph;
+#X obj 69 660 riff 400 3204;
+#X msg 182 499 symbol riff94-5;
+#X msg 141 585 symbol riff94-5;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array riff94-4 100 float 3;
 #A 0 0.00952381 0.00476211 0.00476211 0.514286 0.4 0.371429 0.347619
@@ -1888,7 +1888,7 @@ pollintervall 1 \, verbose 1;
 0.00952381 0.00952381 0 0 0.395222 0.419031 0.419031 0.428554 0.490456
 0.461886 0 0 0 0 0 0;
 #X coords 0 1 100 0 150 105 1 0 0;
-#X restore -163 190 graph;
+#X restore 225 386 graph;
 #X connect 1 0 4 0;
 #X connect 2 0 13 3;
 #X connect 4 0 13 0;
@@ -1996,7 +1996,7 @@ pollintervall 1 \, verbose 1;
 #X connect 58 0 43 1;
 #X connect 59 0 50 1;
 #X restore 14 38 pd save;
-#X obj 358 23 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X obj 358 23 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array booong 10 float 3;
