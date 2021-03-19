@@ -227,7 +227,7 @@
 #X restore 287 370 pd samplers;
 #X text 109 24 * a wireless "field synth" - based on 'esp now' protocol
 ;
-#N canvas 54 99 1440 855 crickets 1;
+#N canvas 0 89 1440 811 crickets 1;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array riff11 10 float 3;
 #A 0 0.342857 0.67619 0.371429 0.685714 0.352381 0.638095 0.352381
@@ -1372,7 +1372,7 @@
 #X connect 33 0 32 1;
 #X connect 34 0 31 1;
 #X restore 94 45 pd green suitcase;
-#N canvas 214 23 1167 807 pingpong 0;
+#N canvas 214 89 1167 806 pingpong 0;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array riff14-1 50 float 3;
 #A 0 0.952381 0.952381 0.952381 0.952381 0.952381 0.952381 0.952381
@@ -1634,7 +1634,7 @@
 #X text 722 17 >>>;
 #X text 12 17 <<<;
 #X text 12 577 <<<;
-#N canvas 314 47 909 831 gastank 1;
+#N canvas 314 89 909 806 gastank 0;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array riff19 50 float 3;
 #A 0 0.780952 0.561905 0.361905 0.00952381 0.00952381 0.00952381 0.00952381
@@ -1647,7 +1647,7 @@
 ;
 #X coords 0 1 50 0 150 105 1 0 0;
 #X restore 201 8 graph;
-#X obj 314 221 tgl 20 0 empty empty 3001 17 7 0 10 -257985 -1 -1 1
+#X obj 314 221 tgl 20 0 empty empty 3001 17 7 0 10 -257985 -1 -1 0
 1;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array riff18 20 float 3;
@@ -1711,7 +1711,7 @@
 -1;
 #X obj 75 221 t b b;
 #X obj 73 267 spigot;
-#X obj 119 198 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X obj 119 198 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X obj 704 490 s NOTE;
 #X obj 557 287 riff 400 4001;
@@ -1760,7 +1760,7 @@
 #X connect 30 0 27 1;
 #X connect 31 0 27 1;
 #X restore 283 53 pd gastank;
-#N canvas -37 84 1440 794 frog 1;
+#N canvas 1 89 1438 794 frog 0;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array riff8-1 100 float 3;
 #A 0 0.695238 0.695238 0.695238 0.695238 0.695238 0.695238 0.695238
@@ -1833,7 +1833,7 @@
 #X obj 969 627 s NOTE;
 #X obj 846 565 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X obj 699 276 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X obj 699 276 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X obj 962 565 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
@@ -1930,7 +1930,7 @@
 #X msg 860 156 symbol riff20-3;
 #X msg 858 136 symbol riff20-4;
 #X obj 799 190 metro 1000;
-#X obj 802 160 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X obj 802 160 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X obj 1155 350 tgl 20 0 empty empty empty 17 7 0 10 -257985 -1 -1
 0 1;
@@ -1941,7 +1941,7 @@
 #X obj 1010 247 riff 1000 1500;
 #X obj 998 198 metro 1000;
 #X obj 1001 168 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1
-1 1;
+0 1;
 #X msg 1111 413 1500 1001 \$1 \$2;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array riff28-1 100 float 3;
@@ -2065,7 +2065,7 @@
 #X msg 287 315 symbol riff10;
 #X msg 447 315 symbol riff11;
 #X msg 607 315 symbol riff15;
-#N canvas 221 23 596 832 yellowhose 1;
+#N canvas 221 89 596 806 yellowhose 0;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array riff94 100 float 3;
 #A 0 0.380952 0.380952 0.380952 0.371428 0.371428 0.371428 0.361905
@@ -2453,7 +2453,7 @@
 #X connect 22 0 18 1;
 #X connect 25 0 18 1;
 #X restore 683 104 pd alu;
-#N canvas 658 23 450 841 rounder 1;
+#N canvas 658 89 497 706 rounder 1;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array riff60 40 float 3;
 #A 0 0.333333 0.409523 0.476189 0.552379 0.599998 0.599998 0.209524
@@ -2463,10 +2463,10 @@
 -0.380949 -0.447615 -0.533329 -0.0190467 -0.190474 -0.295235 -0.342854
 -0.361902 -0.390473 -0.419044;
 #X coords 0 1 40 0 150 105 1 0 0;
-#X restore 556 20 graph;
-#X obj 557 228 tgl 20 0 empty empty empty 17 7 0 10 -262130 -1 -1 0
+#X restore 275 186 graph;
+#X obj 276 394 tgl 20 0 empty empty empty 17 7 0 10 -262130 -1 -1 0
 1;
-#X obj 687 258 tgl 20 0 empty empty empty 17 7 0 10 -257985 -1 -1 0
+#X obj 406 424 tgl 20 0 empty empty empty 17 7 0 10 -257985 -1 -1 0
 1;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array riff60-2 50 float 3;
@@ -2479,13 +2479,13 @@
 -0.161903 -0.161903 -0.161903 -0.171427 -0.171427 -0.171427 -0.171427
 -0.171427;
 #X coords 0 1 50 0 150 105 1 0 0;
-#X restore 553 -118 graph;
-#X obj 704 490 s NOTE;
-#X msg 613 179 symbol riff60-2;
-#X msg 612 201 symbol riff60-1;
-#X msg 617 224 symbol riff60;
-#X obj 557 287 riff 800 4002;
-#X obj 557 253 metro 500;
+#X restore 272 48 graph;
+#X obj 423 656 s NOTE;
+#X msg 332 345 symbol riff60-2;
+#X msg 331 367 symbol riff60-1;
+#X msg 336 390 symbol riff60;
+#X obj 276 453 riff 800 4002;
+#X obj 276 419 metro 500;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array riff60-3 30 float 3;
 #A 0 0.371429 0.371429 0.0190476 -0.428571 -0.438095 0 0.390476 0.4
@@ -2493,8 +2493,8 @@
 -0.447619 0.409524 0.409524 0.0285714 -0.457143 -0.457143 0.409524
 0.409524 0.00952381 -0.428571 0.438095 0.0190476 -0.447619 0;
 #X coords 0 1 30 0 150 105 1 0 0;
-#X restore 340 -82 graph;
-#X msg 585 140 symbol riff60-3;
+#X restore 59 84 graph;
+#X msg 304 306 symbol riff60-3;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array riff60-1 30 float 3;
 #A 0 0.733333 0.885715 0.97143 1.05714 1.13334 1.12381 1.02857 0.914286
@@ -2502,7 +2502,7 @@
 0.97143 0.904763 0.809524 0.761905 0.857143 0.933334 0.980954 1.04762
 1.09524 1.0381 0.980952 0.876191 0.780953;
 #X coords 0 1 30 0 150 105 1 0 0;
-#X restore 339 148 graph;
+#X restore 58 314 graph;
 #X connect 1 0 9 0;
 #X connect 2 0 8 3;
 #X connect 5 0 8 1;
@@ -2543,7 +2543,7 @@
 #X msg 1307 377 symbol riff61;
 #X msg 1302 354 symbol riff61-1;
 #X msg 1303 332 symbol riff61-2;
-#N canvas 0 149 1178 687 drawer 1;
+#N canvas 1 149 1178 687 drawer 0;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array riff93-1 80 float 3;
 #A 0 0.219048 0.209524 0.209524 0.209524 0.2 0.2 0.190476 0.180952
@@ -2666,7 +2666,7 @@
 #X obj 1071 668 riff 800 4702;
 #X obj 1073 782 s NOTE;
 #X obj 1247 406 metro 1000;
-#N canvas 6 214 1362 825 copper 1;
+#N canvas 6 89 1362 806 copper 0;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array riff97 50 float 3;
 #A 0 0.0476214 0.104764 0.161906 0.219049 0.24762 0.285715 0.32381

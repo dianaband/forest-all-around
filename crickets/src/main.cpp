@@ -21,7 +21,7 @@
 //============<identities>============
 //
 #define MY_GROUP_ID   (3000)
-#define MY_ID         (MY_GROUP_ID + 202)
+#define MY_ID         (MY_GROUP_ID + 789)
 #define MY_SIGN       ("CRICKET")
 //
 //============</identities>============
@@ -96,23 +96,39 @@ Scheduler runner;
 #include <Servo.h>
 // my tasks
 int speed = 0;
+bool isactive = false;
 void set_speed() {
   int r = speed;
   analogWrite(SERVO_PIN, r);
   MONITORING_SERIAL.print("set_speed:");
   MONITORING_SERIAL.println(r);
+  isactive = true;
 }
 Task set_speed_task(0, TASK_ONCE, &set_speed);
 //
 void rest() {
   analogWrite(SERVO_PIN, 0);
+  isactive = false;
 }
 Task rest_task(0, TASK_ONCE, &rest);
+//
+uint8_t watch_counter = 0;
+void watcher() {
+  if (isactive) {
+    if (watch_counter > 3) {
+      rest_task.restartDelayed(10);
+      watch_counter = 0;
+    } else {
+      watch_counter++;
+    }
+  }
+}
+Task watcher_task(1000, TASK_FOREVER, &watcher, &runner, true);
 //*-*-*-*-*-*-*-*-*-*-*-*-*
 
 //
 extern Task hello_task;
-static int hello_delay = 0;
+static int hello_delay = 2000;
 void hello() {
   //
   byte mac[6];
@@ -125,7 +141,7 @@ void hello() {
   count++;
   hello.h1 = (count % 1000);
   hello.h2 = speed;
-  // hello.h3 = 0;
+  hello.h3 = (isactive ? 1 : 0);
   // hello.h4 = 0;
   //
   uint8_t frm_size = sizeof(Hello) + 2;
@@ -185,6 +201,7 @@ void onNoteHandler(Note & n) {
       //
       if (n.onoff == 1) {
         set_speed_task.restartDelayed(10);
+        watch_counter = 0;
       } else if (n.onoff == 0) {
         rest_task.restartDelayed(10);
       }
