@@ -3,7 +3,7 @@
 //
 
 //
-// Conversation about the ROOT @ SEMA warehouses, Seoul
+// Conversation about the ROOT @ SEMA storage, Seoul
 //
 
 //
