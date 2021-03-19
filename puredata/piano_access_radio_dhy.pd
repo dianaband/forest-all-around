@@ -76,7 +76,7 @@
 #X msg 549 286 1;
 #X obj 500 286 sel 1;
 #X obj 40 163 spigot;
-#X obj 89 148 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 89 148 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
 #X obj 40 190 print HELLO;
 #N canvas 224 125 706 244 samplers 0;
@@ -655,9 +655,8 @@ down.;
 #X obj 24 243 r BONGBONG;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array world_energy 20 float 3;
-#A 0 0.0260051 0.00082037 0.249905 1.21749e-09 1.21749e-09 0 0.0518141
-6.37602e-15 0 0 6.33895e-18 7.15377e-10 0.299886 4.79674e-18 0 0 0
-0 0 0;
+#A 0 0.199924 0.199924 0.249905 5.48197e-05 0 0 0.099962 1.4298e-13
+0 0 1.81669e-08 3.16981e-05 0.299886 2.31014e-14 0 0 0 0 0 0;
 #X coords 0 1 20 0 200 50 1 0 0;
 #X restore 15 36 graph;
 #X msg 24 452 \; world_energy \$2 \$1;
@@ -903,7 +902,7 @@ down.;
 #X obj 1065 198 s E_SEQ;
 #X msg 1167 76 \; we_sequence const 1;
 #X obj 794 148 hradio 10 1 0 20 empty empty empty 0 -8 0 10 -257985
--4160 -1 14;
+-4160 -1 6;
 #X obj 204 406 * 0.2;
 #X obj 384 406 * 0.25;
 #X obj 564 406 * 0.3;
