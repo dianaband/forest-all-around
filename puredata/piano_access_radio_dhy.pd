@@ -76,7 +76,7 @@
 #X msg 549 286 1;
 #X obj 500 286 sel 1;
 #X obj 40 163 spigot;
-#X obj 89 148 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X obj 89 148 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X obj 40 190 print HELLO;
 #N canvas 224 125 706 244 samplers 0;
@@ -655,8 +655,9 @@ down.;
 #X obj 24 243 r BONGBONG;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array world_energy 20 float 3;
-#A 0 0.199924 0.199924 0.249905 5.48197e-05 0 0 0.099962 1.4298e-13
-0 0 1.81669e-08 3.16981e-05 0.299886 2.31014e-14 0 0 0 0 0 0;
+#A 0 6.0737e-10 1.962e-05 0.249905 0.0296023 0.0296023 0.399848 0.00986742
+0.099962 0.299886 0.199924 0.099962 0.0111525 1.78673e-09 0.149943
+0 0 0 0 0 0;
 #X coords 0 1 20 0 200 50 1 0 0;
 #X restore 15 36 graph;
 #X msg 24 452 \; world_energy \$2 \$1;
@@ -902,7 +903,7 @@ down.;
 #X obj 1065 198 s E_SEQ;
 #X msg 1167 76 \; we_sequence const 1;
 #X obj 794 148 hradio 10 1 0 20 empty empty empty 0 -8 0 10 -257985
--4160 -1 6;
+-4160 -1 0;
 #X obj 204 406 * 0.2;
 #X obj 384 406 * 0.25;
 #X obj 564 406 * 0.3;
@@ -1171,7 +1172,7 @@ down.;
 #X obj 263 571 radio_yellow;
 #X obj 344 302 radio_rounder;
 #X obj 478 557 radio_drawer;
-#X obj 85 384 radio_suitcase;
+#X obj 123 382 radio_suitcase;
 #X obj 343 6 radio_frog;
 #X obj 672 538 radio_copper;
 #X obj 682 342 radio_drummer;
@@ -1181,6 +1182,7 @@ down.;
 #X obj 558 8 radio_tanker_side;
 #X obj 128 143 radio_alumi_A;
 #X obj 229 143 radio_alumi_B;
+#X obj 11 484 radio_tissue;
 #X restore 361 369 pd crickets;
 #X connect 0 0 18 0;
 #X connect 1 0 0 1;
