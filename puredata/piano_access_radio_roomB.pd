@@ -1,4 +1,4 @@
-#N canvas 501 25 623 470 10;
+#N canvas 154 25 623 470 10;
 #X obj 328 198 spigot;
 #X obj 377 183 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
@@ -297,7 +297,7 @@
 #X connect 29 0 27 0;
 #X coords 0 -1 1 1 110 170 1 130 220;
 #X restore 76 246 pd keyboard ctrlr;
-#N canvas 0 25 801 747 crickets 0;
+#N canvas 84 25 801 747 crickets 0;
 #N canvas 1 89 356 384 saved 0;
 #N canvas 194 444 1133 383 roundly 0;
 #X msg 364 139 \$1 5000;
@@ -648,28 +648,28 @@ down.;
 #X restore 119 113 pd saved energy;
 #X obj 45 20 cnv 15 700 700 empty empty empty 20 12 0 14 -233017 -66577
 0;
-#N canvas 1 89 1301 787 (subpatch) 0;
+#N canvas 84 25 1196 747 (subpatch) 0;
 #X obj 74 266 r BONGBONG_DONE;
 #X obj 24 243 r BONGBONG;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array world_energy 20 float 3;
-#A 0 2.21314e-12 7.09245e-08 0.020654 0.000106428 0.000106428 0.399848
-3.54759e-05 0.099962 0.299886 0.199924 0.099962 3.26071e-05 6.50836e-12
-0.149943 0 0 0 0 0 0;
+#A 0 7.77558e-18 3.89725e-18 2.35612e-07 3.68627e-10 3.68627e-10 0
+4.89419e-13 3.88629e-21 0 0 9.76457e-13 2.80651e-10 9.25335e-25 1.34081e-21
+0 0 0 0 0 0;
 #X coords 0 1 20 0 200 50 1 0 0;
 #X restore 15 36 graph;
 #X msg 24 452 \; world_energy \$2 \$1;
 #X obj 24 429 pack f f;
 #X msg 157 411 0;
-#X obj 448 144 array sum;
-#X msg 519 126 symbol world_energy;
+#X obj 448 134 array sum;
+#X msg 519 116 symbol world_energy;
 #X floatatom 183 18 5 0 0 0 sum WORLD_ENERGY -;
-#X msg 608 62 \; world_energy const 0;
-#X obj 448 121 metro 100;
+#X msg 608 52 \; world_energy const 0;
+#X obj 448 111 metro 100;
 #X obj 130 332 loadbang;
-#X obj 448 219 s WORLD_ENERGY;
-#X obj 492 49 loadbang;
-#X obj 492 72 t b b;
+#X obj 548 221 s WORLD_ENERGY;
+#X obj 492 39 loadbang;
+#X obj 492 62 t b b;
 #X obj 24 361 snapshot~;
 #X msg 24 309 start;
 #X msg 74 309 stop;
@@ -695,7 +695,7 @@ down.;
 #X obj 69 406 metro 50;
 #X obj 204 338 ear~ 2000 10000;
 #X obj 24 338 ear~ 2000 10000;
-#X obj 448 167 max 0.001;
+#X obj 448 157 max 0.001;
 #X obj 262 40 loadbang;
 #X msg 262 63 \; pd dsp 1;
 #X msg 384 452 \; world_energy \$2 \$1;
@@ -884,24 +884,24 @@ down.;
 #A 0 1 0.91 0.91 0.799999 0.79 0.78 0.73 0.66 1 0.91 0.87 0.85 0.64
 0.66 1 1 1 0.8 0.8 1;
 #X coords 0 1 20 0 200 100 1 0 0;
-#X restore 794 73 graph;
-#X obj 1065 85 f;
-#X obj 1098 85 + 1;
-#X obj 1065 108 mod 20;
-#X floatatom 1065 131 5 0 0 0 - - -;
-#X obj 1065 153 tabread we_sequence;
-#X obj 1045 85 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X restore 794 63 graph;
+#X obj 1065 75 f;
+#X obj 1098 75 + 1;
+#X obj 1065 98 mod 20;
+#X floatatom 1065 121 5 0 0 0 - - -;
+#X obj 1065 143 tabread we_sequence;
+#X obj 1045 75 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X floatatom 1065 176 5 0 0 0 - - -;
-#X obj 448 193 *;
-#X obj 1045 62 metro 60000;
-#X obj 1045 42 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X floatatom 1065 166 5 0 0 0 - - -;
+#X obj 448 183 *;
+#X obj 1045 52 metro 60000;
+#X obj 1045 32 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
-#X obj 1045 19 loadbang;
-#X obj 1065 198 s E_SEQ;
-#X msg 1167 76 \; we_sequence const 1;
-#X obj 794 148 hradio 10 1 0 20 empty empty empty 0 -8 0 10 -257985
--4160 -1 0;
+#X obj 1045 9 loadbang;
+#X obj 1065 188 s E_SEQ;
+#X msg 1167 66 \; we_sequence const 1;
+#X obj 794 138 hradio 10 1 0 20 empty empty empty 0 -8 0 10 -257985
+-4160 -1 3;
 #X obj 204 406 * 0.2;
 #X obj 384 406 * 0.25;
 #X obj 564 406 * 0.3;
@@ -928,6 +928,9 @@ down.;
 #X coords 0 1 20 0 200 100 1 0 0;
 #X restore 195 141 graph;
 #X restore 137 152 pd backup sequences;
+#X obj 448 204 +;
+#X obj 270 189 tgl 15 0 empty empty set_to_stop_the_world 17 7 0 10
+-262144 -1 -1 1 1;
 #X connect 0 0 17 0;
 #X connect 1 0 16 0;
 #X connect 4 0 3 0;
@@ -1145,7 +1148,7 @@ down.;
 #X connect 216 0 211 0;
 #X connect 217 0 218 1;
 #X connect 217 0 222 0;
-#X connect 218 0 12 0;
+#X connect 218 0 238 0;
 #X connect 219 0 216 0;
 #X connect 220 0 219 0;
 #X connect 221 0 220 0;
@@ -1161,6 +1164,8 @@ down.;
 #X connect 234 0 188 0;
 #X connect 235 0 127 0;
 #X connect 236 0 150 0;
+#X connect 238 0 12 0;
+#X connect 239 0 238 1;
 #X coords 0 -1 1 1 220 100 1 5 5;
 #X restore 7 7 pd;
 #X text 68 658 change stress rate...;
