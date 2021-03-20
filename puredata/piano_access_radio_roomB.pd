@@ -229,8 +229,6 @@
 ;
 #X msg 249 98 devicename /dev/ttyACM0 \, baud 57600 \, pollintervall
 1 \, verbose 1;
-#X msg 210 58 devicename /dev/tty.usbmodem4871051 \, baud 57600 \,
-pollintervall 1 \, verbose 1;
 #X msg 500 315 2000;
 #N canvas 803 196 443 470 keyboard 0;
 #X obj 20 126 unpackOSC;
@@ -655,9 +653,9 @@ down.;
 #X obj 24 243 r BONGBONG;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array world_energy 20 float 3;
-#A 0 3.08863e-16 9.89815e-12 4.81105e-06 1.48529e-08 1.48529e-08 0.399848
-4.95098e-09 0.099962 0.299886 0.000362145 0.000156575 9.45061e-09 9.08299e-16
-3.14063e-05 0 0 0 0 0 0;
+#A 0 2.21314e-12 7.09245e-08 0.020654 0.000106428 0.000106428 0.399848
+3.54759e-05 0.099962 0.299886 0.199924 0.099962 3.26071e-05 6.50836e-12
+0.149943 0 0 0 0 0 0;
 #X coords 0 1 20 0 200 50 1 0 0;
 #X restore 15 36 graph;
 #X msg 24 452 \; world_energy \$2 \$1;
@@ -1184,6 +1182,9 @@ down.;
 #X obj 229 143 radio_alumi_B;
 #X obj 11 484 radio_tissue;
 #X restore 361 369 pd crickets;
+#X msg 210 58 devicename /dev/tty.usbmodem32177401 \, baud 57600 \,
+pollintervall 1 \, verbose 1;
+#X obj 491 25 loadbang;
 #X connect 0 0 18 0;
 #X connect 1 0 0 1;
 #X connect 4 0 16 0;
@@ -1204,10 +1205,11 @@ down.;
 #X connect 25 0 28 0;
 #X connect 26 0 27 0;
 #X connect 27 0 25 0;
-#X connect 28 0 36 0;
+#X connect 28 0 35 0;
 #X connect 28 1 23 0;
 #X connect 29 0 31 0;
 #X connect 30 0 29 1;
 #X connect 34 0 5 1;
-#X connect 35 0 5 1;
-#X connect 36 0 23 0;
+#X connect 35 0 23 0;
+#X connect 38 0 5 1;
+#X connect 39 0 38 0;
