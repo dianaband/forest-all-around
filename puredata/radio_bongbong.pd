@@ -1,4 +1,4 @@
-#N canvas 192 89 410 511 10;
+#N canvas 518 57 410 511 10;
 #X msg 37 337 0;
 #X obj 249 306 loadbang;
 #X obj 231 406 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
@@ -6,24 +6,19 @@
 #X msg 249 329 bongbong;
 #X obj 164 21 r BONGBONG;
 #N canvas 0 50 450 250 (subpatch) 0;
-#X array bongbong 50 float 3;
-#A 0 1.15238 0.828571 1.15238 0.828571 1.15238 0.761905 1.14286 0.828571
-0.8 1.08571 0.961905 1.06667 0.92381 0.885714 1.05714 1.05714 1.05714
-0.933333 1.06667 0.933333 1.10476 1.11428 0.885714 1.10476 1.10476
-1.12381 1.14286 1.1619 0.971429 1.13333 0.904762 0.952381 1.13333 0.92381
-1.13333 0.838095 0.961905 1.13333 0.942857 1.12381 0.933333 1.09524
-0.87619 1.06667 0.904762 0.933333 1.05714 0.904762 0.885714 1.02857
-;
-#X coords 0 1 50 0 50 50 1 0 0;
+#X array bongbong 10 float 3;
+#A 0 -0.771422 -0.390472 -0.390472 0.0761905 -0.399996 -0.504758 -0.476186
+-0.457139 -0.438091 -0.48571;
+#X coords 0 1 10 0 50 50 1 0 0;
 #X restore 30 32 graph;
 #X obj 88 8 bng 15 250 50 0 empty empty empty 17 7 0 10 -261682 -1
 -1;
 #X obj 25 85 hradio 15 1 0 4 empty \$0-word empty 0 -8 0 10 -261682
--4034 -1 1;
+-4034 -1 2;
 #X text 35 318 stop!;
 #X obj 88 306 riff1 800 4100 400;
 #X obj 88 25 tgl 15 0 empty \$0-status-now empty 17 7 0 10 -261682
--1 -1 0 1;
+-1 -1 1 1;
 #X obj 167 249 bng 15 250 50 0 empty empty motivated! 17 7 0 10 -262144
 -1 -1;
 #X obj 167 279 s BONGBONG;
@@ -33,7 +28,7 @@
 #X msg 164 44 1;
 #X obj 164 67 v \$0-STATE;
 #N canvas 557 89 533 644 world 0;
-#X floatatom 16 78 5 0 0 0 - - -;
+#X floatatom 16 94 5 0 0 0 - - -;
 #X obj 16 293 t a b;
 #X obj 16 372 spigot;
 #X obj 67 357 tgl 15 0 empty empty free_:) 17 7 0 10 -262144 -1 -1
@@ -61,7 +56,7 @@
 #X obj 16 114 resample 1000;
 #X obj 238 578 max 0;
 #X text 109 114 listening speed;
-#X text 56 77 speed of happenings;
+#X text 56 93 speed of happenings;
 #X text 69 210 world is quiet?;
 #X text 90 285 status of me;
 #X obj 147 329 tgl 15 0 empty empty busy. 17 7 0 10 -262144 -1 -1 0
@@ -115,6 +110,9 @@
 #X msg 285 439 0.005;
 #X msg 304 462 -0.005;
 #X obj 16 210 < 0.7;
+#X obj 16 66 +;
+#X obj 49 66 tgl 15 0 empty ONOFF r:ONOFF 17 7 0 10 -262144 -1 -1 0
+1;
 #X connect 0 0 21 0;
 #X connect 1 0 5 0;
 #X connect 1 1 37 0;
@@ -153,12 +151,14 @@
 #X connect 40 0 42 0;
 #X connect 41 0 39 0;
 #X connect 42 0 43 0;
-#X connect 44 0 0 0;
+#X connect 44 0 50 0;
 #X connect 47 0 15 0;
 #X connect 48 0 15 0;
 #X connect 49 0 1 0;
+#X connect 50 0 0 0;
+#X connect 51 0 50 1;
 #X restore 167 226 pd world and me;
-#N canvas 329 403 621 436 expressions 0;
+#N canvas 124 52 582 656 expressions 0;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array bongbong1 50 float 3;
 #A 0 1.01905 1.03809 1.05714 0.990476 0.952381 0.933334 0.904762 0.819048
@@ -218,6 +218,19 @@
 #X obj 22 239 random 4;
 #X obj 22 262 t b a;
 #X obj 224 257 s \$0-word;
+#N canvas 84 25 450 278 (subpatch) 0;
+#X array bongbong0 10 float 3;
+#A 0 1.40953 1.28572 0.980954 0.84762 0.771429 0.990478 0.961906 0.619048
+0.8 0.790477;
+#X coords 0 1 10 0 150 105 1 0 0;
+#X restore 332 495 graph;
+#X obj 192 572 bng 15 250 50 0 \$0-reload empty s:reload 17 7 0 10
+-262144 -1 -1;
+#X obj 165 507 t b b;
+#X msg 192 528 0;
+#X obj 192 549 array_copier bongbong;
+#X obj 165 487 bng 15 250 50 0 empty ACT0 r:ACT0 17 7 0 10 -262144
+-1 -1;
 #X connect 3 0 11 1;
 #X connect 4 0 6 0;
 #X connect 5 0 4 0;
@@ -245,6 +258,11 @@
 #X connect 24 0 26 0;
 #X connect 25 0 23 0;
 #X connect 25 1 14 0;
+#X connect 29 0 23 0;
+#X connect 29 1 30 0;
+#X connect 30 0 31 0;
+#X connect 31 0 28 0;
+#X connect 32 0 29 0;
 #X restore 48 226 pd expressions;
 #X obj 231 452 s BONGBONG_DONE;
 #X obj 88 429 s NOTE;

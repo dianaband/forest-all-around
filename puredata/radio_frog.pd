@@ -10,12 +10,12 @@
 #X obj 251 429 v \$0-STATE;
 #X msg 164 44 1;
 #X obj 164 67 v \$0-STATE;
-#N canvas 906 89 533 644 world 0;
-#X floatatom 16 78 5 0 0 0 - - -;
+#N canvas 747 89 533 644 world 0;
+#X floatatom 16 94 5 0 0 0 - - -;
 #X obj 16 293 t a b;
 #X obj 16 372 spigot;
 #X obj 67 357 tgl 15 0 empty empty free_:) 17 7 0 10 -262144 -1 -1
-0 1;
+1 1;
 #X obj 67 334 == 0;
 #X obj 16 316 sel 1;
 #X text 41 402 think;
@@ -39,10 +39,10 @@
 #X obj 16 114 resample 1000;
 #X obj 238 578 max 0;
 #X text 109 114 listening speed;
-#X text 56 77 speed of happenings;
+#X text 56 93 speed of happenings;
 #X text 69 210 world is quiet?;
 #X text 90 285 status of me;
-#X obj 147 329 tgl 15 0 empty empty busy. 17 7 0 10 -262144 -1 -1 1
+#X obj 147 329 tgl 15 0 empty empty busy. 17 7 0 10 -262144 -1 -1 0
 1;
 #X obj 16 451 abs;
 #N canvas 0 50 450 250 (subpatch) 0;
@@ -93,6 +93,9 @@
 #X msg 304 462 -0.005;
 #X msg 285 439 0.01;
 #X obj 16 210 < 0.6;
+#X obj 16 66 +;
+#X obj 43 66 tgl 15 0 empty ONOFF r:ONOFF 17 7 0 10 -262144 -1 -1 1
+1;
 #X connect 0 0 21 0;
 #X connect 1 0 5 0;
 #X connect 1 1 37 0;
@@ -131,12 +134,14 @@
 #X connect 40 0 42 0;
 #X connect 41 0 39 0;
 #X connect 42 0 43 0;
-#X connect 44 0 0 0;
+#X connect 44 0 50 0;
 #X connect 47 0 15 0;
 #X connect 48 0 15 0;
 #X connect 49 0 1 0;
+#X connect 50 0 0 0;
+#X connect 51 0 50 1;
 #X restore 167 226 pd world and me;
-#N canvas 253 280 688 352 expressions 0;
+#N canvas 250 164 688 488 expressions 0;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array frog1 50 float 3;
 #A 0 0.095238 0.12381 0.171429 0.219048 0.295239 0.438097 0.514288
@@ -183,6 +188,16 @@
 #X floatatom 143 261 5 0 0 0 - - -;
 #X obj 143 283 array_copier frog;
 #X obj 33 197 count 4;
+#N canvas 84 25 450 278 (subpatch) 0;
+#X array frog0 10 float 3;
+#A 0 0.561905 0.180952 0.428571 0.0666667 0.0952381 0.209524 0.552381
+0.190476 0.390475 0.419047;
+#X coords 0 1 10 0 150 105 1 0 0;
+#X restore 238 331 graph;
+#X obj 72 345 t b b;
+#X msg 99 366 0;
+#X obj 72 325 bng 15 250 50 0 empty ACT0 r:ACT0 17 7 0 10 -262144 -1
+-1;
 #X connect 4 0 12 0;
 #X connect 6 0 5 0;
 #X connect 6 1 9 0;
@@ -191,29 +206,24 @@
 #X connect 11 0 8 0;
 #X connect 12 0 6 0;
 #X connect 12 0 7 0;
+#X connect 14 0 5 0;
+#X connect 14 1 15 0;
+#X connect 15 0 11 0;
+#X connect 16 0 14 0;
 #X restore 48 226 pd expressions;
 #N canvas 0 23 450 278 (subpatch) 0;
-#X array frog 100 float 3;
-#A 0 0.695238 0.695238 0.695238 0.695238 0.695238 0.695238 0.695238
-0.695238 0.685715 0.685715 4.76837e-06 4.76837e-06 4.76837e-06 4.76837e-06
-0.00952381 0.295238 0.00952381 0.00952381 0.00952381 0.00952381 0.00952381
-0.00952381 0.00952381 0.00952381 0.00952381 0.00952381 0.00952381 0.00952381
-0.00952381 0.00952381 0.00952381 0.00952381 0.00952381 0.00952381 0.00952381
-0.67619 0.67619 0.67619 0.67619 0.67619 0.67619 0.67619 0.67619 0.67619
-0.67619 0.67619 0.67619 0.67619 0 0 0 0 0 0 0 0 0.314286 0 0 0 0 0
-0 0 0 0 -0.00952375 -0.00952375 -0.0190475 0.685714 0.685714 0.685714
-0.685714 0.685714 0.685714 0.685714 0.685714 0.685714 0.685714 0.685714
-0.685714 0.685714 0 0 0 0 0 0 0.342857 -0.0190474 -0.0190474 -0.0190474
--0.0190474 -0.0190474 -0.0190474 -0.0190474 -0.0190474 -0.0190474 -0.0190474
-0;
-#X coords 0 1 100 0 50 50 1 0 0;
+#X array frog 21 float 3;
+#A 0 0.0761905 0.285714 0.552381 0.0761905 0.257143 0.542857 0.00952381
+0.00952381 0.0761905 0.266667 0.495238 0.0666667 0.228571 0.485714
+0.0857143 0.238095 0.504762 0.904762 0.904762 0 0;
+#X coords 0 1 21 0 50 50 1 0 0;
 #X restore 29 46 graph;
 #X obj 23 138 hradio 15 1 0 4 empty \$0-word empty 0 -8 0 10 -262144
--128992 -1 0;
+-128992 -1 2;
 #X obj 88 7 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
 #X obj 88 24 tgl 15 0 empty \$0-status-now empty 17 7 0 10 -262144
--1 -1 1 1;
+-1 -1 0 1;
 #X obj 88 482 s NOTE;
 #X obj 88 406 spigot;
 #X obj 7 420 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1 1
