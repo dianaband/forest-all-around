@@ -1,4 +1,4 @@
-#N canvas 285 25 623 470 10;
+#N canvas 285 89 623 470 10;
 #X obj 328 198 spigot;
 #X obj 377 183 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
@@ -67,7 +67,7 @@
 #X text 419 134 /id /pitch /velocity /onoff;
 #X text 11 442 <<<;
 #X text 581 442 >>>;
-#X text 292 283 * sub-patches;
+#X text 297 267 * sub-patches;
 #X floatatom 549 325 5 0 0 0 - - -;
 #X obj 549 347 s PS;
 #X obj 500 236 tgl 25 0 empty empty hello 32 7 0 15 -159808 -257985
@@ -224,7 +224,7 @@
 #X connect 25 0 22 0;
 #X connect 25 0 0 0;
 #X coords 0 244 1 243 200 200 0;
-#X restore 257 320 pd samplers;
+#X restore 62 424 pd samplers;
 #X text 109 24 * a wireless "field synth" - based on 'esp now' protocol
 ;
 #X msg 249 98 devicename /dev/ttyACM0 \, baud 57600 \, pollintervall
@@ -296,8 +296,8 @@
 #X connect 28 0 30 0;
 #X connect 29 0 27 0;
 #X coords 0 -1 1 1 110 170 1 130 220;
-#X restore 76 246 pd keyboard ctrlr;
-#N canvas 479 25 801 747 crickets 0;
+#X restore 62 244 pd keyboard ctrlr;
+#N canvas 479 89 801 747 crickets 0;
 #N canvas 1 89 356 384 saved 0;
 #N canvas 194 444 1133 383 roundly 0;
 #X msg 364 139 \$1 5000;
@@ -653,8 +653,9 @@ down.;
 #X obj 24 243 r BONGBONG;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array world_energy 20 float 3;
-#A 0 0.168094 0.199924 0.000181986 0.249905 2.94234e-07 0 0.099962
-0.199924 0 0 0.099962 0.249905 0.299886 0.199924 0 0 0 0 0 0;
+#A 0 0.0471927 0.19983 0.249788 0.249788 0.349703 0.249788 0.0999151
+0.19983 0.299745 0.19983 0.0999151 0.249788 0.299745 0.19983 0.19983
+0 0 0 0 0;
 #X coords 0 1 20 0 200 50 1 0 0;
 #X restore 15 36 graph;
 #X msg 24 452 \; world_energy \$2 \$1;
@@ -900,7 +901,7 @@ down.;
 #X obj 1065 188 s E_SEQ;
 #X msg 1167 66 \; we_sequence const 1;
 #X obj 794 138 hradio 10 1 0 20 empty empty empty 0 -8 0 10 -257985
--4160 -1 13;
+-4160 -1 2;
 #X obj 204 406 * 0.2;
 #X obj 384 406 * 0.25;
 #X obj 1104 406 * 0.1;
@@ -1216,22 +1217,25 @@ down.;
 #X obj 128 143 radio_alumi_A;
 #X obj 231 143 radio_alumi_B;
 #X obj 11 484 radio_tissue;
-#X restore 361 369 pd crickets;
+#X restore 371 319 pd crickets;
 #X msg 210 58 devicename /dev/tty.usbmodem32177401 \, baud 57600 \,
 pollintervall 1 \, verbose 1;
 #X obj 491 25 loadbang;
 #X obj 221 401 tgl 25 0 WORLD_SLEEP empty WORLD_SLEEP 27 7 0 14 -258113
 -262144 -258113 0 1;
 #X floatatom 221 380 5 0 0 1 WORLD_ENERGY WORLD_ENERGY -;
-#X obj 380 403 bng 25 250 50 0 ACT0 empty ACT0 27 7 0 15 -4034 -4160
+#X obj 381 401 bng 25 250 50 0 ACT0 empty ACT0 27 7 0 15 -4034 -4160
 -1;
-#X obj 222 263 tgl 25 0 ONOFF empty s:ONOFF 27 7 0 15 -4032 -159808
+#X obj 221 333 tgl 25 0 ONOFF empty s:ONOFF 27 7 0 15 -4032 -159808
 -1 0 1;
-#X msg 227 222 1;
+#X msg 221 310 1;
+#X obj 231 194 tgl 15 0 empty empty connected? 17 7 0 10 -262144 -1
+-1 0 1;
 #X connect 0 0 18 0;
 #X connect 1 0 0 1;
 #X connect 4 0 16 0;
 #X connect 5 0 10 0;
+#X connect 5 1 45 0;
 #X connect 6 0 5 1;
 #X connect 7 0 5 1;
 #X connect 8 0 5 0;
