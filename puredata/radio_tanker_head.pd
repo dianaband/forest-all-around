@@ -1,4 +1,4 @@
-#N canvas 186 86 400 493 10;
+#N canvas 186 95 400 493 10;
 #X msg 37 337 0;
 #X obj 249 306 loadbang;
 #X obj 231 406 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
@@ -10,12 +10,12 @@
 #X obj 251 429 v \$0-STATE;
 #X msg 164 44 1;
 #X obj 164 67 v \$0-STATE;
-#N canvas 747 89 533 644 world 0;
+#N canvas 747 95 533 644 world 0;
 #X floatatom 16 94 5 0 0 0 - - -;
 #X obj 16 293 t a b;
 #X obj 16 372 spigot;
 #X obj 67 357 tgl 15 0 empty empty free_:) 17 7 0 10 -262144 -1 -1
-1 1;
+0 1;
 #X obj 67 334 == 0;
 #X obj 16 316 sel 1;
 #X text 41 402 think;
@@ -41,17 +41,17 @@
 #X text 56 93 speed of happenings;
 #X text 69 210 world is quiet?;
 #X text 90 285 status of me;
-#X obj 147 329 tgl 15 0 empty empty busy. 17 7 0 10 -262144 -1 -1 0
+#X obj 147 329 tgl 15 0 empty empty busy. 17 7 0 10 -262144 -1 -1 1
 1;
 #X obj 16 451 abs;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array \$0-stress 100 float 2;
-#X coords 0 10 100 0 200 50 1 0 0;
+#X coords 0 100 100 0 200 150 1 0 0;
 #X restore 295 45 graph;
 #X obj 238 303 loadbang;
 #X text 78 227 condition of state change;
 #X obj 238 346 metro 100;
-#N canvas 1 89 319 212 (subpatch) 0;
+#N canvas 2 95 319 212 (subpatch) 0;
 #X obj 12 54 metro 100;
 #X obj 12 34 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1 1
 ;
@@ -74,7 +74,7 @@
 #X connect 6 0 1 0;
 #X connect 7 0 2 0;
 #X connect 9 0 7 0;
-#X restore 473 100 pd;
+#X restore 473 200 pd;
 #X obj 285 393 v \$0-STATE;
 #X obj 265 525 v \$0-STRESS;
 #X obj 238 601 v \$0-STRESS;
@@ -224,18 +224,21 @@
 #X connect 18 0 16 0;
 #X restore 48 226 pd expressions;
 #N canvas 0 23 450 278 (subpatch) 0;
-#X array tankerH 15 float 3;
-#A 0 -1.13333 -1.02856 -0.895231 -0.761898 -0.590471 -0.761899 -0.933326
--1.06666 -0.771422 -0.609519 -0.771422 -0.980946 -1.08571 -0.86666
--0.742851;
-#X coords 0 1 15 0 50 50 1 0 0;
+#X array tankerH 40 float 3;
+#A 0 0.590476 0.609524 0.628571 0.628571 0.628571 0.628571 0.590476
+0.542857 0.52381 0.485715 0.466667 0.476191 0.476191 0.495239 0.514286
+0.533334 0.542857 0.552381 0.552381 0.552381 0.561905 0.47619 -0.590472
+-0.599996 -0.590472 -0.571424 -0.552377 -0.542853 -0.533329 -0.533329
+-0.542853 -0.552377 -0.561901 -0.599996 -0.599996 -0.599996 -0.599996
+-0.590472 -0.571424 -0.552377;
+#X coords 0 1 40 0 50 50 1 0 0;
 #X restore 29 46 graph;
 #X obj 23 138 hradio 15 1 0 4 empty \$0-word empty 0 -8 0 10 -204786
--159808 -1 2;
+-159808 -1 0;
 #X obj 88 7 bng 15 250 50 0 empty empty empty 17 7 0 10 -204786 -159808
 -1;
 #X obj 88 24 tgl 15 0 empty \$0-status-now empty 17 7 0 10 -204786
--159808 -1 0 1;
+-159808 -1 1 1;
 #X obj 88 429 s NOTE;
 #X obj 88 406 spigot;
 #X obj 7 420 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1 1
@@ -248,7 +251,6 @@
 #X msg 249 329 tankerH;
 #X obj 269 352 bng 15 250 50 0 empty \$0-reload r:reload 17 7 0 10
 -262144 -1 -1;
-#X obj 264 68 loadbang;
 #X obj 264 111 metro 2000;
 #X obj 264 91 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
@@ -257,7 +259,8 @@
 #X obj 264 157 *;
 #X obj 264 180 v \$0-STRESS;
 #X obj 88 305 riff1 500 4001 800;
-#X connect 0 0 32 0;
+#X obj 264 58 loadbang;
+#X connect 0 0 31 0;
 #X connect 1 0 23 0;
 #X connect 2 0 5 0;
 #X connect 2 0 22 0;
@@ -265,21 +268,20 @@
 #X connect 5 0 6 0;
 #X connect 7 0 8 0;
 #X connect 9 0 4 0;
-#X connect 10 0 32 0;
+#X connect 10 0 31 0;
 #X connect 16 0 15 0;
 #X connect 17 0 16 1;
 #X connect 18 0 17 0;
 #X connect 19 0 7 0;
 #X connect 19 0 13 0;
 #X connect 20 0 10 0;
-#X connect 23 0 32 1;
+#X connect 23 0 31 1;
 #X connect 24 0 23 0;
-#X connect 25 0 27 0;
-#X connect 26 0 29 0;
-#X connect 27 0 26 0;
-#X connect 28 0 30 1;
+#X connect 25 0 28 0;
+#X connect 26 0 25 0;
+#X connect 27 0 29 1;
+#X connect 28 0 29 0;
 #X connect 29 0 30 0;
-#X connect 30 0 31 0;
-#X connect 32 0 16 0;
-#X connect 32 3 2 0;
+#X connect 31 0 16 0;
+#X connect 31 3 2 0;
 #X coords 0 -1 1 1 100 150 2 5 5;

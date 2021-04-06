@@ -1,4 +1,4 @@
-#N canvas 587 86 462 511 10;
+#N canvas 587 95 462 511 10;
 #X msg 37 337 0;
 #X obj 300 306 loadbang;
 #X obj 288 406 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
@@ -10,19 +10,19 @@
 #X obj 308 429 v \$0-STATE;
 #X msg 164 44 1;
 #X obj 164 67 v \$0-STATE;
-#N canvas 747 89 533 644 world 0;
+#N canvas 747 95 533 644 world 0;
 #X floatatom 16 94 5 0 0 0 - - -;
 #X obj 16 293 t a b;
 #X obj 16 372 spigot;
 #X obj 67 357 tgl 15 0 empty empty free_:) 17 7 0 10 -262144 -1 -1
-1 1;
+0 1;
 #X obj 67 334 == 0;
 #X obj 16 316 sel 1;
 #X text 41 402 think;
 #X obj 16 428 gauss 1 0;
 #X floatatom 16 474 5 0 0 0 - - -;
 #X obj 16 544 sel 1;
-#X obj 65 562 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 65 562 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
 #X floatatom 110 504 5 0 0 0 stress - -;
 #X obj 238 555 +;
@@ -41,12 +41,12 @@
 #X text 56 93 speed of happenings;
 #X text 69 210 world is quiet?;
 #X text 90 285 status of me;
-#X obj 147 329 tgl 15 0 empty empty busy. 17 7 0 10 -262144 -1 -1 0
+#X obj 147 329 tgl 15 0 empty empty busy. 17 7 0 10 -262144 -1 -1 1
 1;
 #X obj 16 451 abs;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array \$0-stress 100 float 2;
-#X coords 0 10 100 0 200 50 1 0 0;
+#X coords 0 100 100 0 200 150 1 0 0;
 #X restore 295 45 graph;
 #X obj 238 303 loadbang;
 #X text 78 227 condition of state change;
@@ -74,7 +74,7 @@
 #X connect 6 0 1 0;
 #X connect 7 0 2 0;
 #X connect 9 0 7 0;
-#X restore 473 100 pd;
+#X restore 473 200 pd;
 #X obj 285 393 v \$0-STATE;
 #X obj 265 525 v \$0-STRESS;
 #X obj 238 601 v \$0-STRESS;
@@ -222,7 +222,7 @@
 #X obj 88 7 bng 15 250 50 0 empty empty empty 17 7 0 10 -204786 -159808
 -1;
 #X obj 88 24 tgl 15 0 empty \$0-status-now empty 17 7 0 10 -204786
--159808 -1 0 1;
+-159808 -1 1 1;
 #X obj 88 429 s NOTE;
 #X obj 88 406 spigot;
 #X obj 7 420 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1 1
@@ -235,7 +235,6 @@
 #X obj 167 269 s TANKER_S;
 #X msg 300 329 tankerS;
 #X obj 288 452 s TANKER_S_DONE;
-#X obj 310 71 loadbang;
 #X obj 310 114 metro 2000;
 #X obj 310 94 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
@@ -244,7 +243,8 @@
 #X obj 310 160 *;
 #X obj 310 183 v \$0-STRESS;
 #X obj 85 306 riff1_random 20 1041 500 700;
-#X connect 0 0 32 0;
+#X obj 310 61 loadbang;
+#X connect 0 0 31 0;
 #X connect 1 0 23 0;
 #X connect 2 0 5 0;
 #X connect 2 0 24 0;
@@ -252,7 +252,7 @@
 #X connect 5 0 6 0;
 #X connect 7 0 8 0;
 #X connect 9 0 4 0;
-#X connect 10 0 32 0;
+#X connect 10 0 31 0;
 #X connect 16 0 15 0;
 #X connect 17 0 16 1;
 #X connect 18 0 17 0;
@@ -260,13 +260,12 @@
 #X connect 20 0 7 0;
 #X connect 20 0 13 0;
 #X connect 21 0 10 0;
-#X connect 23 0 32 1;
-#X connect 25 0 27 0;
-#X connect 26 0 29 0;
-#X connect 27 0 26 0;
-#X connect 28 0 30 1;
+#X connect 23 0 31 1;
+#X connect 25 0 28 0;
+#X connect 26 0 25 0;
+#X connect 27 0 29 1;
+#X connect 28 0 29 0;
 #X connect 29 0 30 0;
-#X connect 30 0 31 0;
-#X connect 32 0 16 0;
-#X connect 32 3 2 0;
+#X connect 31 0 16 0;
+#X connect 31 3 2 0;
 #X coords 0 -1 1 1 100 150 2 5 5;

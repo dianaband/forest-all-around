@@ -10,7 +10,7 @@
 #X obj 308 429 v \$0-STATE;
 #X msg 164 44 1;
 #X obj 164 67 v \$0-STATE;
-#N canvas 747 89 533 644 world 0;
+#N canvas 747 95 533 644 world 0;
 #X floatatom 16 94 5 0 0 0 - - -;
 #X obj 16 293 t a b;
 #X obj 16 372 spigot;
@@ -46,7 +46,7 @@
 #X obj 16 451 abs;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array \$0-stress 100 float 2;
-#X coords 0 10 100 0 200 50 1 0 0;
+#X coords 0 100 100 0 200 150 1 0 0;
 #X restore 295 45 graph;
 #X obj 238 303 loadbang;
 #X text 78 227 condition of state change;
@@ -74,7 +74,7 @@
 #X connect 6 0 1 0;
 #X connect 7 0 2 0;
 #X connect 9 0 7 0;
-#X restore 473 100 pd;
+#X restore 473 200 pd;
 #X obj 285 393 v \$0-STATE;
 #X obj 265 525 v \$0-STRESS;
 #X obj 238 601 v \$0-STRESS;
@@ -255,15 +255,14 @@
 #X restore 48 226 pd expressions;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array drummerA 30 float 3;
-#A 0 0.628571 0.00952381 0.00952381 0.00952381 0.733333 0.00952381
--0.00952381 -0.00952381 -0.00952381 -0.00952381 -0.00952381 -0.00952381
--0.00952381 0.647619 -0.00952381 -0.00952381 -0.00952381 0 0.761905
--0.00634921 -0.0031746 0 0.0031746 0.438095 0.00952381 0.00952381 0.00952381
-0.00952381 0.723809 0.00952381;
+#A 0 0.180952 0.161905 0.161905 0.161905 0.161905 0.161905 0.161905
+0.161905 0.161905 0.161905 0.161905 0.161905 0.161905 0.161905 0.152381
+0.152381 0.152381 0.152381 0.152381 0.152381 0.152381 0.152381 0.152381
+0.152381 0.152381 0.152381 0.152381 0.152381 0.152381 0.152381;
 #X coords 0 1 30 0 25 25 1 0 0;
 #X restore 29 50 graph;
 #X obj 21 138 hradio 15 1 0 4 empty \$0-word empty 0 -8 0 10 -203904
--260097 -1 1;
+-260097 -1 3;
 #X obj 88 7 bng 15 250 50 0 empty empty empty 17 7 0 10 -203904 -1
 -1;
 #X obj 88 24 tgl 15 0 empty \$0-status-now empty 17 7 0 10 -203904
@@ -277,9 +276,10 @@
 #X obj 275 78 s DRUMMER;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array drummerB 30 float 3;
-#A 0 0.52381 0.342857 -0.00952381 -0.00952381 0 0 0 0.00952381 0.838095
-0.419048 0 0 0 0.561905 0.361905 0 0 0 0 0 0 0.733333 0.333333 0 0
-0 0.47619 0.295238 0.00952381 0.00952381;
+#A 0 1.78814e-07 1.78814e-07 0.628571 0.00952393 0.00952393 0.00952393
+0.00952393 1.78814e-07 1.78814e-07 1.78814e-07 0.67619 0.00952375 0.00952375
+0.00952375 0.00952375 0 0 0 0 0.638095 0 0 0 0 0 0.638095 -0.00952357
+-0.00952357 -0.00952357 -0.00952357;
 #X coords 0 1 30 0 25 25 1 0 0;
 #X restore 29 100 graph;
 #X msg 316 329 drummerA;
@@ -294,14 +294,13 @@
 -262144 -1 -1;
 #X msg 726 329 drummerB;
 #X obj 88 466 s NOTE;
-#X obj 221 428 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 221 428 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
 #X obj 88 443 spigot;
 #X obj 498 466 s NOTE;
-#X obj 631 428 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 631 428 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
 #X obj 498 443 spigot;
-#X obj 637 63 loadbang;
 #X obj 637 106 metro 2000;
 #X obj 637 86 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
@@ -313,7 +312,8 @@
 #X obj 631 405 > 1;
 #X obj 88 306 riff1_random 40 1031 600 1000;
 #X obj 498 306 riff1_random 90 1032 600 1000;
-#X connect 0 0 46 0;
+#X obj 637 53 loadbang;
+#X connect 0 0 45 0;
 #X connect 1 0 22 0;
 #X connect 2 0 5 0;
 #X connect 2 0 19 0;
@@ -321,37 +321,36 @@
 #X connect 5 0 6 0;
 #X connect 7 0 8 0;
 #X connect 9 0 4 0;
+#X connect 10 0 45 0;
 #X connect 10 0 46 0;
-#X connect 10 0 47 0;
 #X connect 15 0 33 0;
 #X connect 16 0 15 1;
 #X connect 16 0 28 1;
 #X connect 17 0 16 0;
 #X connect 18 0 10 0;
-#X connect 22 0 46 1;
+#X connect 22 0 45 1;
 #X connect 23 0 7 0;
 #X connect 23 0 13 0;
 #X connect 24 0 22 0;
-#X connect 25 0 47 0;
+#X connect 25 0 46 0;
 #X connect 26 0 30 0;
 #X connect 28 0 36 0;
 #X connect 29 0 30 0;
-#X connect 30 0 47 1;
+#X connect 30 0 46 1;
 #X connect 32 0 33 1;
 #X connect 33 0 31 0;
 #X connect 35 0 36 1;
 #X connect 36 0 34 0;
-#X connect 37 0 39 0;
-#X connect 38 0 41 0;
-#X connect 39 0 38 0;
-#X connect 40 0 42 1;
+#X connect 37 0 40 0;
+#X connect 38 0 37 0;
+#X connect 39 0 41 1;
+#X connect 40 0 41 0;
 #X connect 41 0 42 0;
-#X connect 42 0 43 0;
-#X connect 44 0 32 0;
-#X connect 45 0 35 0;
-#X connect 46 0 15 0;
+#X connect 43 0 32 0;
+#X connect 44 0 35 0;
+#X connect 45 0 15 0;
+#X connect 45 2 43 0;
+#X connect 45 3 2 0;
+#X connect 46 0 28 0;
 #X connect 46 2 44 0;
-#X connect 46 3 2 0;
-#X connect 47 0 28 0;
-#X connect 47 2 45 0;
 #X coords 0 -1 1 1 100 150 2 5 5;
