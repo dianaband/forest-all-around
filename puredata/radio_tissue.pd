@@ -18,7 +18,7 @@
 #X obj 16 428 gauss 1 0;
 #X floatatom 16 474 5 0 0 0 - - -;
 #X obj 16 544 sel 1;
-#X obj 65 562 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X obj 65 562 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X floatatom 110 504 5 0 0 0 stress - -;
 #X obj 238 555 +;
@@ -89,9 +89,9 @@
 #X obj 49 66 tgl 15 0 empty ONOFF r:ONOFF 17 7 0 10 -262144 -1 -1 0
 1;
 #X obj 16 114 resample 100;
-#X msg 285 439 0.1;
 #X msg 304 462 -0.05;
 #X obj 16 210 < 0.57;
+#X msg 285 439 0.2;
 #X connect 0 0 48 0;
 #X connect 1 0 5 0;
 #X connect 1 1 36 0;
@@ -111,11 +111,11 @@
 #X connect 16 0 9 0;
 #X connect 16 0 10 0;
 #X connect 17 0 20 0;
-#X connect 17 0 51 0;
+#X connect 17 0 50 0;
 #X connect 18 0 15 0;
 #X connect 18 1 33 0;
-#X connect 19 0 49 0;
-#X connect 19 1 50 0;
+#X connect 19 0 51 0;
+#X connect 19 1 49 0;
 #X connect 21 0 11 0;
 #X connect 21 0 35 0;
 #X connect 27 0 8 0;
@@ -134,8 +134,8 @@
 #X connect 47 0 46 1;
 #X connect 48 0 17 0;
 #X connect 49 0 15 0;
-#X connect 50 0 15 0;
-#X connect 51 0 1 0;
+#X connect 50 0 1 0;
+#X connect 51 0 15 0;
 #X restore 267 79 pd world and me;
 #N canvas 510 168 691 645 expressions 0;
 #X obj 28 419 inlet;

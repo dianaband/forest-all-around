@@ -15,7 +15,7 @@
 #X obj 16 293 t a b;
 #X obj 16 372 spigot;
 #X obj 67 357 tgl 15 0 empty empty free_:) 17 7 0 10 -262144 -1 -1
-0 1;
+1 1;
 #X obj 67 334 == 0;
 #X obj 16 316 sel 1;
 #X text 41 402 think;
@@ -41,7 +41,7 @@
 #X text 56 93 speed of happenings;
 #X text 69 210 world is quiet?;
 #X text 90 285 status of me;
-#X obj 147 329 tgl 15 0 empty empty busy. 17 7 0 10 -262144 -1 -1 1
+#X obj 147 329 tgl 15 0 empty empty busy. 17 7 0 10 -262144 -1 -1 0
 1;
 #X obj 16 451 abs;
 #N canvas 0 50 450 250 (subpatch) 0;
@@ -93,9 +93,9 @@
 #X obj 43 66 tgl 15 0 empty ONOFF r:ONOFF 17 7 0 10 -262144 -1 -1 0
 1;
 #X obj 16 114 resample 100;
-#X msg 285 436 0.1;
 #X msg 304 462 -0.05;
 #X obj 16 210 < 0.63;
+#X msg 285 436 0.2;
 #X connect 0 0 48 0;
 #X connect 1 0 5 0;
 #X connect 1 1 36 0;
@@ -115,11 +115,11 @@
 #X connect 16 0 9 0;
 #X connect 16 0 10 0;
 #X connect 17 0 20 0;
-#X connect 17 0 51 0;
+#X connect 17 0 50 0;
 #X connect 18 0 15 0;
 #X connect 18 1 33 0;
-#X connect 19 0 49 0;
-#X connect 19 1 50 0;
+#X connect 19 0 51 0;
+#X connect 19 1 49 0;
 #X connect 21 0 11 0;
 #X connect 21 0 35 0;
 #X connect 27 0 8 0;
@@ -138,8 +138,8 @@
 #X connect 47 0 46 1;
 #X connect 48 0 17 0;
 #X connect 49 0 15 0;
-#X connect 50 0 15 0;
-#X connect 51 0 1 0;
+#X connect 50 0 1 0;
+#X connect 51 0 15 0;
 #X restore 267 79 pd world and me;
 #N canvas 202 79 809 655 expressions 0;
 #X obj 28 419 inlet;
@@ -380,7 +380,7 @@
 #X coords 0 1 100 0 25 25 1 0 0;
 #X restore 26 96 graph;
 #X obj 88 24 tgl 15 0 empty \$0-status-now empty 17 7 0 10 -204786
--1 -1 1 1;
+-1 -1 0 1;
 #X obj 114 21 r SUITCASE;
 #X obj 48 188 r SUITCASE;
 #X obj 267 122 s SUITCASE;

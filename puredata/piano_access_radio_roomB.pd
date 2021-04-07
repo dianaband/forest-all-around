@@ -297,7 +297,7 @@
 #X connect 29 0 27 0;
 #X coords 0 -1 1 1 110 170 1 130 220;
 #X restore 62 244 pd keyboard ctrlr;
-#N canvas 479 25 801 747 crickets 1;
+#N canvas 479 25 801 747 crickets 0;
 #X obj 45 28 cnv 15 700 700 empty empty empty 20 12 0 14 -233017 -66577
 0;
 #N canvas 84 25 1196 747 (subpatch) 0;
@@ -305,9 +305,9 @@
 #X obj 24 243 r BONGBONG;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array world_energy 20 float 3;
-#A 0 2.42967e-05 0.199924 0.0001829 0 0 0.349687 1.08309e-09 0.0197511
-0 5.925e-35 2.01744e-21 0.249905 2.62778e-15 9.04983e-15 0 0 0 0 0
-0;
+#A 0 0.199924 1.06111e-08 0.249905 3.03309e-30 0 4.77619e-13 0.0999365
+3.27876e-21 7.97657e-18 1.59528e-34 1.01127e-36 1.74349e-10 0.123003
+5.25672e-22 3.05661e-13 0 0 0 0 0;
 #X coords 0 1 20 0 200 50 1 0 0;
 #X restore 15 36 graph;
 #X msg 24 452 \; world_energy \$2 \$1;
@@ -553,7 +553,7 @@
 #X obj 1065 188 s E_SEQ;
 #X msg 1167 66 \; we_sequence const 1;
 #X obj 794 136 hradio 10 1 0 20 empty empty empty 0 -8 0 10 -257985
--4160 -1 4;
+-4160 -1 14;
 #X obj 204 406 * 0.2;
 #X obj 384 406 * 0.25;
 #X obj 1104 406 * 0.1;
