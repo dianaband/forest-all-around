@@ -15,14 +15,14 @@
 #X obj 16 293 t a b;
 #X obj 16 372 spigot;
 #X obj 67 357 tgl 15 0 empty empty free_:) 17 7 0 10 -262144 -1 -1
-0 1;
+1 1;
 #X obj 67 334 == 0;
 #X obj 16 316 sel 1;
 #X text 41 402 think;
 #X obj 16 428 gauss 1 0;
 #X floatatom 16 474 5 0 0 0 - - -;
 #X obj 16 544 sel 1;
-#X obj 65 562 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X obj 65 562 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X floatatom 110 504 5 0 0 0 stress - -;
 #X obj 238 555 +;
@@ -41,7 +41,7 @@
 #X text 56 93 speed of happenings;
 #X text 69 210 world is quiet?;
 #X text 90 285 status of me;
-#X obj 147 329 tgl 15 0 empty empty busy. 17 7 0 10 -262144 -1 -1 1
+#X obj 147 329 tgl 15 0 empty empty busy. 17 7 0 10 -262144 -1 -1 0
 1;
 #X obj 16 451 abs;
 #N canvas 0 50 450 250 (subpatch) 0;
@@ -255,18 +255,18 @@
 #X restore 48 226 pd expressions;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array drummerA 30 float 3;
-#A 0 0.095238 0.133333 0.12381 0.200001 0.304763 0.190477 0.24762 0.380954
-0.238096 0.0476186 0.0666664 0.24762 0.180953 0.285714 0.171429 0.180953
-0.228572 0.295239 0.419048 0.12381 0.24762 0.161905 0.361906 0.314287
-0.37143 0.180953 0.257144 0.104762 0.0666664 0.266668;
+#A 0 0.180952 0.161905 0.161905 0.161905 0.161905 0.161905 0.161905
+0.161905 0.161905 0.161905 0.161905 0.161905 0.161905 0.161905 0.152381
+0.152381 0.152381 0.152381 0.152381 0.152381 0.152381 0.152381 0.152381
+0.152381 0.152381 0.152381 0.152381 0.152381 0.152381 0.152381;
 #X coords 0 1 30 0 25 25 1 0 0;
 #X restore 29 50 graph;
 #X obj 21 138 hradio 15 1 0 4 empty \$0-word empty 0 -8 0 10 -203904
--260097 -1 2;
+-260097 -1 3;
 #X obj 88 7 bng 15 250 50 0 empty empty empty 17 7 0 10 -203904 -1
 -1;
 #X obj 88 24 tgl 15 0 empty \$0-status-now empty 17 7 0 10 -203904
--1 -1 1 1;
+-1 -1 0 1;
 #X obj 88 406 spigot;
 #X obj 397 460 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
@@ -276,9 +276,9 @@
 #X obj 275 78 s DRUMMER;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array drummerB 30 float 3;
-#A 0 1.78814e-07 1.78814e-07 0.00952393 0.00952393 0.00952393 0.00952393
-0.00952393 1.78814e-07 1.78814e-07 1.78814e-07 0.00952375 0.00952375
-0.00952375 0.00952375 0.00952375 0 0 0 0 0 0 0 0 0 0 -0.00952357 -0.00952357
+#A 0 1.78814e-07 1.78814e-07 0.628571 0.00952393 0.00952393 0.00952393
+0.00952393 1.78814e-07 1.78814e-07 1.78814e-07 0.67619 0.00952375 0.00952375
+0.00952375 0.00952375 0 0 0 0 0.638095 0 0 0 0 0 0.638095 -0.00952357
 -0.00952357 -0.00952357 -0.00952357;
 #X coords 0 1 30 0 25 25 1 0 0;
 #X restore 29 100 graph;
@@ -301,19 +301,16 @@
 #X obj 631 428 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X obj 498 443 spigot;
-#X obj 637 106 metro 2000;
-#X obj 637 86 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
-#X obj 712 134 r E_SEQ;
-#X obj 637 129 v \$0-STRESS;
-#X obj 637 152 *;
-#X obj 637 175 v \$0-STRESS;
 #X obj 221 405 > 1;
 #X obj 631 405 > 1;
 #X obj 88 306 riff1_random 40 1031 600 1000;
 #X obj 498 306 riff1_random 90 1032 600 1000;
-#X obj 637 53 loadbang;
-#X connect 0 0 45 0;
+#X obj 473 137 v \$0-STRESS;
+#X obj 473 183 v \$0-STRESS;
+#X obj 473 117 bng 15 250 50 0 empty WORLD_evt_half r:WORLD_evt_half
+17 7 0 10 -262144 -1 -1;
+#X obj 473 160 * 0.5;
+#X connect 0 0 39 0;
 #X connect 1 0 22 0;
 #X connect 2 0 5 0;
 #X connect 2 0 19 0;
@@ -321,36 +318,34 @@
 #X connect 5 0 6 0;
 #X connect 7 0 8 0;
 #X connect 9 0 4 0;
-#X connect 10 0 45 0;
-#X connect 10 0 46 0;
+#X connect 10 0 39 0;
+#X connect 10 0 40 0;
 #X connect 15 0 33 0;
 #X connect 16 0 15 1;
 #X connect 16 0 28 1;
 #X connect 17 0 16 0;
 #X connect 18 0 10 0;
-#X connect 22 0 45 1;
+#X connect 22 0 39 1;
 #X connect 23 0 7 0;
 #X connect 23 0 13 0;
 #X connect 24 0 22 0;
-#X connect 25 0 46 0;
+#X connect 25 0 40 0;
 #X connect 26 0 30 0;
 #X connect 28 0 36 0;
 #X connect 29 0 30 0;
-#X connect 30 0 46 1;
+#X connect 30 0 40 1;
 #X connect 32 0 33 1;
 #X connect 33 0 31 0;
 #X connect 35 0 36 1;
 #X connect 36 0 34 0;
-#X connect 37 0 40 0;
-#X connect 38 0 37 0;
-#X connect 39 0 41 1;
-#X connect 40 0 41 0;
-#X connect 41 0 42 0;
-#X connect 43 0 32 0;
-#X connect 44 0 35 0;
-#X connect 45 0 15 0;
-#X connect 45 2 43 0;
-#X connect 45 3 2 0;
-#X connect 46 0 28 0;
-#X connect 46 2 44 0;
+#X connect 37 0 32 0;
+#X connect 38 0 35 0;
+#X connect 39 0 15 0;
+#X connect 39 2 37 0;
+#X connect 39 3 2 0;
+#X connect 40 0 28 0;
+#X connect 40 2 38 0;
+#X connect 41 0 44 0;
+#X connect 43 0 41 0;
+#X connect 44 0 42 0;
 #X coords 0 -1 1 1 100 150 2 5 5;

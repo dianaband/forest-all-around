@@ -22,7 +22,7 @@
 #X obj 16 428 gauss 1 0;
 #X floatatom 16 474 5 0 0 0 - - -;
 #X obj 16 544 sel 1;
-#X obj 65 562 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X obj 65 562 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X floatatom 110 504 5 0 0 0 stress - -;
 #X obj 238 555 +;
@@ -208,14 +208,15 @@
 #X connect 16 0 14 0;
 #X restore 48 226 pd expressions;
 #N canvas 0 23 450 278 (subpatch) 0;
-#X array tankerS 16 float 3;
-#A 0 0.819047 0.771428 0.752381 2.74181e-06 0.00952315 0.00952315 0.638096
-0.666667 0.8 0.942857 0.161907 0.019051 0.866666 0.428573 0.342856
-0.257142;
-#X coords 0 1 16 0 50 50 1 0 0;
+#X array tankerS 25 float 3;
+#A 0 1.30476 0.0857143 1.31428 1.31428 1.31428 0.00952381 1.30476 1.31428
+1.31428 1.31428 1.31428 0.12381 1.31428 1.31428 1.31428 0.00952381
+1.30476 0.0857143 1.30476 0.0952381 1.30476 1.30476 0.171429 1.30476
+1.30476;
+#X coords 0 1 25 0 50 50 1 0 0;
 #X restore 29 46 graph;
 #X obj 23 138 hradio 15 1 0 4 empty \$0-word empty 0 -8 0 10 -204786
--159808 -1 1;
+-159808 -1 2;
 #X obj 88 7 bng 15 250 50 0 empty empty empty 17 7 0 10 -204786 -159808
 -1;
 #X obj 88 24 tgl 15 0 empty \$0-status-now empty 17 7 0 10 -204786
@@ -232,16 +233,13 @@
 #X obj 167 269 s TANKER_S;
 #X msg 300 329 tankerS;
 #X obj 288 452 s TANKER_S_DONE;
-#X obj 310 114 metro 2000;
-#X obj 310 94 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
-#X obj 385 142 r E_SEQ;
-#X obj 310 137 v \$0-STRESS;
-#X obj 310 160 *;
-#X obj 310 183 v \$0-STRESS;
 #X obj 85 306 riff1_random 20 1041 500 700;
-#X obj 310 61 loadbang;
-#X connect 0 0 31 0;
+#X obj 317 129 v \$0-STRESS;
+#X obj 317 175 v \$0-STRESS;
+#X obj 317 109 bng 15 250 50 0 empty WORLD_evt_half r:WORLD_evt_half
+17 7 0 10 -262144 -1 -1;
+#X obj 317 152 * 0.5;
+#X connect 0 0 25 0;
 #X connect 1 0 23 0;
 #X connect 2 0 5 0;
 #X connect 2 0 24 0;
@@ -249,7 +247,7 @@
 #X connect 5 0 6 0;
 #X connect 7 0 8 0;
 #X connect 9 0 4 0;
-#X connect 10 0 31 0;
+#X connect 10 0 25 0;
 #X connect 16 0 15 0;
 #X connect 17 0 16 1;
 #X connect 18 0 17 0;
@@ -257,12 +255,10 @@
 #X connect 20 0 7 0;
 #X connect 20 0 13 0;
 #X connect 21 0 10 0;
-#X connect 23 0 31 1;
-#X connect 25 0 28 0;
-#X connect 26 0 25 0;
-#X connect 27 0 29 1;
-#X connect 28 0 29 0;
-#X connect 29 0 30 0;
-#X connect 31 0 16 0;
-#X connect 31 3 2 0;
+#X connect 23 0 25 1;
+#X connect 25 0 16 0;
+#X connect 25 3 2 0;
+#X connect 26 0 29 0;
+#X connect 28 0 26 0;
+#X connect 29 0 27 0;
 #X coords 0 -1 1 1 100 150 2 5 5;

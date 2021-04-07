@@ -239,16 +239,13 @@
 #X obj 7 397 loadbang;
 #X obj 339 346 bng 15 250 50 0 empty \$0-reload r:reload 17 7 0 10
 -262144 -1 -1;
-#X obj 280 98 metro 2000;
-#X obj 280 78 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
-#X obj 355 126 r E_SEQ;
-#X obj 280 121 v \$0-STRESS;
-#X obj 280 144 *;
-#X obj 280 167 v \$0-STRESS;
 #X obj 89 307 riff1_random 700 4403 700 1000;
-#X obj 280 45 loadbang;
-#X connect 0 0 31 0;
+#X obj 282 108 v \$0-STRESS;
+#X obj 282 154 v \$0-STRESS;
+#X obj 282 88 bng 15 250 50 0 empty WORLD_evt_half r:WORLD_evt_half
+17 7 0 10 -262144 -1 -1;
+#X obj 282 131 * 0.5;
+#X connect 0 0 25 0;
 #X connect 1 0 19 0;
 #X connect 2 0 5 0;
 #X connect 2 0 17 0;
@@ -256,20 +253,18 @@
 #X connect 5 0 6 0;
 #X connect 7 0 8 0;
 #X connect 9 0 4 0;
-#X connect 10 0 31 0;
+#X connect 10 0 25 0;
 #X connect 14 0 7 0;
 #X connect 14 0 13 0;
 #X connect 15 0 10 0;
-#X connect 19 0 31 1;
+#X connect 19 0 25 1;
 #X connect 21 0 20 0;
 #X connect 22 0 21 1;
 #X connect 23 0 22 0;
 #X connect 24 0 19 0;
-#X connect 25 0 28 0;
-#X connect 26 0 25 0;
-#X connect 27 0 29 1;
-#X connect 28 0 29 0;
-#X connect 29 0 30 0;
-#X connect 31 0 21 0;
-#X connect 31 3 2 0;
+#X connect 25 0 21 0;
+#X connect 25 3 2 0;
+#X connect 26 0 29 0;
+#X connect 28 0 26 0;
+#X connect 29 0 27 0;
 #X coords 0 -1 1 1 100 150 2 5 5;
