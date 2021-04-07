@@ -1,4 +1,4 @@
-#N canvas 2 95 623 470 10;
+#N canvas 85 25 623 470 10;
 #X obj 328 198 spigot;
 #X obj 377 183 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
@@ -297,17 +297,17 @@
 #X connect 29 0 27 0;
 #X coords 0 -1 1 1 110 170 1 130 220;
 #X restore 62 244 pd keyboard ctrlr;
-#N canvas 637 95 801 747 crickets 0;
+#N canvas 479 25 801 747 crickets 1;
 #X obj 45 28 cnv 15 700 700 empty empty empty 20 12 0 14 -233017 -66577
 0;
-#N canvas 95 95 1196 747 (subpatch) 0;
+#N canvas 84 25 1196 747 (subpatch) 0;
 #X obj 74 266 r BONGBONG_DONE;
 #X obj 24 243 r BONGBONG;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array world_energy 20 float 3;
-#A 0 1.00132e-14 8.22265e-09 8.76653e-16 0 6.58564e-08 1.40888e-07
-3.79563e-15 0 7.64929e-06 1.1023e-06 1.87028e-24 5.01252e-13 8.60995e-21
-0.199924 1.41227e-10 0 0 0 0 0;
+#A 0 2.42967e-05 0.199924 0.0001829 0 0 0.349687 1.08309e-09 0.0197511
+0 5.925e-35 2.01744e-21 0.249905 2.62778e-15 9.04983e-15 0 0 0 0 0
+0;
 #X coords 0 1 20 0 200 50 1 0 0;
 #X restore 15 36 graph;
 #X msg 24 452 \; world_energy \$2 \$1;
@@ -553,7 +553,7 @@
 #X obj 1065 188 s E_SEQ;
 #X msg 1167 66 \; we_sequence const 1;
 #X obj 794 136 hradio 10 1 0 20 empty empty empty 0 -8 0 10 -257985
--4160 -1 0;
+-4160 -1 4;
 #X obj 204 406 * 0.2;
 #X obj 384 406 * 0.25;
 #X obj 1104 406 * 0.1;
@@ -602,6 +602,7 @@
 #X floatatom 700 193 5 0 0 0 - - -;
 #X msg 700 151 \$1 10000;
 #X obj 924 406 * 0.35;
+#X obj 700 213 s E_SEQ_line;
 #X connect 0 0 17 0;
 #X connect 1 0 16 0;
 #X connect 4 0 3 0;
@@ -853,6 +854,7 @@
 #X connect 253 0 188 0;
 #X connect 254 0 255 0;
 #X connect 255 0 218 1;
+#X connect 255 0 258 0;
 #X connect 256 0 254 0;
 #X connect 257 0 68 0;
 #X coords 0 -1 1 1 220 100 1 5 5;
@@ -1223,6 +1225,7 @@ down.;
 #X connect 1 0 4 0;
 #X connect 4 0 3 0;
 #X restore 7 112 pd saved energy;
+#X floatatom 307 9 5 0 0 0 r:E_SEQ_line E_SEQ_line -;
 #X restore 371 319 pd crickets;
 #X msg 210 58 devicename /dev/tty.usbmodem32177401 \, baud 57600 \,
 pollintervall 1 \, verbose 1;
@@ -1236,7 +1239,7 @@ pollintervall 1 \, verbose 1;
 -1 0 1;
 #X msg 221 310 1;
 #X obj 231 194 tgl 15 0 empty empty connected? 17 7 0 10 -262144 -1
--1 0 1;
+-1 1 1;
 #X connect 0 0 18 0;
 #X connect 1 0 0 1;
 #X connect 4 0 16 0;
