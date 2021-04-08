@@ -7,14 +7,14 @@
 #X obj 164 21 r BONGBONG;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array bongbong 10 float 3;
-#A 0 -0.771422 -0.390472 -0.390472 0.0761905 -0.399996 -0.504758 -0.476186
--0.457139 -0.438091 -0.48571;
+#A 0 1.01905 1.03809 1.05714 0.990476 0.952381 0.933334 0.904762 0.819048
+0.838095 0.857143;
 #X coords 0 1 10 0 50 50 1 0 0;
 #X restore 30 32 graph;
 #X obj 88 8 bng 15 250 50 0 empty empty empty 17 7 0 10 -261682 -1
 -1;
 #X obj 25 85 hradio 15 1 0 4 empty \$0-word empty 0 -8 0 10 -261682
--4034 -1 2;
+-4034 -1 0;
 #X text 35 318 stop!;
 #X obj 88 306 riff1 800 4100 400;
 #X obj 88 25 tgl 15 0 empty \$0-status-now empty 17 7 0 10 -261682
@@ -36,7 +36,7 @@
 #X obj 16 428 gauss 1 0;
 #X floatatom 16 474 5 0 0 0 - - -;
 #X obj 16 544 sel 1;
-#X obj 65 562 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X obj 65 562 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X floatatom 110 504 5 0 0 0 stress - -;
 #X obj 238 555 +;
@@ -280,7 +280,6 @@
 #X obj 317 129 v \$0-STRESS;
 #X obj 317 175 v \$0-STRESS;
 #X obj 231 426 v \$0-STATE;
-#X obj 326 427 == 0;
 #X obj 326 448 sel 1;
 #X obj 231 406 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
@@ -300,14 +299,17 @@
 #X obj 317 109 bng 15 250 50 0 empty WORLD_evt_half r:WORLD_evt_half
 17 7 0 10 -262144 -1 -1;
 #X obj 317 152 * 0.5;
+#X obj 326 427 <= 0;
+#X msg 289 518 0;
 #X connect 0 0 9 0;
 #X connect 1 0 3 0;
 #X connect 2 0 17 0;
+#X connect 2 0 41 0;
 #X connect 3 0 9 1;
 #X connect 4 0 6 0;
-#X connect 4 0 37 0;
+#X connect 4 0 36 0;
 #X connect 9 0 19 0;
-#X connect 9 3 27 0;
+#X connect 9 3 26 0;
 #X connect 11 0 12 0;
 #X connect 13 0 16 0;
 #X connect 15 0 11 0;
@@ -315,21 +317,22 @@
 #X connect 19 0 18 0;
 #X connect 20 0 19 1;
 #X connect 21 0 20 0;
-#X connect 22 0 40 0;
-#X connect 24 0 28 0;
-#X connect 25 0 26 0;
-#X connect 26 0 2 0;
-#X connect 26 1 38 0;
-#X connect 27 0 24 0;
-#X connect 28 0 30 0;
-#X connect 29 0 25 0;
-#X connect 29 0 34 0;
-#X connect 30 0 29 0;
-#X connect 30 1 29 0;
-#X connect 31 0 32 0;
-#X connect 33 0 16 0;
-#X connect 37 0 14 0;
-#X connect 38 0 35 0;
-#X connect 39 0 22 0;
-#X connect 40 0 23 0;
+#X connect 22 0 39 0;
+#X connect 24 0 27 0;
+#X connect 25 0 2 0;
+#X connect 25 1 37 0;
+#X connect 26 0 24 0;
+#X connect 27 0 29 0;
+#X connect 28 0 33 0;
+#X connect 28 0 40 0;
+#X connect 29 0 28 0;
+#X connect 29 1 28 0;
+#X connect 30 0 31 0;
+#X connect 32 0 16 0;
+#X connect 36 0 14 0;
+#X connect 37 0 34 0;
+#X connect 38 0 22 0;
+#X connect 39 0 23 0;
+#X connect 40 0 25 0;
+#X connect 41 0 28 0;
 #X coords 0 -1 1 1 100 100 2 5 5;
