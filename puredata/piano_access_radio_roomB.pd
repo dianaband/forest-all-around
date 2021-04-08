@@ -300,14 +300,14 @@
 #N canvas 479 25 801 747 crickets 1;
 #X obj 45 28 cnv 15 700 700 empty empty empty 20 12 0 14 -233017 -66577
 0;
-#N canvas 84 25 1196 747 (subpatch) 1;
+#N canvas 84 470 1196 747 (subpatch) 0;
 #X obj 74 266 r BONGBONG_DONE;
 #X obj 24 243 r BONGBONG;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array world_energy 20 float 3;
-#A 0 4.79672e-09 0.100207 6.61801e-21 0.299886 5.67365e-07 4.01701e-34
-6.6049e-05 7.95898e-16 0 0 1.69711e-09 2.59569e-18 6.47671e-32 3.15304e-21
-9.83504e-15 0 0 0 0 0;
+#A 0 0 0.0013835 0.249905 0.00207525 0.00242112 0.349867 0.000691749
+0.199924 2.61207e-07 1.33918e-07 0.0218682 0.000969789 5.20489e-09
+6.10381e-06 0.000732741 0 0 0 0 0;
 #X coords 0 1 20 0 200 50 1 0 0;
 #X restore 15 36 graph;
 #X msg 24 452 \; world_energy \$2 \$1;
@@ -553,7 +553,7 @@
 #X obj 1065 188 s E_SEQ;
 #X msg 1167 66 \; we_sequence const 1;
 #X obj 764 136 hradio 10 1 0 20 empty empty empty 0 -8 0 10 -257985
--4160 -1 6;
+-4160 -1 4;
 #X obj 204 406 * 0.2;
 #X obj 384 406 * 0.25;
 #X obj 1104 406 * 0.1;
@@ -573,8 +573,8 @@
 #X restore 195 141 graph;
 #X restore 137 152 pd backup sequences;
 #X obj 448 204 +;
-#X obj 270 189 tgl 15 0 empty WORLD_SLEEP set_to_stop_the_world 17
-7 0 10 -262144 -1 -1 0 1;
+#X obj 270 189 tgl 15 0 empty WORLD_SLEEP r:WORLD_SLEEP 17 7 0 10 -262144
+-1 -1 0 1;
 #X obj 1114 676 * 0.2;
 #X obj 754 676 * 0.25;
 #X obj 574 676 * 0.1;
@@ -605,10 +605,36 @@
 #X obj 700 213 s E_SEQ_line;
 #X obj 937 210 bng 15 250 50 0 WORLD_evt_half empty s:WORLD_evt_half
 17 7 0 10 -262144 -1 -1;
-#X obj 778 178 bng 25 250 50 0 ACT0 empty ACT0 27 7 0 15 -4034 -4160
--1;
 #X obj 937 189 sel 12 19;
-#X obj 863 200 sel 5;
+#X obj 829 177 sel 5;
+#X text 247 211 set 1 to stop the world;
+#N canvas 85 472 450 300 ACT0 0;
+#X obj 8 27 bng 25 250 50 0 ACT0 empty ACT0 27 7 0 15 -4034 -4160 -1
+;
+#X obj 151 89 tgl 15 0 empty WORLD_SLEEP r:WORLD_SLEEP 17 7 0 10 -262144
+-1 -1 0 1;
+#X obj 151 109 == 0;
+#X obj 151 130 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+1;
+#X obj 259 93 loadbang;
+#X msg 259 114 1;
+#X obj 118 48 inlet;
+#X obj 118 156 spigot;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X connect 3 0 7 1;
+#X connect 4 0 5 0;
+#X connect 5 0 3 0;
+#X connect 6 0 7 0;
+#X connect 7 0 0 0;
+#X coords 0 -1 1 1 50 50 1 5 5;
+#X restore 829 198 pd ACT0;
+#X obj 362 29 tgl 15 0 empty WORLD_SLEEP r:WORLD_SLEEP 17 7 0 10 -262144
+-1 -1 0 1;
+#X obj 362 49 == 0;
+#X obj 362 70 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+1;
+#X msg 351 95 \; pd dsp \$1;
 #X connect 0 0 17 0;
 #X connect 1 0 16 0;
 #X connect 4 0 3 0;
@@ -822,8 +848,8 @@
 #X connect 213 0 214 0;
 #X connect 214 0 215 0;
 #X connect 214 0 224 0;
+#X connect 214 0 260 0;
 #X connect 214 0 261 0;
-#X connect 214 0 262 0;
 #X connect 215 0 217 0;
 #X connect 216 0 211 0;
 #X connect 217 0 222 0;
@@ -865,8 +891,11 @@
 #X connect 255 0 258 0;
 #X connect 256 0 254 0;
 #X connect 257 0 68 0;
-#X connect 261 0 259 0;
-#X connect 262 0 260 0;
+#X connect 260 0 259 0;
+#X connect 261 0 263 0;
+#X connect 264 0 265 0;
+#X connect 265 0 266 0;
+#X connect 266 0 267 0;
 #X coords 0 -1 1 1 220 100 1 5 5;
 #X restore 7 7 pd;
 #X text 68 658 change stress rate...;
@@ -1240,7 +1269,7 @@ down.;
 #X msg 210 58 devicename /dev/tty.usbmodem32177401 \, baud 57600 \,
 pollintervall 1 \, verbose 1;
 #X obj 491 25 loadbang;
-#X obj 221 401 tgl 25 0 WORLD_SLEEP empty WORLD_SLEEP 27 7 0 14 -258113
+#X obj 221 399 tgl 25 0 WORLD_SLEEP empty WORLD_SLEEP 27 7 0 14 -258113
 -262144 -258113 0 1;
 #X floatatom 221 380 5 0 0 1 WORLD_ENERGY WORLD_ENERGY -;
 #X obj 381 401 bng 25 250 50 0 ACT0 empty ACT0 27 7 0 15 -4034 -4160

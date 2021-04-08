@@ -1,4 +1,4 @@
-#N canvas 194 95 496 559 10;
+#N canvas 85 213 496 559 10;
 #X msg 37 337 0;
 #X obj 249 306 loadbang;
 #X obj 326 469 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
@@ -7,14 +7,14 @@
 #X obj 164 21 r BONGBONG;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array bongbong 10 float 3;
-#A 0 1.77873 1.51677 1.81633 1.49051 1.73577 1.37524 1.68919 1.3473
-1.33718 1.60217;
+#A 0 -0.771422 -0.390472 -0.390472 0.0761905 -0.399996 -0.504758 -0.476186
+-0.457139 -0.438091 -0.48571;
 #X coords 0 1 10 0 50 50 1 0 0;
 #X restore 30 32 graph;
 #X obj 88 8 bng 15 250 50 0 empty empty empty 17 7 0 10 -261682 -1
 -1;
 #X obj 25 85 hradio 15 1 0 4 empty \$0-word empty 0 -8 0 10 -261682
--4034 -1 3;
+-4034 -1 2;
 #X text 35 318 stop!;
 #X obj 88 306 riff1 800 4100 400;
 #X obj 88 25 tgl 15 0 empty \$0-status-now empty 17 7 0 10 -261682
@@ -24,7 +24,7 @@
 #X obj 167 279 s BONGBONG;
 #X obj 48 188 r BONGBONG;
 #X obj 164 67 v \$0-STATE;
-#N canvas 241 128 533 644 world 0;
+#N canvas 582 25 533 644 world 0;
 #X floatatom 16 94 5 0 0 0 - - -;
 #X obj 16 293 t a b;
 #X obj 16 372 spigot;
@@ -36,7 +36,7 @@
 #X obj 16 428 gauss 1 0;
 #X floatatom 16 474 5 0 0 0 - - -;
 #X obj 16 544 sel 1;
-#X obj 65 562 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 65 562 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
 #X floatatom 110 504 5 0 0 0 stress - -;
 #X obj 238 555 +;
@@ -230,8 +230,11 @@
 #X obj 165 507 t b b;
 #X msg 192 528 0;
 #X obj 192 549 array_copier bongbong;
-#X obj 165 487 bng 15 250 50 0 empty ACT0 r:ACT0 17 7 0 10 -262144
+#X obj 165 447 bng 15 250 50 0 empty ACT0 r:ACT0 17 7 0 10 -262144
 -1 -1;
+#X obj 229 516 v \$0-STATE;
+#X msg 229 493 1;
+#X obj 165 477 t b b;
 #X connect 3 0 11 1;
 #X connect 4 0 6 0;
 #X connect 5 0 4 0;
@@ -263,7 +266,10 @@
 #X connect 29 1 30 0;
 #X connect 30 0 31 0;
 #X connect 31 0 28 0;
-#X connect 32 0 29 0;
+#X connect 32 0 35 0;
+#X connect 34 0 33 0;
+#X connect 35 0 29 0;
+#X connect 35 1 34 0;
 #X restore 48 226 pd expressions;
 #X obj 326 519 s BONGBONG_DONE;
 #X obj 88 429 s NOTE;
