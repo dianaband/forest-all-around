@@ -21,7 +21,7 @@
 //============<identities>============
 //
 #define MY_GROUP_ID   (4000)
-#define MY_ID         (MY_GROUP_ID + 403)
+#define MY_ID         (MY_GROUP_ID + 1)
 #define MY_SIGN       ("ROLLER")
 //
 //============</identities>============
@@ -96,6 +96,7 @@ Scheduler runner;
 #define MOTOR_1B (D5)
 // my tasks
 int speed = 0;
+bool isactive = false;
 void set_speed() {
   int r = speed;
   //
@@ -108,19 +109,34 @@ void set_speed() {
   }
   MONITORING_SERIAL.print("set_speed:");
   MONITORING_SERIAL.println(r);
+  isactive = true;
 }
 Task set_speed_task(0, TASK_ONCE, &set_speed);
 //
 void rest() {
   analogWrite(MOTOR_1A, LOW);
   analogWrite(MOTOR_1B, LOW);
+  isactive = false;
 }
 Task rest_task(0, TASK_ONCE, &rest);
+//
+uint8_t watch_counter = 0;
+void watcher() {
+  if (isactive) {
+    if (watch_counter > 3) {
+      rest_task.restartDelayed(10);
+      watch_counter = 0;
+    } else {
+      watch_counter++;
+    }
+  }
+}
+Task watcher_task(1000, TASK_FOREVER, &watcher, &runner, true);
 //*-*-*-*-*-*-*-*-*-*-*-*-*
 
 //
 extern Task hello_task;
-static int hello_delay = 0;
+static int hello_delay = 2000;
 void hello() {
   //
   byte mac[6];
@@ -133,7 +149,7 @@ void hello() {
   count++;
   hello.h1 = (count % 1000);
   hello.h2 = speed;
-  // hello.h3 = 0;
+  hello.h3 = (isactive ? 1 : 0);
   // hello.h4 = 0;
   //
   uint8_t frm_size = sizeof(Hello) + 2;
@@ -192,6 +208,7 @@ void onNoteHandler(Note & n) {
       //
       if (n.onoff == 1) {
         set_speed_task.restartDelayed(10);
+        watch_counter = 0;
       } else if (n.onoff == 0) {
         rest_task.restartDelayed(10);
       }
