@@ -21,7 +21,7 @@
 //============<identities>============
 //
 #define MY_GROUP_ID   (4000)
-#define MY_ID         (MY_GROUP_ID + 1)
+#define MY_ID         (MY_GROUP_ID + 100)
 #define MY_SIGN       ("ROLLER")
 //
 //============</identities>============
