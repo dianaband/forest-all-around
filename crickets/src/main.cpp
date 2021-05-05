@@ -21,7 +21,7 @@
 //============<identities>============
 //
 #define MY_GROUP_ID   (3000)
-#define MY_ID         (MY_GROUP_ID + 789)
+#define MY_ID         (MY_GROUP_ID + 122)
 #define MY_SIGN       ("CRICKET")
 //
 //============</identities>============

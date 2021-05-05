@@ -46,114 +46,47 @@
 //============</gastank>===========
 
 //============<parameters>============
-#define MESH_SSID "forest-all/around"
-#define MESH_PASSWORD "cc*vvvv/kkk"
-#define MESH_PORT 5555
-#define MESH_CHANNEL 5
-#define LONELY_TO_DIE    (1000)
-//============</parameters>===========
-
 //
-// LED status indication
-// phase 0
-//    - LED => steady on
-//    - booted. and running. no connection. scanning.
-// phase 1
-//    - LED => slow blinking (syncronized)
-//    - + connected.
-//
-#if defined(ARDUINO_ESP8266_NODEMCU) // nodemcuv2
-#define LED_PIN 2
-#elif defined(ARDUINO_ESP8266_ESP12) // huzzah
-#define LED_PIN 2
-#elif defined(ARDUINO_FEATHER_ESP32) // featheresp32
-#define LED_PIN 13
-#elif defined(ARDUINO_NodeMCU_32S) // nodemcu-32s
-#define LED_PIN 2
-#endif
-#define LED_PERIOD (1111)
+#define LED_PERIOD (11111)
 #define LED_ONTIME (1)
+#define LED_GAPTIME (222)
+//
+#define WIFI_CHANNEL 5
+//
+// 'MONITORING_SERIAL'
+//
+// --> sometimes, the 'Serial' is in use (for example, 'osc' node)
+//     then,      use 'Serial1' - D4/GPIO2/TDX1 @ nodemcu (this is TX only.)
+//
+// --> otherwise, MONITORING_SERIAL == Serial.
+//
+#if defined(SERIAL_SWAP)
+#define MONITORING_SERIAL (Serial1)
+#else
+#define MONITORING_SERIAL (Serial)
+#endif
+//
+//============</parameters>===========
 
 //arduino
 #include <Arduino.h>
 
-//i2c
-#include <Wire.h>
+//post & addresses
 #include "../../post.h"
 
-//painlessmesh
-#include <painlessMesh.h>
-painlessMesh mesh;
+//espnow
+#include <ESP8266WiFi.h>
+#include <espnow.h>
 
-//scheduler
+//task
+#include <TaskScheduler.h>
 Scheduler runner;
 
-//task #0 : connection indicator
-bool onFlag = false;
-bool isConnected = false;
-//prototypes
-void taskStatusBlink_steadyOn();
-void taskStatusBlink_slowblink_insync();
-void taskStatusBlink_steadyOff();
-//the task
-Task statusblinks(0, 1, &taskStatusBlink_steadyOn); // at start, steady on. default == disabled. ==> setup() will enable.
-// when disconnected, and trying, steadyon.
-void taskStatusBlink_steadyOn() {
-  onFlag = true;
-}
-// when connected, blink per 1s. sync-ed. (== default configuration)
-void taskStatusBlink_slowblink_insync() {
-  // toggler
-  onFlag = !onFlag;
-  // on-time
-  statusblinks.delay(LED_ONTIME);
-  // re-enable & sync.
-  if (statusblinks.isLastIteration()) {
-    statusblinks.setIterations(2); //refill iteration counts
-    statusblinks.enableDelayed(LED_PERIOD - (mesh.getNodeTime() % (LED_PERIOD*1000))/1000); //re-enable with sync-ed delay
-  }
-}
-// when connected, steadyoff. (== alternative configuration)
-void taskStatusBlink_steadyOff() {
-  onFlag = false;
-}
-
-//task #1 : happy or lonely
-//   --> automatic reset after some time of 'loneliness (disconnected from any node)'
-void nothappyalone() {
-  static bool isConnected_prev = false;
-  static unsigned long lonely_time_start = 0;
-  // oh.. i m lost the signal(==connection)
-  if (isConnected_prev != isConnected && isConnected == false) {
-    lonely_time_start = millis();
-    Serial.println("oh.. i m lost!");
-  }
-  // .... how long we've been lonely?
-  if (isConnected == false) {
-    if (millis() - lonely_time_start > LONELY_TO_DIE) {
-      // okay. i m fed up. bye the world.
-      Serial.println("okay. i m fed up. bye the world.");
-      Serial.println();
-#if defined(ESP8266)
-      ESP.reset();
-#elif defined(ESP32)
-      ESP.restart();
-      // esp32 doesn't support 'reset()' yet...
-      // (restart() is framework-supported, reset() is more forced hardware-reset-action)
-#else
-#error unknown esp.
-#endif
-    }
-  }
-  //
-  isConnected_prev = isConnected;
-}
-// Task nothappyalone_task(1000, TASK_FOREVER, &nothappyalone, &runner, true); // by default, ENABLED.
-Task nothappyalone_task(100, TASK_FOREVER, &nothappyalone); // by default, ENABLED.
-
+//-*-*-*-*-*-*-*-*-*-*-*-*-
 // servo
-#define SERVO_PIN D6
 #include <Servo.h>
+
+#define SERVO_PIN D6
 Servo myservo;
 // #define HITTING_ANGLE 87
 #define HITTING_ANGLE 90
