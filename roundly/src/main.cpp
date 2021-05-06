@@ -112,7 +112,39 @@ AccelStepper stepper(AccelStepper::FULL4WIRE, D5, D6, D7, D8, false); // N.B. - 
 
 // my tasks
 extern Task stepping_task;
+extern Task moving_task;
 extern Task rest_task;
+
+// 'move' task --> relative movements
+int move_target = 0;
+int move_duration = 10000;
+void moving() {
+  //
+  float velocity = move_target / move_duration * 1000;   // unit conv.: (steps/msec) --> (steps/sec)
+  float speed = fabs(velocity);
+  //
+  MONITORING_SERIAL.print("move_target --> "); MONITORING_SERIAL.println(move_target);
+  MONITORING_SERIAL.print("move_duration --> "); MONITORING_SERIAL.println(move_duration);
+  //
+  if (speed > STEPS_PER_SEC_MAX) {
+    MONITORING_SERIAL.println("oh.. it might be TOO FAST for me..");
+  } else {
+    MONITORING_SERIAL.println("okay. i m going.");
+  }
+
+  //
+  stepper.enableOutputs();
+  stepper.moveTo(move_target + stepper.currentPosition());
+  stepper.setSpeed(velocity);
+  //NOTE: 'setSpeed' should come LATER than 'moveTo'!
+  //  --> 'moveTo' re-calculate the velocity.
+  //  --> so we need to re-override it.
+  //
+  // }
+}
+Task moving_task(0, TASK_ONCE, &moving);
+
+// 'step' task --> absolute movements
 int step_target = 0;
 int step_duration = 10000;
 void stepping() {
@@ -228,16 +260,38 @@ void onNoteHandler(Note & n) {
   //is it for me?
   if (n.id == MY_GROUP_ID || n.id == MY_ID) {
     //
-    step_target = n.x1;
-    step_duration = n.x2;
-    if (step_duration < 1000) step_duration = 1000;
-    //
-    if (n.onoff == 1) {
-      stepping_task.restartDelayed(10);
-    } else if (n.onoff == 0) {
-      rest_task.restartDelayed(10);
+    if (n.pitch == 0) {
+      //
+      if (n.onoff == 1) {
+        //
+        step_target = n.x1;
+        step_duration = n.x2;
+        if (step_duration < 1000) step_duration = 1000;
+        stepping_task.restartDelayed(10);
+        //
+      } else if (n.onoff == 0) {
+        //
+        move_target = 0;
+        move_duration = 1000;
+        moving_task.restartDelayed(10);
+      }
+      //
+    } else if (n.pitch == 1) {
+      //
+      if (n.onoff == 1) {
+        //
+        move_target = n.x1;
+        move_duration = n.x2;
+        if (move_duration < 1000) move_duration = 1000;
+        moving_task.restartDelayed(10);
+        //
+      } else if (n.onoff == 0) {
+        move_target = 0;
+        move_duration = 1000;
+        moving_task.restartDelayed(10);
+      }
+      //
     }
-    //
   }
 }
 
@@ -369,6 +423,7 @@ void setup() {
 
   //tasks
   runner.addTask(stepping_task);
+  runner.addTask(moving_task);
   runner.addTask(rest_task);
   rest_task.restartDelayed(500);
 }
