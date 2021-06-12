@@ -1,4 +1,4 @@
-#N canvas 503 95 623 400 10;
+#N canvas 503 89 623 400 10;
 #X obj 322 198 spigot;
 #X obj 371 183 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
@@ -76,18 +76,18 @@
 #X obj 34 190 print HELLO;
 #X text 103 24 * a wireless "field synth" - based on 'esp now' protocol
 ;
-#X msg 243 98 devicename /dev/ttyACM0 \, baud 57600 \, pollintervall
-1 \, verbose 1;
 #X msg 204 58 devicename /dev/tty.usbmodem4871051 \, baud 57600 \,
 pollintervall 1 \, verbose 1;
 #X msg 494 315 2000;
 #X obj 230 203 tgl 15 0 empty empty connected? 17 7 0 10 -262144 -1
 -1 1 1;
+#X msg 243 98 devicename /dev/ttyACM0 \, baud 57600 \, pollintervall
+1 \, verbose 1;
 #X connect 0 0 16 0;
 #X connect 1 0 0 1;
 #X connect 2 0 14 0;
 #X connect 3 0 8 0;
-#X connect 3 1 31 0;
+#X connect 3 1 30 0;
 #X connect 4 0 3 1;
 #X connect 5 0 3 1;
 #X connect 6 0 3 0;
@@ -104,10 +104,10 @@ pollintervall 1 \, verbose 1;
 #X connect 20 0 23 0;
 #X connect 21 0 22 0;
 #X connect 22 0 20 0;
-#X connect 23 0 30 0;
+#X connect 23 0 29 0;
 #X connect 23 1 18 0;
 #X connect 24 0 26 0;
 #X connect 25 0 24 1;
 #X connect 28 0 3 1;
-#X connect 29 0 3 1;
-#X connect 30 0 18 0;
+#X connect 29 0 18 0;
+#X connect 31 0 3 1;

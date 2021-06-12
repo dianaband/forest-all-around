@@ -107,6 +107,18 @@ struct AddressLibrary {
       //
       lib.push_back(book);
     }
+    // book #4
+    {
+      AddressBook book = AddressBook("audioooo");
+      //
+      // samplers don't have ID_KEY, they will just get all messages,
+      // then open the content to get **midi** 'key' in the 'note' message.
+      book.add(Address(0xAC, 0x67, 0xB2, 0x0B, 0xAE, 0x0C, "audioooo #1")); //WROOM
+      book.add(Address(0xAC, 0x67, 0xB2, 0x0B, 0xAD, 0xB0, "audioooo #2")); //WROOM
+      book.add(Address(0xA8, 0x03, 0x2A, 0x6C, 0x88, 0x78, "audioooo #3")); //WROVER
+      //
+      lib.push_back(book);
+    }
   }
   //
   AddressBook* getBookByTitle(String title_) {

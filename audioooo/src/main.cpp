@@ -29,9 +29,16 @@
 // 'DISABLE_AP'
 // --> (questioning)...
 //
+// 'REPLICATE_NOTE_REQ' (+ N_SEC_BLOCKING_NOTE_REQ)
+// --> for supporting wider area with simple esp_now protocol,
+//     all receipents will replicate NOTE msg. when they are newly appeared.
+//   + then, network would be flooded by infinite duplicating msg.,
+//     unless they stop reacting to 'known' req. for some seconds. (e.g. 3 seconds)
+//
 //==========</list-of-configurations>==========
 //
 #define DISABLE_AP
+#define REPLICATE_NOTE_REQ
 
 //============<parameters>============
 //
@@ -77,6 +84,7 @@
 //espnow
 #include <esp_now.h>
 #include <WiFi.h>
+AddressLibrary lib;
 
 //task
 #include <TaskScheduler.h>
@@ -215,6 +223,37 @@ void sample_player_stop() {
   audio.stopSong();
 }
 Task sample_player_stop_task(0, TASK_ONCE, &sample_player_stop, &runner, false);
+
+//
+#if defined(REPLICATE_NOTE_REQ)
+Note note_now = {
+  -1, // int32_t id;
+  -1, // float pitch;
+  -1, // float velocity;
+  -1, // float onoff;
+  -1, // float x1;
+  -1, // float x2;
+  -1, // float x3;
+  -1, // float x4;
+  -1 // float ps;
+};
+#define NEW_NOTE_TIMEOUT (3000)
+static unsigned long new_note_time = (-1*NEW_NOTE_TIMEOUT);
+void repeat() {
+  //
+  uint8_t frm_size = sizeof(Note) + 2;
+  uint8_t frm[frm_size];
+  frm[0] = '[';
+  memcpy(frm + 1, (uint8_t *) &note_now, sizeof(Note));
+  frm[frm_size - 1] = ']';
+  //
+  esp_now_send(NULL, frm, frm_size); // to all peers in the list.
+  //
+  MONITORING_SERIAL.print("repeat! ==> ");
+  MONITORING_SERIAL.println(note_now.to_string());
+}
+Task repeat_task(0, TASK_ONCE, &repeat, &runner, false);
+#endif
 //*-*-*-*-*-*-*-*-*-*-*-*-*
 
 //
@@ -250,6 +289,21 @@ void hello() {
     if (hello_delay < 100) hello_delay = 100;
     hello_task.restartDelayed(hello_delay);
   }
+
+  // //TEST
+  // Note n = {
+  //   10001, // int32_t id;
+  //   1, // float pitch;
+  //   127, // float velocity;
+  //   1, // float onoff;
+  //   0, // float x1;
+  //   0, // float x2;
+  //   0, // float x3;
+  //   0, // float x4;
+  //   5000 // float ps;
+  // };
+  // note_now = n;
+  // repeat_task.restart();
 }
 Task hello_task(0, TASK_ONCE, &hello, &runner, false);
 
@@ -335,6 +389,15 @@ void onDataReceive(const uint8_t * mac, const uint8_t *incomingData, int32_t len
     }
 
     MONITORING_SERIAL.println(note.to_string());
+
+    #if defined(REPLICATE_NOTE_REQ)
+    if (millis() - new_note_time > NEW_NOTE_TIMEOUT) {
+      note_now = note;
+      repeat_task.restart();
+      new_note_time = millis();
+    }
+    #endif
+
   }
 }
 
@@ -431,6 +494,9 @@ void setup() {
 #if defined(HAVE_CLIENT_I2C)
   Serial.println("- ======== 'HAVE_CLIENT_I2C' ========");
 #endif
+#if defined(REPLICATE_NOTE_REQ)
+  Serial.println("- ======== 'REPLICATE_NOTE_REQ' ========");
+#endif
   Serial.println("-");
 
   //wifi
@@ -450,16 +516,25 @@ void setup() {
   esp_now_register_send_cb(onDataSent);
   esp_now_register_recv_cb(onDataReceive);
   //
-  Serial.println("- ! (esp_now_add_peer) ==> add a 'broadcast peer' (FF:FF:FF:FF:FF:FF).");
-  uint8_t broadcastmac[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
-
+  // Serial.println("- ! (esp_now_add_peer) ==> add a 'broadcast peer' (FF:FF:FF:FF:FF:FF).");
+  // uint8_t broadcastmac[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
   //
-  esp_now_peer_info_t peerInfo;
-  memcpy(peerInfo.peer_addr, broadcastmac, 6);
-  peerInfo.channel = 0;
-  peerInfo.encrypt = false;
-  esp_now_add_peer(&peerInfo);
+  // //
+  // esp_now_peer_info_t peerInfo;
+  // memcpy(peerInfo.peer_addr, broadcastmac, 6);
+  // peerInfo.channel = 0;
+  // peerInfo.encrypt = false;
+  // esp_now_add_peer(&peerInfo);
 
+  AddressBook * book = lib.getBookByTitle("audioooo");
+  for (int idx = 0; idx < book->list.size(); idx++) {
+    Serial.println("- ! (esp_now_add_peer) ==> add a '" + book->list[idx].name + "'.");
+    esp_now_peer_info_t peerInfo;
+    memcpy(peerInfo.peer_addr, book->list[idx].mac, 6);
+    peerInfo.channel = 0;
+    peerInfo.encrypt = false;
+    esp_now_add_peer(&peerInfo);
+  }
   //
   Serial.println("-");
   Serial.println("\".-.-.-. :)\"");
