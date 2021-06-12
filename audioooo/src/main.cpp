@@ -120,7 +120,7 @@ Audio audio;
 
 //screen task
 String screen_cmd = "(((..listening..)))";
-String screen_filename = "***.wav";
+String screen_filename = "***.mp3";
 
 //
 extern Task screen_cmd_notify_task;
@@ -175,14 +175,14 @@ void sample_player_start()
 {
   //filename buffer - 8.3 naming convension! 8+1+3+1 = 13
   // + '/' root symbol 13+1 = 14 (ESP32 specific?)
-  char filename[14] = "/NNN.wav";
+  char filename[14] = "/NNN.mp3";
   //search for the sound file
   int note = sample_now;
   int nnn = (note % 1000);  // 0~999
   int nn =  (note % 100);   // 0~99
-  filename[1] = '0' + (nnn / 100); // N__.WAV
-  filename[2] = '0' + (nn / 10);   // _N_.WAV
-  filename[3] = '0' + (nn % 10);   // __N.WAV
+  filename[1] = '0' + (nnn / 100); // N__.MP3
+  filename[2] = '0' + (nn / 10);   // _N_.MP3
+  filename[3] = '0' + (nn % 10);   // __N.MP3
   //TEST
   Serial.println(filename);
   screen_filename = String(filename);
@@ -202,14 +202,14 @@ Task sample_player_start_task(0, TASK_ONCE, &sample_player_start, &runner, false
 void sample_player_stop() {
   //filename buffer - 8.3 naming convension! 8+1+3+1 = 13
   // + '/' root symbol 13+1 = 14 (ESP32 specific?)
-  char filename[14] = "/NNN.wav";
+  char filename[14] = "/NNN.mp3";
   //search for the sound file
   int note = sample_now;
   int nnn = (note % 1000);  // 0~999
   int nn =  (note % 100);   // 0~99
-  filename[1] = '0' + (nnn / 100); // N__.WAV
-  filename[2] = '0' + (nn / 10);   // _N_.WAV
-  filename[3] = '0' + (nn % 10);   // __N.WAV
+  filename[1] = '0' + (nnn / 100); // N__.MP3
+  filename[2] = '0' + (nn / 10);   // _N_.MP3
+  filename[3] = '0' + (nn % 10);   // __N.MP3
   //TEST
   Serial.println(filename);
   screen_filename = String(filename);
