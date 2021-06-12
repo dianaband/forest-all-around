@@ -117,6 +117,8 @@ struct AddressLibrary {
       book.add(Address(0xAC, 0x67, 0xB2, 0x0B, 0xAD, 0xB0, "audioooo #2")); //WROOM
       book.add(Address(0xA8, 0x03, 0x2A, 0x6C, 0x88, 0x78, "audioooo #3")); //WROVER
       //
+      book.add(Address(0x98, 0xF4, 0xAB, 0xB3, 0xB4, 0xDD, "sampler #1")); //TEENSY+ESP8266
+      //
       lib.push_back(book);
     }
   }

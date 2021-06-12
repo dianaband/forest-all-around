@@ -12,14 +12,6 @@
 // (part-3) teensy35 : 'client:sampler' (mesh post --> play sounds)
 //
 
-//============<sampler>============
-//optionally pin3 will go HIGH/LOW in sync w/ sound PLAY/STOP
-#define MOTOR_PIN 3
-// #define FAN_ACTION // this is noisy.... ==> not so recommendable..
-#define NOTE_MIN 24
-#define NOTE_MAX 84
-//============</sampler>===========
-
 //HACK: let auto-poweroff speakers stay turned ON! - (creative muvo mini)
 #define IDLE_FREQ 22000
 #define IDLE_AMP 0 // --> creative muvo 2 doesn't need this. they just stay on!
@@ -31,11 +23,6 @@
 #include <SdFat.h>
 SdFatSdioEX SD;
 #include <SerialFlash.h>
-
-//teensy 3.5 with SD card
-#define SDCARD_CS_PIN    BUILTIN_SDCARD
-#define SDCARD_MOSI_PIN  11  // not actually used
-#define SDCARD_SCK_PIN   13  // not actually used
 
 // GUItool: begin automatically generated code
 AudioPlaySdWav playSdWav1;               //xy=224,265
@@ -81,14 +68,7 @@ void sample_player_start()
     return;
   }
   //start the player!
-  //NOTE: block out 're-triggering'
-  // if (playSdWav1.isPlaying() == false) {
   playSdWav1.play(filename);
-  // }
-#if defined(FAN_ACTION)
-  //fan action
-  digitalWrite(MOTOR_PIN, HIGH);
-#endif
   //mark the indicator : HIGH: ON
   digitalWrite(13, HIGH);
   //to wait a bit for updating isPlaying()
@@ -116,10 +96,6 @@ void sample_player_stop() {
   //stop the player.
   if (playSdWav1.isPlaying() == true) {
     playSdWav1.stop();
-#if defined(FAN_ACTION)
-    //fan stop
-    digitalWrite(MOTOR_PIN, LOW);
-#endif
   }
 }
 void sample_player_check() {
@@ -135,8 +111,8 @@ void sample_player_check() {
   }
 }
 //
-Task sample_player_start_task(0, TASK_ONCE, sample_player_start);
-Task sample_player_stop_task(0, TASK_ONCE, sample_player_stop);
+Task sample_player_start_task(0, TASK_ONCE, sample_player_start, &runner, false);
+Task sample_player_stop_task(0, TASK_ONCE, sample_player_stop, &runner, false);
 Task sample_player_check_task(0, TASK_FOREVER, sample_player_check, &runner, true);
 
 //i2c
@@ -183,22 +159,23 @@ void receiveEvent(int numBytes) {
 
     //
     int key = str_key.toInt();
-    if (key >= NOTE_MIN && key <= NOTE_MAX) {
-      sample_now = key;
-      //
-      int velocity = str_velocity.toInt(); // 0 ~ 127
-      float amp_gain = (float)velocity / 127.0;
-      amp1.gain(amp_gain);
-      amp2.gain(amp_gain);
-      //
-      int gate = str_gate.toInt();
-      if (gate == 0) {
-        sample_player_stop_task.restart();
-        Serial.println("sample_player_stop_task");
-      } else {
-        sample_player_start_task.restart();
-        Serial.println("sample_player_start_task");
-      }
+    sample_now = key;
+    //
+    int velocity = str_velocity.toInt();   // 0 ~ 127
+    float amp_gain = (float)velocity / 127.0;
+    //
+    amp_gain = amp_gain * 0.7; // additional amp down. * 70%
+    //
+    amp1.gain(amp_gain);
+    amp2.gain(amp_gain);
+    //
+    int gate = str_gate.toInt();
+    if (gate == 0) {
+      sample_player_stop_task.restart();
+      Serial.println("sample_player_stop_task");
+    } else {
+      sample_player_start_task.restart();
+      Serial.println("sample_player_start_task");
     }
   }
 }
@@ -242,13 +219,7 @@ void setup() {
   // w/o ==> get killed by watchdog.. :(
   //
   // while (!Serial) {}
-  //  --> use this.. to capture start-up messages, properly. very handy.
-
-  //motor
-#if defined(FAN_ACTION)
-  pinMode(MOTOR_PIN, OUTPUT);
-  digitalWrite(MOTOR_PIN, LOW);
-#endif
+  //  --> enable this.. to use Serial. otherwise, very jerky/unstable..
 
   //i2c
   Wire.begin(I2C_ADDR);
@@ -269,10 +240,13 @@ void setup() {
 
   //audio
   AudioMemory(20);
-#if !defined(TEENSY36)
-  //NOTE!! teensy36 board.. output broken? .. so disable this for teensy36.. this is the cause??
-  dacs1.analogReference(EXTERNAL);
-#endif
+
+  // dacs1.analogReference(EXTERNAL);
+  // <-- this was used probably to make output swing greater Vpp == 3.3v
+  //     but, with this + small headphones, i cannot hear anything.
+  //     and, this might be dangerous in some case -> this is suspicous of 1 broken teensy 3.6
+  //     so, unless you are so sure, don't enable this.
+
   mixer1.gain(0,1.0);
   mixer1.gain(1,1.0);
   mixer1.gain(2,0);
@@ -290,10 +264,6 @@ void setup() {
   //led
   pinMode(13, OUTPUT);
   digitalWrite(13, LOW); // LOW: OFF
-
-  //player task
-  runner.addTask(sample_player_start_task);
-  runner.addTask(sample_player_stop_task);
 
   //
   Serial.println("[setup] done.");
