@@ -433,6 +433,15 @@ void printDirectory(File dir, int numTabs) {
   }
 }
 
+void lcd_text(String str) {
+  display.clearDisplay();
+  display.setTextColor(SSD1306_WHITE);
+  display.setTextSize(1);
+  display.setCursor(0, 0);
+  display.println(str.c_str());
+  display.display();
+}
+
 //
 File root;
 void setup() {
@@ -461,7 +470,7 @@ void setup() {
   SPI.setFrequency(1000000);
   if (!SD.begin(SD_CS, SPI)) {
     Serial.println("Card Mount Failed");
-    // lcd_text("SD ERR");
+    lcd_text("SD ERR!\nCard Mount Failed!");
     while (1)
       ;
   } else {
