@@ -40,6 +40,12 @@
 // 'DISABLE_AP'
 // --> (questioning)...
 //
+// 'REPLICATE_NOTE_REQ' (+ N_SEC_BLOCKING_NOTE_REQ)
+// --> for supporting wider area with simple esp_now protocol,
+//     all receipents will replicate NOTE msg. when they are newly appeared.
+//   + then, network would be flooded by infinite duplicating msg.,
+//     unless they stop reacting to 'known' req. for some seconds. (e.g. 3 seconds)
+
 // 'HAVE_CLIENT_I2C'
 // --> i have a client w/ I2C i/f. enable the I2C client task.
 //
@@ -47,6 +53,7 @@
 //
 #define HAVE_CLIENT_I2C
 #define DISABLE_AP
+#define REPLICATE_NOTE_REQ
 
 //============<parameters>============
 //
@@ -91,10 +98,43 @@
 //espnow
 #include <ESP8266WiFi.h>
 #include <espnow.h>
+AddressLibrary lib;
 
 //task
 #include <TaskScheduler.h>
 Scheduler runner;
+
+//
+#if defined(REPLICATE_NOTE_REQ)
+Note note_now = {
+  -1, // int32_t id;
+  -1, // float pitch;
+  -1, // float velocity;
+  -1, // float onoff;
+  -1, // float x1;
+  -1, // float x2;
+  -1, // float x3;
+  -1, // float x4;
+  -1 // float ps;
+};
+#define NEW_NOTE_TIMEOUT (3000)
+static unsigned long new_note_time = (-1*NEW_NOTE_TIMEOUT);
+void repeat() {
+  //
+  uint8_t frm_size = sizeof(Note) + 2;
+  uint8_t frm[frm_size];
+  frm[0] = '[';
+  memcpy(frm + 1, (uint8_t *) &note_now, sizeof(Note));
+  frm[frm_size - 1] = ']';
+  //
+  esp_now_send(NULL, frm, frm_size); // to all peers in the list.
+  //
+  MONITORING_SERIAL.print("repeat! ==> ");
+  MONITORING_SERIAL.println(note_now.to_string());
+}
+Task repeat_task(0, TASK_ONCE, &repeat, &runner, false);
+#endif
+//*-*-*-*-*-*-*-*-*-*-*-*-*
 
 //
 extern Task hello_task;
@@ -122,8 +162,8 @@ void hello() {
   //
   esp_now_send(NULL, frm, frm_size); // to all peers in the list.
   //
-  MONITORING_SERIAL.write(frm, frm_size);
-  MONITORING_SERIAL.println(" ==(esp_now_send/0)==> ");
+  // MONITORING_SERIAL.write(frm, frm_size);
+  // MONITORING_SERIAL.println(" ==(esp_now_send/0)==> ");
   //
   if (hello_delay > 0) {
     if (hello_delay < 100) hello_delay = 100;
@@ -188,6 +228,14 @@ void onDataReceive(uint8_t * mac, uint8_t *incomingData, uint8_t len) {
     MONITORING_SERIAL.println(note.to_string());
     //
 
+    #if defined(REPLICATE_NOTE_REQ)
+    if (millis() - new_note_time > NEW_NOTE_TIMEOUT) {
+      note_now = note;
+      repeat_task.restart();
+      new_note_time = millis();
+    }
+    #endif
+
     #if defined(HAVE_CLIENT_I2C)
 
     //is this for me & my client?
@@ -230,21 +278,15 @@ void onDataReceive(uint8_t * mac, uint8_t *incomingData, uint8_t len) {
         hello_task.restart();
       }
     }
-
     #endif
-
-    //-*-*-*-*-*-*-*-*-*-
-    // use 'note' here...
-    //   ==> N.B.: "callback function runs from a high-priority Wi-Fi task.
-    //              So, do not do lengthy operations in the callback function.
-    //              Instead, post the necessary data to a queue and handle it from a lower priority task."
-    //-*-*-*-*-*-*-*-*-*-
   }
 }
 
 // on 'sent'
 void onDataSent(uint8_t *mac_addr, uint8_t sendStatus) {
-  if (sendStatus != 0) MONITORING_SERIAL.println("Delivery failed!");
+  char buff[256] = "";
+  sprintf(buff, "Delivery failed! -> %02X:%02X:%02X:%02X:%02X:%02X",  mac_addr[0],  mac_addr[1],  mac_addr[2],  mac_addr[3],  mac_addr[4],  mac_addr[5]);
+  if (sendStatus != 0) MONITORING_SERIAL.println(buff);
 }
 
 //
@@ -276,6 +318,9 @@ void setup() {
 #if defined(HAVE_CLIENT_I2C)
   Serial.println("- ======== 'HAVE_CLIENT_I2C' ========");
 #endif
+#if defined(REPLICATE_NOTE_REQ)
+  Serial.println("- ======== 'REPLICATE_NOTE_REQ' ========");
+#endif
   Serial.println("-");
 
   //wifi
@@ -295,10 +340,29 @@ void setup() {
   esp_now_register_send_cb(onDataSent);
   esp_now_register_recv_cb(onDataReceive);
   //
-  Serial.println("- ! (esp_now_add_peer) ==> add a 'broadcast peer' (FF:FF:FF:FF:FF:FF).");
-  uint8_t broadcastmac[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
-  esp_now_add_peer(broadcastmac, ESP_NOW_ROLE_COMBO, 1, NULL, 0);
+  // Serial.println("- ! (esp_now_add_peer) ==> add a 'broadcast peer' (FF:FF:FF:FF:FF:FF).");
+  // uint8_t broadcastmac[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+  //
+  // //
+  // esp_now_peer_info_t peerInfo;
+  // memcpy(peerInfo.peer_addr, broadcastmac, 6);
+  // peerInfo.channel = 0;
+  // peerInfo.encrypt = false;
+  // esp_now_add_peer(&peerInfo);
 
+  AddressBook * book = lib.getBookByTitle("audioooo");
+  for (int idx = 0; idx < book->list.size(); idx++) {
+    Serial.println("- ! (esp_now_add_peer) ==> add a '" + book->list[idx].name + "'.");
+#if defined(ESP32)
+    esp_now_peer_info_t peerInfo;
+    memcpy(peerInfo.peer_addr, book->list[idx].mac, 6);
+    peerInfo.channel = 0;
+    peerInfo.encrypt = false;
+    esp_now_add_peer(&peerInfo);
+#else
+    esp_now_add_peer(book->list[idx].mac, ESP_NOW_ROLE_COMBO, 1, NULL, 0);
+#endif
+  }
   //
   Serial.println("-");
   Serial.println("\".-.-.-. :)\"");
