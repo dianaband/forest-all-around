@@ -454,19 +454,31 @@ void hello() {
   }
 
   // //TEST
-  // Note n = {
-  //   10001, // int32_t id;
-  //   1, // float pitch;
-  //   127, // float velocity;
-  //   1, // float onoff;
-  //   0, // float x1;
-  //   0, // float x2;
-  //   0, // float x3;
-  //   0, // float x4;
-  //   5000 // float ps;
-  // };
-  // note_now = n;
-  // repeat_task.restart();
+  // {
+  //   Note note_composed = {
+  //     10001, // int32_t id;
+  //     1, // float pitch;
+  //     127, // float velocity;
+  //     1, // float onoff;
+  //     0, // float x1;
+  //     0, // float x2;
+  //     0, // float x3;
+  //     0, // float x4;
+  //     5000 // float ps;
+  //   };
+  //   //
+  //   uint8_t frm_size = sizeof(Note) + 2;
+  //   uint8_t frm[frm_size];
+  //   frm[0] = '[';
+  //   memcpy(frm + 1, (uint8_t *) &note_composed, sizeof(Note));
+  //   frm[frm_size - 1] = ']';
+  //   //
+  //   esp_now_send(NULL, frm, frm_size); // to all peers in the list.
+  //   //
+  //   MONITORING_SERIAL.print("# posting a req.# ==> ");
+  //   MONITORING_SERIAL.println(note_composed.to_string());
+  //   //
+  // }
 }
 Task hello_task(0, TASK_ONCE, &hello, &runner, false);
 
