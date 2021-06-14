@@ -35,10 +35,15 @@
 //   + then, network would be flooded by infinite duplicating msg.,
 //     unless they stop reacting to 'known' req. for some seconds. (e.g. 3 seconds)
 //
+// 'USE_ALTERNATIVE_ADDRESSES'
+// --> peer list limited max. 20.
+//     so, we have alternative address book that covers after 20th.
+//
 //==========</list-of-configurations>==========
 //
 #define DISABLE_AP
 #define REPLICATE_NOTE_REQ
+#define USE_ALTERNATIVE_ADDRESSES
 
 //============<parameters>============
 //
@@ -538,7 +543,11 @@ void setup() {
   // peerInfo.encrypt = false;
   // esp_now_add_peer(&peerInfo);
 
+#if defined(USE_ALTERNATIVE_ADDRESSES)
+  AddressBook * book = lib.getBookByTitle("audioooo alt");
+#else
   AddressBook * book = lib.getBookByTitle("audioooo");
+#endif
   for (int idx = 0; idx < book->list.size(); idx++) {
     Serial.println("- ! (esp_now_add_peer) ==> add a '" + book->list[idx].name + "'.");
     esp_now_peer_info_t peerInfo;
