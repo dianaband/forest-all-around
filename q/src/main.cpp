@@ -38,10 +38,15 @@
 // 'GEN_NOTE_REQ'
 // --> this will generate 'note' msg.
 //
+// 'USE_ALTERNATIVE_ADDRESSES'
+// --> peer list limited max. 20.
+//     so, we have alternative address book that covers after 20th.
+//
 //==========</list-of-configurations>==========
 //
 #define DISABLE_AP
 #define GEN_NOTE_REQ
+// #define USE_ALTERNATIVE_ADDRESSES
 
 //============<parameters>============
 //
@@ -721,7 +726,11 @@ void setup() {
   // peerInfo.encrypt = false;
   // esp_now_add_peer(&peerInfo);
 
+#if defined(USE_ALTERNATIVE_ADDRESSES)
+  AddressBook * book = lib.getBookByTitle("audioooo alt");
+#else
   AddressBook * book = lib.getBookByTitle("audioooo");
+#endif
   for (int idx = 0; idx < book->list.size(); idx++) {
     Serial.println("- ! (esp_now_add_peer) ==> add a '" + book->list[idx].name + "'.");
     esp_now_peer_info_t peerInfo;
