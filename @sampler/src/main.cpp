@@ -159,7 +159,7 @@ void receiveEvent(int numBytes) {
 
     //
     int key = str_key.toInt();
-    sample_now = key;
+    // sample_now = key;
     //
     int velocity = str_velocity.toInt();   // 0 ~ 127
     float amp_gain = (float)velocity / 127.0;
@@ -171,9 +171,14 @@ void receiveEvent(int numBytes) {
     //
     int gate = str_gate.toInt();
     if (gate == 0) {
-      sample_player_stop_task.restart();
-      Serial.println("sample_player_stop_task");
+      // filter out re-triggering same note while it is playing.
+      if (!playSdWav1.isPlaying() || sample_now != key) {
+        sample_now = key;
+        sample_player_stop_task.restart();
+        Serial.println("sample_player_stop_task");
+      }
     } else {
+      sample_now = key;
       sample_player_start_task.restart();
       Serial.println("sample_player_start_task");
     }
