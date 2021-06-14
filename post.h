@@ -111,8 +111,7 @@ struct AddressLibrary {
     {
       AddressBook book = AddressBook("audioooo");
       //
-      // book.add(Address(0xAC, 0x67, 0xB2, 0x0B, 0xAE, 0x0C, "audioooo #1 (Q)")); //WROOM <- sender(the Q injector)
-      book.add(Address(0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, "BROADCAST"));   //a broadcast (ESP32 will ignore this, but ESP8266 will do process this. let's expect them to work!)
+      book.add(Address(0xAC, 0x67, 0xB2, 0x0B, 0xAE, 0x0C, "audioooo #1 (Q)")); //WROOM <- sender(the Q injector)
       book.add(Address(0xAC, 0x67, 0xB2, 0x0B, 0xAD, 0xB0, "audioooo #2")); //WROOM
       book.add(Address(0xA8, 0x03, 0x2A, 0x6C, 0x88, 0x78, "audioooo #3")); //WROVER
       book.add(Address(0xA8, 0x03, 0x2A, 0x6C, 0x88, 0x5C, "audioooo #4")); //WROVER
@@ -132,7 +131,8 @@ struct AddressLibrary {
       book.add(Address(0xB4, 0xE6, 0x2D, 0x37, 0x11, 0xE6, "sampler #C")); //TEENSY+ESP8266
       book.add(Address(0xB4, 0xE6, 0x2D, 0x37, 0x18, 0xAE, "sampler #D")); //TEENSY+ESP8266
       book.add(Address(0xB4, 0xE6, 0x2D, 0x37, 0x0A, 0x07, "sampler #E")); //TEENSY+ESP8266
-      book.add(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB7, 0x21, "sampler #F")); //TEENSY+ESP8266 //20 sets => FULL
+      book.add(Address(0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, "BROADCAST"));   //a broadcast (ESP32 will ignore this, but ESP8266 will do process this. let's expect them to work!)
+      // book.add(Address(0xF4, 0xCF, 0xA2, 0xED, 0xB7, 0x21, "sampler #F")); //TEENSY+ESP8266 //20 sets => FULL
       // + we have 5 more un-registered devices. esp8266 devices will broadcast for them. hopely all get to contact w/ msg. on time.
       lib.push_back(book);
     }
