@@ -344,8 +344,11 @@ void onNoteHandler(Note & n) {
     screen_cmd_notify_task.restart();
     //
     if (n.onoff == 1) {
-      sample_now = n.pitch;
-      sample_player_start_task.restartDelayed(10);
+      // filter out re-triggering same note while it is playing.
+      if (!audio.isRunning() || sample_now != n.pitch) {
+        sample_now = n.pitch;
+        sample_player_start_task.restartDelayed(10);
+      }
     } else if (n.onoff == 0) {
       sample_now = n.pitch;
       sample_player_stop_task.restartDelayed(10);
@@ -358,7 +361,7 @@ void onNoteHandler(Note & n) {
 void onDataReceive(const uint8_t * mac, const uint8_t *incomingData, int32_t len) {
 
   //
-  // MONITORING_SERIAL.write(incomingData, len);
+  //MONITORING_SERIAL.write(incomingData, len);
 
   //
 #if defined(HAVE_CLIENT)
@@ -388,6 +391,7 @@ void onDataReceive(const uint8_t * mac, const uint8_t *incomingData, int32_t len
       }
     }
 
+    //
     MONITORING_SERIAL.println(note.to_string());
 
     #if defined(REPLICATE_NOTE_REQ)
@@ -397,7 +401,6 @@ void onDataReceive(const uint8_t * mac, const uint8_t *incomingData, int32_t len
       new_note_time = millis();
     }
     #endif
-
   }
 }
 

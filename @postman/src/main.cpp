@@ -224,23 +224,11 @@ void onDataReceive(uint8_t * mac, uint8_t *incomingData, uint8_t len) {
   if (incomingData[0] == '[' && incomingData[len - 1] == ']' && len == (sizeof(Note) + 2)) {
     Note note;
     memcpy((uint8_t *) &note, incomingData + 1, sizeof(Note));
-    //
-    MONITORING_SERIAL.println(note.to_string());
-    //
-
-    #if defined(REPLICATE_NOTE_REQ)
-    if (millis() - new_note_time > NEW_NOTE_TIMEOUT) {
-      note_now = note;
-      repeat_task.restart();
-      new_note_time = millis();
-    }
-    #endif
-
-    #if defined(HAVE_CLIENT_I2C)
 
     //is this for me & my client?
     if (note.id == MY_GROUP_ID || note.id == MY_ID) {
 
+      #if defined(HAVE_CLIENT_I2C)
       // (struct --> obsolete I2C format.)
       //    --> we want to open & re-construct the msg.
 
@@ -272,11 +260,22 @@ void onDataReceive(uint8_t * mac, uint8_t *incomingData, uint8_t len) {
       Wire.write(msg.c_str(), POST_LENGTH);
       Wire.endTransmission();
 
+      #endif
       //
       hello_delay = note.ps;
       if (hello_delay > 0 && hello_task.isEnabled() == false) {
         hello_task.restart();
       }
+    }
+
+    //
+    MONITORING_SERIAL.println(note.to_string());
+
+    #if defined(REPLICATE_NOTE_REQ)
+    if (millis() - new_note_time > NEW_NOTE_TIMEOUT) {
+      note_now = note;
+      repeat_task.restart();
+      new_note_time = millis();
     }
     #endif
   }
