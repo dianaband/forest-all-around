@@ -135,7 +135,7 @@ void screen_cmd_notify() {
   else if (screen_cmd_notify_task.isLastIteration()) cmd_notify = false;
   else cmd_notify = !cmd_notify;
 }
-Task screen_cmd_notify_task(500, 10, &screen_cmd_notify, &runner, true);
+Task screen_cmd_notify_task(500, 10, &screen_cmd_notify, &runner, false);
 
 //
 extern Task screen_task;
