@@ -163,7 +163,7 @@ void receiveEvent(int numBytes) {
     int velocity = str_velocity.toInt();   // 0 ~ 127
     float amp_gain = (float)velocity / 127.0;
     //
-    amp_gain = amp_gain * 0.2; // 1.0 was too loud. => 0.2 max.
+    amp_gain = amp_gain * 0.3; // 1.0 was too loud. => 0.3 max.
     //
     amp1.gain(amp_gain);
     amp2.gain(amp_gain);
@@ -259,8 +259,8 @@ void setup() {
   mixer2.gain(1,1.0);
   mixer2.gain(2,0);
   mixer2.gain(3,0);
-  amp1.gain(0.2); // 1.0 was too loud. => 0.2
-  amp2.gain(0.2);
+  amp1.gain(0.3); // 1.0 was too loud. => 0.3
+  amp2.gain(0.3);
 
   //let auto-poweroff speakers stay turned ON!
   sine1.frequency(IDLE_FREQ);
