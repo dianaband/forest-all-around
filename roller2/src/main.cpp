@@ -111,14 +111,14 @@ void set_speed() {
   MONITORING_SERIAL.println(r);
   isactive = true;
 }
-Task set_speed_task(0, TASK_ONCE, &set_speed);
+Task set_speed_task(0, TASK_ONCE, &set_speed, &runner, false);
 //
 void rest() {
   analogWrite(MOTOR_1A, LOW);
   analogWrite(MOTOR_1B, LOW);
   isactive = false;
 }
-Task rest_task(0, TASK_ONCE, &rest);
+Task rest_task(0, TASK_ONCE, &rest, &runner, false);
 //
 uint8_t watch_counter = 0;
 void watcher() {
@@ -133,8 +133,8 @@ void watcher() {
 }
 Task watcher_task(1000, TASK_FOREVER, &watcher, &runner, true);
 //
-#define MOTOR_2A (D8)
-#define MOTOR_2B (D7)
+#define MOTOR_2A (D3)
+#define MOTOR_2B (D2)
 // my tasks
 int speed2 = 0;
 bool isactive2 = false;
@@ -152,14 +152,14 @@ void set_speed2() {
   MONITORING_SERIAL.println(r);
   isactive2 = true;
 }
-Task set_speed2_task(0, TASK_ONCE, &set_speed2);
+Task set_speed2_task(0, TASK_ONCE, &set_speed2, &runner, false);
 //
 void rest2() {
   analogWrite(MOTOR_2A, LOW);
   analogWrite(MOTOR_2B, LOW);
   isactive2 = false;
 }
-Task rest2_task(0, TASK_ONCE, &rest2);
+Task rest2_task(0, TASK_ONCE, &rest2, &runner, false);
 //
 uint8_t watch2_counter = 0;
 void watcher2() {
@@ -390,12 +390,7 @@ void setup() {
   randomSeed(analogRead(0));
 
   //tasks
-  runner.addTask(set_speed_task);
-  runner.addTask(rest_task);
   rest_task.restartDelayed(500);
-  //
-  runner.addTask(set_speed2_task);
-  runner.addTask(rest2_task);
   rest2_task.restartDelayed(500);
 }
 
