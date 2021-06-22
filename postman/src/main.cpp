@@ -205,6 +205,34 @@ void collect_post() {
           }
         }
       }
+      //
+      else if (type == '{') {
+        //expecting a Hello message.
+        uint8_t frm_size = sizeof(Hello) + 2;
+        //
+        if (Serial.available() >= frm_size) {
+          //
+          uint8_t frm[frm_size];
+          //
+          Serial.readBytes(frm, frm_size);
+          char first = frm[0];
+          char last = frm[frm_size - 1];
+          if (first == '{' && last == '}') {
+            //
+            //good. ==> ok, post it.
+            //
+            //pseudo-broadcast using peer-list!
+            //
+            esp_now_send(NULL, frm, frm_size);
+            //
+            MONITORING_SERIAL.write(frm, frm_size);
+            MONITORING_SERIAL.print(" ==(esp_now_send/0)==> ");
+            //
+          } else {
+            insync = false; //error!
+          }
+        }
+      }
     }
   }
 }
