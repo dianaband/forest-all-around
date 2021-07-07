@@ -290,10 +290,23 @@ void screen() {
   display.setTextColor(SSD1306_WHITE);
   display.setTextSize(1);
 
+  //button status (DEBUG)
+  // int b = digitalRead(pin_vol_up);
+  // b = b*10 + digitalRead(pin_vol_down);
+  // b = b*10 + digitalRead(pin_mute);
+  // b = b*10 + digitalRead(pin_previous);
+  // b = b*10 + digitalRead(pin_pause);
+  // b = b*10 + digitalRead(pin_next);
+
   //line1 - mode line (playing / stopped) + notify mark
   display.setCursor(0, line);
-  if (audio.isRunning()) display.println("= playing ===");
-  else display.println("* stopped !:.");
+  if (audio.isRunning()) {
+    // display.printf("%06d= playing ===", b); // (DEBUG)
+    display.printf("= playing ===");
+  } else {
+    // display.printf("%06d* stopped !:.", b); // (DEBUG)
+    display.printf("* stopped !:.");
+  }
   if (cmd_notify) {
     display.setCursor(120, line);
     display.println("*");
