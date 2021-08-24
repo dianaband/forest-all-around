@@ -57,8 +57,9 @@
 //
 #define HAVE_CLIENT_I2C
 #define DISABLE_AP
-#define REPLICATE_NOTE_REQ
-#define USE_ALTERNATIVE_ADDRESSES
+// #define SERIAL_SWAP
+// #define REPLICATE_NOTE_REQ
+// #define USE_ALTERNATIVE_ADDRESSES
 
 //============<parameters>============
 //
@@ -344,33 +345,37 @@ void setup() {
   esp_now_register_send_cb(onDataSent);
   esp_now_register_recv_cb(onDataReceive);
   //
-  // Serial.println("- ! (esp_now_add_peer) ==> add a 'broadcast peer' (FF:FF:FF:FF:FF:FF).");
-  // uint8_t broadcastmac[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
-  //
-  // //
+  Serial.println("- ! (esp_now_add_peer) ==> add a 'broadcast peer' (FF:FF:FF:FF:FF:FF).");
+  uint8_t broadcastmac[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+
+  // option 1-1)) broadcast to all. for ESP8266
+  esp_now_add_peer(broadcastmac, ESP_NOW_ROLE_COMBO, 1, NULL, 0);
+
+  // // option 1-2)) broadcast to all. for ESP32
   // esp_now_peer_info_t peerInfo;
   // memcpy(peerInfo.peer_addr, broadcastmac, 6);
   // peerInfo.channel = 0;
   // peerInfo.encrypt = false;
   // esp_now_add_peer(&peerInfo);
 
-#if defined(USE_ALTERNATIVE_ADDRESSES)
-  AddressBook * book = lib.getBookByTitle("audioooo alt");
-#else
-  AddressBook * book = lib.getBookByTitle("audioooo");
-#endif
-  for (int idx = 0; idx < book->list.size(); idx++) {
-    Serial.println("- ! (esp_now_add_peer) ==> add a '" + book->list[idx].name + "'.");
-#if defined(ESP32)
-    esp_now_peer_info_t peerInfo;
-    memcpy(peerInfo.peer_addr, book->list[idx].mac, 6);
-    peerInfo.channel = 0;
-    peerInfo.encrypt = false;
-    esp_now_add_peer(&peerInfo);
-#else
-    esp_now_add_peer(book->list[idx].mac, ESP_NOW_ROLE_COMBO, 1, NULL, 0);
-#endif
-  }
+//   // option 2)) according to the addressbook.
+// #if defined(USE_ALTERNATIVE_ADDRESSES)
+//   AddressBook * book = lib.getBookByTitle("audioooo alt");
+// #else
+//   AddressBook * book = lib.getBookByTitle("audioooo");
+// #endif
+//   for (int idx = 0; idx < book->list.size(); idx++) {
+//     Serial.println("- ! (esp_now_add_peer) ==> add a '" + book->list[idx].name + "'.");
+// #if defined(ESP32)
+//     esp_now_peer_info_t peerInfo;
+//     memcpy(peerInfo.peer_addr, book->list[idx].mac, 6);
+//     peerInfo.channel = 0;
+//     peerInfo.encrypt = false;
+//     esp_now_add_peer(&peerInfo);
+// #else
+//     esp_now_add_peer(book->list[idx].mac, ESP_NOW_ROLE_COMBO, 1, NULL, 0);
+// #endif
+//   }
   //
   Serial.println("-");
   Serial.println("\".-.-.-. :)\"");

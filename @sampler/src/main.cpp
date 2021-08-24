@@ -16,6 +16,8 @@
 #define IDLE_FREQ 22000
 #define IDLE_AMP 0 // --> creative muvo 2 doesn't need this. they just stay on!
 
+#define GAIN_MAX 1.0 // if 1.0 is too loud, give max. limit here.
+
 //teensy audio
 #include <Audio.h>
 // #include <SPI.h>
@@ -163,19 +165,19 @@ void receiveEvent(int numBytes) {
     int velocity = str_velocity.toInt();   // 0 ~ 127
     float amp_gain = (float)velocity / 127.0;
     //
-    amp_gain = amp_gain * 0.3; // 1.0 was too loud. => 0.3 max.
+    amp_gain = amp_gain * GAIN_MAX;
     //
     amp1.gain(amp_gain);
     amp2.gain(amp_gain);
     //
     int gate = str_gate.toInt();
     if (gate == 0) {
-      // filter out re-triggering same note while it is playing.
-      if (!playSdWav1.isPlaying() || sample_now != key) {
-        sample_now = key;
-        sample_player_stop_task.restart();
-        Serial.println("sample_player_stop_task");
-      }
+      // filter out re-triggering same note while it is playing. <== ???? WORKS????
+      // if (!playSdWav1.isPlaying() || sample_now != key) { <== ???? WORKS????
+      sample_now = key;
+      sample_player_stop_task.restart();
+      Serial.println("sample_player_stop_task");
+      // }
     } else {
       sample_now = key;
       sample_player_start_task.restart();
@@ -259,8 +261,8 @@ void setup() {
   mixer2.gain(1,1.0);
   mixer2.gain(2,0);
   mixer2.gain(3,0);
-  amp1.gain(0.3); // 1.0 was too loud. => 0.3
-  amp2.gain(0.3);
+  amp1.gain(GAIN_MAX);
+  amp2.gain(GAIN_MAX);
 
   //let auto-poweroff speakers stay turned ON!
   sine1.frequency(IDLE_FREQ);
