@@ -171,17 +171,17 @@ void receiveEvent(int numBytes) {
     amp2.gain(amp_gain);
     //
     int gate = str_gate.toInt();
-    if (gate == 0) {
-      // filter out re-triggering same note while it is playing. <== ???? WORKS????
-      // if (!playSdWav1.isPlaying() || sample_now != key) { <== ???? WORKS????
+    if (gate == 1) { //on 'start'
+      // filter out re-triggering same note while it is playing.
+      if (!playSdWav1.isPlaying() || sample_now != key) {
+        sample_now = key;
+        sample_player_start_task.restart();
+        Serial.println("sample_player_start_task");
+      }
+    } else if (gate == 0) { //on 'stop'
       sample_now = key;
       sample_player_stop_task.restart();
       Serial.println("sample_player_stop_task");
-      // }
-    } else {
-      sample_now = key;
-      sample_player_start_task.restart();
-      Serial.println("sample_player_start_task");
     }
   }
 }
