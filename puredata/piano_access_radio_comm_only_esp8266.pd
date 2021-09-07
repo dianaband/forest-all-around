@@ -57,7 +57,7 @@
 #X obj 117 190 s HELLO;
 #X obj 34 120 print OSC;
 #X obj 34 93 spigot;
-#X obj 83 58 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0 1
+#X obj 83 58 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1 1
 ;
 #X obj 412 217 s OSC;
 #X obj 412 155 r NOTE;
@@ -66,7 +66,7 @@
 #X floatatom 543 325 5 0 0 0 - - -;
 #X obj 543 347 s PS;
 #X obj 494 236 tgl 25 0 empty empty hello 32 7 0 15 -159808 -257985
--159808 1 1;
+-159808 0 1;
 #X obj 543 263 loadbang;
 #X msg 543 286 1;
 #X obj 494 286 sel 1;
@@ -76,31 +76,31 @@
 #X obj 34 190 print HELLO;
 #X text 103 24 * a wireless "field synth" - based on 'esp now' protocol
 ;
-#X msg 204 58 devicename /dev/tty.usbmodem4871051 \, baud 57600 \,
-pollintervall 1 \, verbose 1;
 #X msg 494 315 2000;
 #X obj 230 203 tgl 15 0 empty empty connected? 17 7 0 10 -262144 -1
 -1 1 1;
-#X msg 243 98 devicename /dev/ttyACM0 \, baud 57600 \, pollintervall
-1 \, verbose 1;
 #X obj 79 307 tgl 15 0 empty empty melodica_long_long_breath 17 7 0
-10 -262144 -1 -1 0 1;
-#X msg 79 327 1999 0 0 \$1;
+10 -262144 -1 -1 1 1;
 #X obj 79 351 s NOTE;
 #X obj 271 352 s NOTE;
 #X msg 271 328 4401 0 \$1 1;
 #X floatatom 271 305 5 0 0 0 - - -;
+#X msg 243 78 devicename /dev/ttyUSB0 \, baud 57600 \, pollintervall
+1 \, verbose 1;
+#X obj 143 241 print;
+#X msg 79 327 10001 1 127 \$1;
 #X connect 0 0 16 0;
 #X connect 1 0 0 1;
 #X connect 2 0 14 0;
 #X connect 3 0 8 0;
-#X connect 3 1 30 0;
+#X connect 3 1 29 0;
 #X connect 4 0 3 1;
 #X connect 5 0 3 1;
 #X connect 6 0 3 0;
 #X connect 7 0 6 0;
 #X connect 7 0 12 0;
 #X connect 8 0 9 0;
+#X connect 8 0 36 0;
 #X connect 9 0 10 0;
 #X connect 9 0 24 0;
 #X connect 12 0 11 0;
@@ -111,14 +111,13 @@ pollintervall 1 \, verbose 1;
 #X connect 20 0 23 0;
 #X connect 21 0 22 0;
 #X connect 22 0 20 0;
-#X connect 23 0 29 0;
+#X connect 23 0 28 0;
 #X connect 23 1 18 0;
 #X connect 24 0 26 0;
 #X connect 25 0 24 1;
-#X connect 28 0 3 1;
-#X connect 29 0 18 0;
-#X connect 31 0 3 1;
-#X connect 32 0 33 0;
-#X connect 33 0 34 0;
-#X connect 36 0 35 0;
-#X connect 37 0 36 0;
+#X connect 28 0 18 0;
+#X connect 30 0 37 0;
+#X connect 33 0 32 0;
+#X connect 34 0 33 0;
+#X connect 35 0 3 1;
+#X connect 37 0 31 0;
