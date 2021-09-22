@@ -45,6 +45,10 @@
 #define REPLICATE_NOTE_REQ
 #define USE_ALTERNATIVE_ADDRESSES
 
+//============<audioooo-param>============
+#define GAIN_MAX 1.0 // if 1.0 is too loud, give max. limit here.
+//============<audioooo-param>============
+
 //============<parameters>============
 //
 #define LED_PERIOD (11111)
@@ -347,6 +351,8 @@ void onNoteHandler(Note & n) {
     //
     screen_cmd = n.to_string();
     screen_cmd_notify_task.restart();
+    //
+    audio.setVolume(n.velocity * 21 / 127 * GAIN_MAX); // 0...127 ==> 0...21
     //
     if (n.onoff == 1) {
       // filter out re-triggering same note while it is playing.
