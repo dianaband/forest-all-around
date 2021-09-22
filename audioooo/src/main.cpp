@@ -128,8 +128,8 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 Audio audio;
 
 //screen task
-String screen_cmd = "(((..listening..)))";
-String screen_filename = "***.mp3";
+String screen_cmd = "(.........................................";
+String screen_filename = "/___.mp3";
 
 //
 extern Task screen_cmd_notify_task;
