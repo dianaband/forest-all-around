@@ -23,7 +23,7 @@
 //============<identities>============
 //
 #define MY_GROUP_ID   (20000)
-#define MY_ID         (MY_GROUP_ID + 1)
+#define MY_ID         (MY_GROUP_ID + 16)
 #define MY_SIGN       ("@POSTMAN|@SAMPLER")
 //
 //============</identities>============
@@ -58,7 +58,7 @@
 #define HAVE_CLIENT_I2C
 #define DISABLE_AP
 // #define SERIAL_SWAP
-// #define REPLICATE_NOTE_REQ
+#define REPLICATE_NOTE_REQ
 // #define USE_ALTERNATIVE_ADDRESSES
 
 //============<parameters>============
