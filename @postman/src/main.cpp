@@ -22,7 +22,7 @@
 
 //============<identities>============
 //
-#define MY_GROUP_ID   (10000)
+#define MY_GROUP_ID   (20000)
 #define MY_ID         (MY_GROUP_ID + 1)
 #define MY_SIGN       ("@POSTMAN|@SAMPLER")
 //
