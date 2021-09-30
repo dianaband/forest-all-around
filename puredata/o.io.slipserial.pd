@@ -14,7 +14,7 @@
 #X obj 264 120 loadbang;
 #X obj 196 235 print info;
 #X obj 50 104 spigot;
-#X obj 144 150 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X obj 144 150 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X obj 186 74 route open devicename close;
 #X connect 0 0 4 0;
@@ -26,7 +26,6 @@
 #X connect 6 0 3 0;
 #X connect 7 0 10 0;
 #X connect 7 0 14 0;
-#X connect 7 1 12 0;
 #X connect 8 0 15 0;
 #X connect 8 1 3 0;
 #X connect 9 0 6 0;
