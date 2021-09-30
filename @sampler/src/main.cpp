@@ -12,12 +12,6 @@
 // (part-3) teensy35 : 'client:sampler' (mesh post --> play sounds)
 //
 
-//HACK: let auto-poweroff speakers stay turned ON! - (creative muvo mini)
-#define IDLE_FREQ 22000
-#define IDLE_AMP 0 // --> creative muvo 2 doesn't need this. they just stay on!
-
-#define GAIN_FACTOR 1.0 // if 1.0 is too loud, give a multiplier here.
-
 //==========<list-of-configurations>===========
 //
 // 'USE_EXTERNAL_ANALOG_REFERENCE'
@@ -27,8 +21,26 @@
 //     so, unless you are so sure, don't enable this.
 // !WARNING! : teensy36 could be destroyed! don't enable it.
 //
+// 'USE_IDLE_NOISE'
+// --> HACK: let auto-poweroff speakers stay turned ON - (creative muvo mini)
+//     .NOTE. : creative muvo 2 doesn't need this. they just stay on!
+//
+// 'USE_LED_INDICATOR'
+// --> a light indicator for playing/stopped
+//
 //==========</list-of-configurations>===========
 #define USE_EXTERNAL_ANALOG_REFERENCE
+#define USE_IDLE_NOISE
+#define USE_LED_INDICATOR
+
+//============<parameters>============
+//
+#define IDLE_FREQ 22000
+#define IDLE_AMP 0
+//
+#define GAIN_FACTOR 1.0 // this is a private multiplier for this module.
+//
+//============</parameters>============
 
 //teensy audio
 #include <Audio.h>
@@ -82,8 +94,10 @@ void sample_player_start() {
   }
   //start the player!
   playSdWav1.play(filename);
+#if defined(USE_LED_INDICATOR)
   //mark the indicator : HIGH: ON
   digitalWrite(13, HIGH);
+#endif
   //to wait a bit for updating isPlaying()
   delay(10);
 }
@@ -115,11 +129,11 @@ void sample_player_check() {
   if (playSdWav1.isPlaying() == false) {
     //mark the indicator : LOW: OFF
     digitalWrite(13, LOW);
-    //let speaker leave turned ON!
+#if defined(USE_IDLE_NOISE)
     sine1.amplitude(IDLE_AMP);
+#endif
   }
   else {
-    //let speaker leave turned ON!
     sine1.amplitude(0);
   }
 }
