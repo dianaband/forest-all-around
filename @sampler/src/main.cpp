@@ -16,7 +16,19 @@
 #define IDLE_FREQ 22000
 #define IDLE_AMP 0 // --> creative muvo 2 doesn't need this. they just stay on!
 
-#define GAIN_MAX 1.0 // if 1.0 is too loud, give max. limit here.
+#define GAIN_FACTOR 1.0 // if 1.0 is too loud, give a multiplier here.
+
+//==========<list-of-configurations>===========
+//
+// 'USE_EXTERNAL_ANALOG_REFERENCE'
+// --> this was used probably to make output swing greater Vpp == 3.3v
+//     but, with this + small headphones, i cannot hear anything.
+//     and, this might be dangerous in some case -> this is suspicous of 1 broken teensy 3.6
+//     so, unless you are so sure, don't enable this.
+// !WARNING! : teensy36 could be destroyed! don't enable it.
+//
+//==========</list-of-configurations>===========
+#define USE_EXTERNAL_ANALOG_REFERENCE
 
 //teensy audio
 #include <Audio.h>
@@ -165,7 +177,7 @@ void receiveEvent(int numBytes) {
     int velocity = str_velocity.toInt();   // 0 ~ 127
     float amp_gain = (float)velocity / 127.0;
     //
-    amp_gain = amp_gain * GAIN_MAX;
+    amp_gain = amp_gain * GAIN_FACTOR;
     //
     amp1.gain(amp_gain);
     amp2.gain(amp_gain);
@@ -203,7 +215,8 @@ void printDirectory(File dir, int numTabs) {
     // Serial.print(entry.name());
     if (entry.isDirectory()) {
       Serial.println("/");
-      printDirectory(entry, numTabs+1);
+      //non-recursive listing...
+      // printDirectory(entry, numTabs+1);
     } else {
       // files have sizes, directories do not
       Serial.print("\t\t");
@@ -247,11 +260,14 @@ void setup() {
   //audio
   AudioMemory(20);
 
-  // dacs1.analogReference(EXTERNAL);
+  #if defined(USE_EXTERNAL_ANALOG_REFERENCE) && !defined(TEENSY36)
+  Serial.println("- ======== 'USE_EXTERNAL_ANALOG_REFERENCE' ========");
+  dacs1.analogReference(EXTERNAL);
   // <-- this was used probably to make output swing greater Vpp == 3.3v
   //     but, with this + small headphones, i cannot hear anything.
   //     and, this might be dangerous in some case -> this is suspicous of 1 broken teensy 3.6
   //     so, unless you are so sure, don't enable this.
+  #endif
 
   mixer1.gain(0,1.0);
   mixer1.gain(1,1.0);
@@ -261,8 +277,8 @@ void setup() {
   mixer2.gain(1,1.0);
   mixer2.gain(2,0);
   mixer2.gain(3,0);
-  amp1.gain(GAIN_MAX);
-  amp2.gain(GAIN_MAX);
+  amp1.gain(GAIN_FACTOR);
+  amp2.gain(GAIN_FACTOR);
 
   //let auto-poweroff speakers stay turned ON!
   sine1.frequency(IDLE_FREQ);
