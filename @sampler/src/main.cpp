@@ -296,6 +296,7 @@ void setup() {
 
   //let auto-poweroff speakers stay turned ON!
   sine1.frequency(IDLE_FREQ);
+  sine1.amplitude(0);
 
   //led
   pinMode(13, OUTPUT);
