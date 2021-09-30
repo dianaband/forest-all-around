@@ -35,8 +35,8 @@
 
 //============<parameters>============
 //
-#define IDLE_FREQ 22000
-#define IDLE_AMP 0
+#define IDLE_FREQ 50
+#define IDLE_AMP 0.05
 //
 #define GAIN_FACTOR 1.0 // this is a private multiplier for this module.
 //
