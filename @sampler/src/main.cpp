@@ -37,6 +37,8 @@
 //
 #define IDLE_FREQ 50
 #define IDLE_AMP 0.05
+#define IDLE_OFFTIME 60 //sec
+#define IDLE_ONTIME 1 //sec
 //
 #define GAIN_FACTOR 1.0 // this is a private multiplier for this module.
 //
@@ -71,6 +73,7 @@ AudioConnection patchCord8(amp2, 0, dacs1, 1);
 //task
 #include <TaskScheduler.h>
 Scheduler runner;
+extern Task idle_noise_task;
 //sample #
 int sample_now = 0; //0~99
 void sample_player_start() {
@@ -129,14 +132,45 @@ void sample_player_check() {
   if (playSdWav1.isPlaying() == false) {
     //mark the indicator : LOW: OFF
     digitalWrite(13, LOW);
-#if defined(USE_IDLE_NOISE)
-    sine1.amplitude(IDLE_AMP);
-#endif
   }
-  else {
+#if defined(USE_IDLE_NOISE)
+  static bool active = false;
+  if (active == false && playSdWav1.isPlaying() == false) {
+    idle_noise_task.restart();
+    active = true;
+  }
+  else if (active == true && playSdWav1.isPlaying() == true) {
+    idle_noise_task.disable();
+    sine1.amplitude(0);
+    active = false;
+  }
+#endif
+}
+#if defined(USE_IDLE_NOISE)
+void idle_noise() {
+  //
+  static int elapsed_sec = 0;
+  static bool active = false;
+  if (idle_noise_task.isFirstIteration()) {
+    elapsed_sec = 0;
+    active = false;
+    sine1.amplitude(0);
+  } else {
+    elapsed_sec++;
+  }
+  //
+  if (active == false && elapsed_sec == IDLE_OFFTIME) {
+    active = true;
+    elapsed_sec = 0;
+    sine1.amplitude(IDLE_AMP);
+  } else if (active == true && elapsed_sec == IDLE_ONTIME) {
+    active = false;
+    elapsed_sec = 0;
     sine1.amplitude(0);
   }
 }
+Task idle_noise_task(1000, TASK_FOREVER, idle_noise, &runner, true);
+#endif
 //
 Task sample_player_start_task(0, TASK_ONCE, sample_player_start, &runner, false);
 Task sample_player_stop_task(0, TASK_ONCE, sample_player_stop, &runner, false);
