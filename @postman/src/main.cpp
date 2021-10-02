@@ -23,8 +23,8 @@
 //============<identities>============
 //
 #define MY_GROUP_ID   (20000)
-#define MY_ID         (MY_GROUP_ID + 19)
-#define MY_SIGN       ("@POSTMAN|@SAMPLER")
+#define MY_ID         (MY_GROUP_ID + 999)
+#define MY_SIGN       ("@POSTMAN|REPEATER")
 //
 //============</identities>============
 
@@ -101,6 +101,10 @@
 //post & addresses
 #include "../../post.h"
 
+//vector
+#include <vector>
+std::vector<Note> recentNotes;
+
 //espnow
 #include <ESP8266WiFi.h>
 #include <espnow.h>
@@ -123,22 +127,18 @@ Note note_now = {
   -1, // float x4;
   -1 // float ps;
 };
-#define NEW_NOTE_TIMEOUT (3000)
-static unsigned long new_note_time = (-1*NEW_NOTE_TIMEOUT);
-void repeat() {
+#define RECENT_NOTES_TIMEOUT (3000)
+static unsigned long last_note_time = 0;
+void recent_clear() {
   //
-  uint8_t frm_size = sizeof(Note) + 2;
-  uint8_t frm[frm_size];
-  frm[0] = '[';
-  memcpy(frm + 1, (uint8_t *) &note_now, sizeof(Note));
-  frm[frm_size - 1] = ']';
+  if (millis() - last_note_time > RECENT_NOTES_TIMEOUT) {
+    recentNotes.clear();
+    Serial.println("recent list cleared");
+    last_note_time = millis();
+  }
   //
-  esp_now_send(NULL, frm, frm_size); // to all peers in the list.
-  //
-  MONITORING_SERIAL.print("repeat! ==> ");
-  MONITORING_SERIAL.println(note_now.to_string());
 }
-Task repeat_task(0, TASK_ONCE, &repeat, &runner, false);
+Task recent_clear_task(100, TASK_FOREVER, &recent_clear, &runner, true);
 #endif
 //*-*-*-*-*-*-*-*-*-*-*-*-*
 
@@ -278,11 +278,39 @@ void onDataReceive(uint8_t * mac, uint8_t *incomingData, uint8_t len) {
     MONITORING_SERIAL.println(note.to_string());
 
     #if defined(REPLICATE_NOTE_REQ)
-    if (millis() - new_note_time > NEW_NOTE_TIMEOUT) {
-      note_now = note;
-      repeat_task.restart();
-      new_note_time = millis();
+    last_note_time = millis(); //clear timer reset : the recent list holding (re)started
+    // check if this note is in the list?
+    bool check = false;
+    for (uint32_t idx = 0; idx < recentNotes.size(); idx++) {
+      if (recentNotes[idx].pitch == note.pitch && recentNotes[idx].id == note.id) {
+        check = true;
+      }
     }
+    // if not, add this into the list and repeat!
+    if (check == false) {
+      //
+      recentNotes.push_back(note);
+      //
+      uint8_t frm_size = sizeof(Note) + 2;
+      uint8_t frm[frm_size];
+      frm[0] = '[';
+      memcpy(frm + 1, (uint8_t *) &note, sizeof(Note));
+      frm[frm_size - 1] = ']';
+      //
+      esp_now_send(NULL, frm, frm_size); // to all peers in the list.
+      //
+      MONITORING_SERIAL.print("repeat! ==> ");
+      MONITORING_SERIAL.println(note.to_string());
+      //
+    }
+
+    //EMERGENCY PATCH.HACK:
+    // original code is not intended for a BURST of notes.
+    // so, only 1 msg. will be repeated in 3 sec. all others will be simply ignored.
+    // to make a burst of msgs repeatible:
+    // --> make a list of recent 'pitches'
+    //     if there is any new msg. check if this is in the list, if not, add it & repeat, if yes, skip it.
+    //     after 3sec no new msg., the list will be flushed. every new msg. will reset timeout + save the list for extra. 3 sec.
     #endif
   }
 }
