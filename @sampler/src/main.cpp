@@ -35,10 +35,32 @@
 
 //============<parameters>============
 //
+// #define IDLE_FREQ 50
+// #define IDLE_AMP 0.05
+// #define IDLE_OFFTIME 60 //sec
+// #define IDLE_ONTIME 1 //sec
+// ^--- FAILED
+// #define IDLE_FREQ 50
+// #define IDLE_AMP 0.05
+// #define IDLE_OFFTIME 300 //sec
+// #define IDLE_ONTIME 30 //sec
+// ^--- FAILED
+// == TESTING === C selected (prematurely)
 #define IDLE_FREQ 50
-#define IDLE_AMP 0.05
-#define IDLE_OFFTIME 60 //sec
-#define IDLE_ONTIME 1 //sec
+#define IDLE_AMP 0.1
+#define IDLE_OFFTIME 150 //sec
+#define IDLE_ONTIME 15 //sec
+// == TESTING === 5
+// #define IDLE_FREQ 22000
+// #define IDLE_AMP 0.05
+// #define IDLE_OFFTIME 60 //sec
+// #define IDLE_ONTIME 10 //sec
+// // == TESTING === A
+// #define IDLE_FREQ 22000
+// #define IDLE_AMP 0.05
+// #define IDLE_OFFTIME 1 //sec (min 1)
+// #define IDLE_ONTIME 10 //sec
+
 //
 #define GAIN_FACTOR 1.0 // this is a private multiplier for this module.
 //
@@ -159,11 +181,11 @@ void idle_noise() {
     elapsed_sec++;
   }
   //
-  if (active == false && elapsed_sec == IDLE_OFFTIME) {
+  if (active == false && elapsed_sec >= IDLE_OFFTIME) {
     active = true;
     elapsed_sec = 0;
     sine1.amplitude(IDLE_AMP);
-  } else if (active == true && elapsed_sec == IDLE_ONTIME) {
+  } else if (active == true && elapsed_sec >= IDLE_ONTIME) {
     active = false;
     elapsed_sec = 0;
     sine1.amplitude(0);

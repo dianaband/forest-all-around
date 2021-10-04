@@ -23,8 +23,10 @@
 //============<identities>============
 //
 #define MY_GROUP_ID   (20000)
-#define MY_ID         (MY_GROUP_ID + 999)
+#define MY_ID         (MY_GROUP_ID + 1000 + 999)
 #define MY_SIGN       ("@POSTMAN|REPEATER")
+//
+#define ADDRESSBOOK_TITLE ("1st floor")
 //
 //============</identities>============
 
@@ -49,17 +51,12 @@
 // 'HAVE_CLIENT_I2C'
 // --> i have a client w/ I2C i/f. enable the I2C client task.
 //
-// 'USE_ALTERNATIVE_ADDRESSES'
-// --> peer list limited max. 20.
-//     so, we have alternative address book that covers after 20th.
-//
 //==========</list-of-configurations>==========
 //
 #define HAVE_CLIENT_I2C
 #define DISABLE_AP
 // #define SERIAL_SWAP
 #define REPLICATE_NOTE_REQ
-// #define USE_ALTERNATIVE_ADDRESSES
 
 //============<parameters>============
 //
@@ -372,38 +369,41 @@ void setup() {
   esp_now_set_self_role(ESP_NOW_ROLE_COMBO);
   esp_now_register_send_cb(onDataSent);
   esp_now_register_recv_cb(onDataReceive);
-  //
-  Serial.println("- ! (esp_now_add_peer) ==> add a 'broadcast peer' (FF:FF:FF:FF:FF:FF).");
-  uint8_t broadcastmac[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
-  // option 1-1)) broadcast to all. for ESP8266
-  esp_now_add_peer(broadcastmac, ESP_NOW_ROLE_COMBO, 1, NULL, 0);
-
-  // // option 1-2)) broadcast to all. for ESP32
-  // esp_now_peer_info_t peerInfo;
-  // memcpy(peerInfo.peer_addr, broadcastmac, 6);
-  // peerInfo.channel = 0;
-  // peerInfo.encrypt = false;
-  // esp_now_add_peer(&peerInfo);
-
-//   // option 2)) according to the addressbook.
-// #if defined(USE_ALTERNATIVE_ADDRESSES)
-//   AddressBook * book = lib.getBookByTitle("audioooo alt");
-// #else
-//   AddressBook * book = lib.getBookByTitle("audioooo");
+  //fetch & read addressbook
+  String addressbook_title = ADDRESSBOOK_TITLE;
+// #if defined(ADDRESSBOOK_TITLE_CLI)
+//   addressbook_title = ADDRESSBOOK_TITLE_CLI;
 // #endif
-//   for (int idx = 0; idx < book->list.size(); idx++) {
-//     Serial.println("- ! (esp_now_add_peer) ==> add a '" + book->list[idx].name + "'.");
-// #if defined(ESP32)
-//     esp_now_peer_info_t peerInfo;
-//     memcpy(peerInfo.peer_addr, book->list[idx].mac, 6);
-//     peerInfo.channel = 0;
-//     peerInfo.encrypt = false;
-//     esp_now_add_peer(&peerInfo);
-// #else
-//     esp_now_add_peer(book->list[idx].mac, ESP_NOW_ROLE_COMBO, 1, NULL, 0);
-// #endif
-//   }
+//
+// NOTE: there is a way to give a define value here like:
+//   export PLATFORMIO_SRC_BUILD_FLAGS="'-DADDRESSBOOK_TITLE_CLI=\"broadcast only\"'" && pio run
+// but, everytime i change this, whole arduino framework + libraries rebuild.
+// PLATFORMIO_SRC_BUILD_FLAGS supposed to work only to src/ but strange.
+// this takes up too much time, not really haptic. later, investigate the issues.
+//
+  AddressBook * book = lib.getBookByTitle(addressbook_title);
+  if (book == NULL) {
+    Serial.println("- ! wrong book !! :" + addressbook_title); while(1);
+  } else {
+    Serial.println("- ! reading book ....");
+    Serial.println("    -----------------");
+    Serial.println("    { " + addressbook_title + " }");
+    Serial.println("    -----------------");
+    Serial.println();
+  }
+  for (int idx = 0; idx < book->list.size(); idx++) {
+    Serial.println("- ! (esp_now_add_peer) ==> add a '" + book->list[idx].name + "'.");
+#if defined(ESP32)
+    esp_now_peer_info_t peerInfo;
+    memcpy(peerInfo.peer_addr, book->list[idx].mac, 6);
+    peerInfo.channel = 0;
+    peerInfo.encrypt = false;
+    esp_now_add_peer(&peerInfo);
+#else
+    esp_now_add_peer(book->list[idx].mac, ESP_NOW_ROLE_COMBO, 1, NULL, 0);
+#endif
+  }
   //
   Serial.println("-");
   Serial.println("\".-.-.-. :)\"");

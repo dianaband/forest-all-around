@@ -1,0 +1,172 @@
+==== ADDRESSBOOK ====
+
+1- my id: 20001, gid: 20000, call me ==> "@POSTMAN|@SAMPLER"- mac address: B4:E6:2D:37:0A:07, channel: 5
+2- my id: 20002, gid: 20000, call me ==> "@POSTMAN|@SAMPLER"- mac address: EC:FA:BC:63:19:84, channel: 5
+3- my id: 20003, gid: 20000, call me ==> "@POSTMAN|@SAMPLER"- mac address: 98:F4:AB:B3:B4:19, channel: 5
+4- my id: 20004, gid: 20000, call me ==> "@POSTMAN|@SAMPLER"- mac address: 98:F4:AB:B3:B4:DD, channel: 5
+5- my id: 20005, gid: 20000, call me ==> "@POSTMAN|@SAMPLER"- mac address: BC:DD:C2:14:74:D2, channel: 5
+6- my id: 20006, gid: 20000, call me ==> "@POSTMAN|@SAMPLER"- mac address: BC:DD:C2:14:75:6F, channel: 5
+7- my id: 20007, gid: 20000, call me ==> "@POSTMAN|@SAMPLER"- mac address: B4:E6:2D:37:45:F5, channel: 5
+8- my id: 20008, gid: 20000, call me ==> "@POSTMAN|@SAMPLER"- mac address: 84:CC:A8:A3:A7:B5, channel: 5
+9- my id: 20009, gid: 20000, call me ==> "@POSTMAN|@SAMPLER"- mac address: B4:E6:2D:37:11:E6, channel: 5
+a- my id: 20010, gid: 20000, call me ==> "@POSTMAN|@SAMPLER"- mac address: BC:DD:C2:14:63:8E, channel: 5
+b- my id: 20011, gid: 20000, call me ==> "@POSTMAN|@SAMPLER"- mac address: 98:F4:AB:B3:BA:44, channel: 5
+c- my id: 20012, gid: 20000, call me ==> "@POSTMAN|@SAMPLER"- mac address: 5C:CF:7F:B8:B6:80, channel: 5
+d- my id: 20013, gid: 20000, call me ==> "@POSTMAN|@SAMPLER"- mac address: B4:E6:2D:37:18:AE, channel: 5
+e- my id: 20014, gid: 20000, call me ==> "@POSTMAN|@SAMPLER"- mac address: 98:F4:AB:B3:B5:C2, channel: 5
+f- my id: 20015, gid: 20000, call me ==> "@POSTMAN|@SAMPLER"- mac address: B4:E6:2D:37:37:AE, channel: 5
+g- my id: 20016, gid: 20000, call me ==> "@POSTMAN|@SAMPLER"- mac address: BC:DD:C2:B2:AF:D4, channel: 5
+h- my id: 20017, gid: 20000, call me ==> "@POSTMAN|@SAMPLER"- mac address: 68:C6:3A:D5:3E:F3, channel: 5
+i- my id: 20018, gid: 20000, call me ==> "@POSTMAN|@SAMPLER"- mac address: B4:E6:2D:37:09:92, channel: 5
+j- my id: 20019, gid: 20000, call me ==> "@POSTMAN|@SAMPLER"- mac address: 5C:CF:7F:B7:55:98, channel: 5
+
+repeaters
+10- my id: 21010, gid: 20000, call me ==> "@POSTMAN|REPEATER"- mac address: A8:48:FA:CD:29:76, channel: 5
+11- my id: 21011, gid: 20000, call me ==> "@POSTMAN|REPEATER"- mac address: 30:83:98:B1:D2:66, channel: 5
+12- my id: 21012, gid: 20000, call me ==> "@POSTMAN|REPEATER"- mac address: 30:83:98:B2:77:E6, channel: 5
+13- my id: 21013, gid: 20000, call me ==> "@POSTMAN|REPEATER"- mac address: 30:83:98:B2:6C:7B, channel: 5
+14- my id: 21014, gid: 20000, call me ==> "@POSTMAN|REPEATER"- mac address: 60:01:94:38:20:5B, channel: 5
+15- my id: 21015, gid: 20000, call me ==> "@POSTMAN|REPEATER"- mac address: A8:48:FA:CD:47:84, channel: 5
+16- my id: 21016, gid: 20000, call me ==> "@POSTMAN|REPEATER"- mac address: A8:48:FA:CD:43:A7, channel: 5
+17- my id: 21017, gid: 20000, call me ==> "@POSTMAN|REPEATER"- mac address: B4:E6:2D:37:3B:90, channel: 5
+18- my id: 21018, gid: 20000, call me ==> "@POSTMAN|REPEATER"- mac address: A8:48:FA:CD:1C:53, channel: 5
+19- my id: 21019, gid: 20000, call me ==> "@POSTMAN|REPEATER"- mac address: 80:7D:3A:58:87:2D, channel: 5
+20- my id: 21020, gid: 20000, call me ==> "@POSTMAN|REPEATER"- mac address: 30:83:98:B1:18:B4, channel: 5
+
+
+==== GROUPS ====
+[slopeway]        => 5 11 8 12 a    + c 2 13 4 i j e f 19 7 6
+5  : "@POSTMAN|@SAMPLER" => BC:DD:C2:14:74:D2
+11 : "@POSTMAN|REPEATER" => 30:83:98:B1:D2:66
+8  : "@POSTMAN|@SAMPLER" => 84:CC:A8:A3:A7:B5
+12 : "@POSTMAN|REPEATER" => 30:83:98:B2:77:E6
+a  : "@POSTMAN|@SAMPLER" => BC:DD:C2:14:63:8E
++
+c  : "@POSTMAN|@SAMPLER" => 5C:CF:7F:B8:B6:80
+2  : "@POSTMAN|@SAMPLER" => EC:FA:BC:63:19:84
+13 : "@POSTMAN|REPEATER" => 30:83:98:B2:6C:7B
+4  : "@POSTMAN|@SAMPLER" => 98:F4:AB:B3:B4:DD
+i  : "@POSTMAN|@SAMPLER" => B4:E6:2D:37:09:92
+j  : "@POSTMAN|@SAMPLER" => 5C:CF:7F:B7:55:98
+e  : "@POSTMAN|@SAMPLER" => 98:F4:AB:B3:B5:C2
+f  : "@POSTMAN|@SAMPLER" => B4:E6:2D:37:37:AE
+19 : "@POSTMAN|REPEATER" => 80:7D:3A:58:87:2D
+7  : "@POSTMAN|@SAMPLER" => B4:E6:2D:37:45:F5
+6  : "@POSTMAN|@SAMPLER" => BC:DD:C2:14:75:6F
++
+broadcast
+----------------
+[1st floor]       => c 2 10 b 14 3  + slopeway(5 11 8 12 a)
+c  : "@POSTMAN|@SAMPLER" => 5C:CF:7F:B8:B6:80
+2  : "@POSTMAN|@SAMPLER" => EC:FA:BC:63:19:84
+10 : "@POSTMAN|REPEATER" => A8:48:FA:CD:29:76
+b  : "@POSTMAN|@SAMPLER" => 98:F4:AB:B3:BA:44
+14 : "@POSTMAN|REPEATER" => 60:01:94:38:20:5B
+3  : "@POSTMAN|@SAMPLER" => 98:F4:AB:B3:B4:19
++
+5  : "@POSTMAN|@SAMPLER" => BC:DD:C2:14:74:D2
+11 : "@POSTMAN|REPEATER" => 30:83:98:B1:D2:66
+8  : "@POSTMAN|@SAMPLER" => 84:CC:A8:A3:A7:B5
+12 : "@POSTMAN|REPEATER" => 30:83:98:B2:77:E6
+a  : "@POSTMAN|@SAMPLER" => BC:DD:C2:14:63:8E
++
+broadcast
+----------------
+[2nd floor]       => 4 j i 13 e f h + slopeway(5 11 8 12 a) + bridge(15 16 1 17)
+4  : "@POSTMAN|@SAMPLER" => 98:F4:AB:B3:B4:DD
+j  : "@POSTMAN|@SAMPLER" => 5C:CF:7F:B7:55:98
+i  : "@POSTMAN|@SAMPLER" => B4:E6:2D:37:09:92
+13 : "@POSTMAN|REPEATER" => 30:83:98:B2:6C:7B
+e  : "@POSTMAN|@SAMPLER" => 98:F4:AB:B3:B5:C2
+f  : "@POSTMAN|@SAMPLER" => B4:E6:2D:37:37:AE
+h  : "@POSTMAN|@SAMPLER" => 68:C6:3A:D5:3E:F3
++
+5  : "@POSTMAN|@SAMPLER" => BC:DD:C2:14:74:D2
+11 : "@POSTMAN|REPEATER" => 30:83:98:B1:D2:66
+8  : "@POSTMAN|@SAMPLER" => 84:CC:A8:A3:A7:B5
+12 : "@POSTMAN|REPEATER" => 30:83:98:B2:77:E6
+a  : "@POSTMAN|@SAMPLER" => BC:DD:C2:14:63:8E
++
+15 : "@POSTMAN|REPEATER" => A8:48:FA:CD:47:84
+16 : "@POSTMAN|REPEATER" => A8:48:FA:CD:43:A7
+1  : "@POSTMAN|@SAMPLER" => B4:E6:2D:37:0A:07
+17 : "@POSTMAN|REPEATER" => B4:E6:2D:37:3B:90
++
+broadcast
+----------------
+[bridge]          => 15 16 1 17     + h 13 18 9
+15 : "@POSTMAN|REPEATER" => A8:48:FA:CD:47:84
+16 : "@POSTMAN|REPEATER" => A8:48:FA:CD:43:A7
+1  : "@POSTMAN|@SAMPLER" => B4:E6:2D:37:0A:07
+17 : "@POSTMAN|REPEATER" => B4:E6:2D:37:3B:90
++
+h  : "@POSTMAN|@SAMPLER" => 68:C6:3A:D5:3E:F3
+13 : "@POSTMAN|REPEATER" => 30:83:98:B2:6C:7B
+18 : "@POSTMAN|REPEATER" => A8:48:FA:CD:1C:53
+9  : "@POSTMAN|@SAMPLER" => B4:E6:2D:37:11:E6
++
+broadcast
+----------------
+[2nd floor annex] => 18 g 9         + bridge(15 16 1 17)
+18 : "@POSTMAN|REPEATER" => A8:48:FA:CD:1C:53
+g  : "@POSTMAN|@SAMPLER" => BC:DD:C2:B2:AF:D4
+9  : "@POSTMAN|@SAMPLER" => B4:E6:2D:37:11:E6
++
+15 : "@POSTMAN|REPEATER" => A8:48:FA:CD:47:84
+16 : "@POSTMAN|REPEATER" => A8:48:FA:CD:43:A7
+1  : "@POSTMAN|@SAMPLER" => B4:E6:2D:37:0A:07
+17 : "@POSTMAN|REPEATER" => B4:E6:2D:37:3B:90
++
+broadcast
+----------------
+[3rd floor]       => 7 19 20 6 d    + slopeway(5 11 8 12 a)
+7  : "@POSTMAN|@SAMPLER" => B4:E6:2D:37:45:F5
+19 : "@POSTMAN|REPEATER" => 80:7D:3A:58:87:2D
+20 : "@POSTMAN|REPEATER" => 30:83:98:B1:18:B4
+6  : "@POSTMAN|@SAMPLER" => BC:DD:C2:14:75:6F
+d  : "@POSTMAN|@SAMPLER" => B4:E6:2D:37:18:AE
++
+5  : "@POSTMAN|@SAMPLER" => BC:DD:C2:14:74:D2
+11 : "@POSTMAN|REPEATER" => 30:83:98:B1:D2:66
+8  : "@POSTMAN|@SAMPLER" => 84:CC:A8:A3:A7:B5
+12 : "@POSTMAN|REPEATER" => 30:83:98:B2:77:E6
+a  : "@POSTMAN|@SAMPLER" => BC:DD:C2:14:63:8E
+----------------
+
+
+
+
+
+
+1  : "@POSTMAN|@SAMPLER" => B4:E6:2D:37:0A:07 [bridge]
+2  : "@POSTMAN|@SAMPLER" => EC:FA:BC:63:19:84 [1st floor]
+3  : "@POSTMAN|@SAMPLER" => 98:F4:AB:B3:B4:19 [1st floor]
+4  : "@POSTMAN|@SAMPLER" => 98:F4:AB:B3:B4:DD [2nd floor]
+5  : "@POSTMAN|@SAMPLER" => BC:DD:C2:14:74:D2 [slopeway]
+6  : "@POSTMAN|@SAMPLER" => BC:DD:C2:14:75:6F [3rd floor]
+7  : "@POSTMAN|@SAMPLER" => B4:E6:2D:37:45:F5 [3rd floor]
+8  : "@POSTMAN|@SAMPLER" => 84:CC:A8:A3:A7:B5 [slopeway]
+9  : "@POSTMAN|@SAMPLER" => B4:E6:2D:37:11:E6 [2nd floor annex]
+a  : "@POSTMAN|@SAMPLER" => BC:DD:C2:14:63:8E [slopeway]
+b  : "@POSTMAN|@SAMPLER" => 98:F4:AB:B3:BA:44 [1st floor]
+c  : "@POSTMAN|@SAMPLER" => 5C:CF:7F:B8:B6:80 [1st floor]
+d  : "@POSTMAN|@SAMPLER" => B4:E6:2D:37:18:AE [3rd floor]
+e  : "@POSTMAN|@SAMPLER" => 98:F4:AB:B3:B5:C2 [2nd floor]
+f  : "@POSTMAN|@SAMPLER" => B4:E6:2D:37:37:AE [2nd floor]
+g  : "@POSTMAN|@SAMPLER" => BC:DD:C2:B2:AF:D4 [2nd floor annex]
+h  : "@POSTMAN|@SAMPLER" => 68:C6:3A:D5:3E:F3 [2nd floor]
+i  : "@POSTMAN|@SAMPLER" => B4:E6:2D:37:09:92 [2nd floor]
+j  : "@POSTMAN|@SAMPLER" => 5C:CF:7F:B7:55:98 [2nd floor]
+
+
+10 : "@POSTMAN|REPEATER" => A8:48:FA:CD:29:76 [1st floor]
+11 : "@POSTMAN|REPEATER" => 30:83:98:B1:D2:66 [slopeway]
+12 : "@POSTMAN|REPEATER" => 30:83:98:B2:77:E6 [slopeway]
+13 : "@POSTMAN|REPEATER" => 30:83:98:B2:6C:7B [2nd floor]
+14 : "@POSTMAN|REPEATER" => 60:01:94:38:20:5B [1st floor]
+15 : "@POSTMAN|REPEATER" => A8:48:FA:CD:47:84 [bridge]
+16 : "@POSTMAN|REPEATER" => A8:48:FA:CD:43:A7 [bridge]
+17 : "@POSTMAN|REPEATER" => B4:E6:2D:37:3B:90 [bridge]
+18 : "@POSTMAN|REPEATER" => A8:48:FA:CD:1C:53 [2nd floor annex]
+19 : "@POSTMAN|REPEATER" => 80:7D:3A:58:87:2D [3rd floor]
+20 : "@POSTMAN|REPEATER" => 30:83:98:B1:18:B4 [3rd floor]
