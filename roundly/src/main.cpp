@@ -120,7 +120,7 @@ int move_target = 0;
 int move_duration = 10000;
 void moving() {
   //
-  float velocity = move_target / move_duration * 1000;   // unit conv.: (steps/msec) --> (steps/sec)
+  float velocity = (float)move_target / move_duration * 1000;   // unit conv.: (steps/msec) --> (steps/sec)
   float speed = fabs(velocity);
   //
   MONITORING_SERIAL.print("move_target --> "); MONITORING_SERIAL.println(move_target);
