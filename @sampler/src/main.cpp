@@ -35,31 +35,20 @@
 
 //============<parameters>============
 //
-// #define IDLE_FREQ 50
-// #define IDLE_AMP 0.05
-// #define IDLE_OFFTIME 60 //sec
-// #define IDLE_ONTIME 1 //sec
-// ^--- FAILED
+#define IDLE_FREQ 50
+#define IDLE_AMP 0.05
+#define IDLE_OFFTIME 60 //sec
+#define IDLE_ONTIME 1 //sec
+//
 // #define IDLE_FREQ 50
 // #define IDLE_AMP 0.05
 // #define IDLE_OFFTIME 300 //sec
 // #define IDLE_ONTIME 30 //sec
-// ^--- FAILED
-// == TESTING === C selected (prematurely)
-#define IDLE_FREQ 50
-#define IDLE_AMP 0.1
-#define IDLE_OFFTIME 150 //sec
-#define IDLE_ONTIME 15 //sec
-// == TESTING === 5
-// #define IDLE_FREQ 22000
-// #define IDLE_AMP 0.05
-// #define IDLE_OFFTIME 60 //sec
-// #define IDLE_ONTIME 10 //sec
-// // == TESTING === A
-// #define IDLE_FREQ 22000
-// #define IDLE_AMP 0.05
-// #define IDLE_OFFTIME 1 //sec (min 1)
-// #define IDLE_ONTIME 10 //sec
+//
+// #define IDLE_FREQ 50
+// #define IDLE_AMP 0.1
+// #define IDLE_OFFTIME 150 //sec
+// #define IDLE_ONTIME 15 //sec
 
 //
 #define GAIN_FACTOR 1.0 // this is a private multiplier for this module.
@@ -156,16 +145,18 @@ void sample_player_check() {
     digitalWrite(13, LOW);
   }
 #if defined(USE_IDLE_NOISE)
-  static bool active = false;
-  if (active == false && playSdWav1.isPlaying() == false) {
-    idle_noise_task.restart();
-    active = true;
-  }
-  else if (active == true && playSdWav1.isPlaying() == true) {
+  static bool wasplaying = false;
+  //
+  bool isplaying = playSdWav1.isPlaying();
+  if (wasplaying == false && isplaying == true) { //rising edge event
     idle_noise_task.disable();
     sine1.amplitude(0);
-    active = false;
   }
+  else if (wasplaying == true && isplaying == false) { //falling edge event
+    idle_noise_task.restart();
+  }
+  //
+  wasplaying = isplaying;
 #endif
 }
 #if defined(USE_IDLE_NOISE)
