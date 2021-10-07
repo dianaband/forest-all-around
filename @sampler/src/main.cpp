@@ -112,23 +112,29 @@ void sample_player_start() {
   delay(10);
 }
 void sample_player_stop() {
-  //filename buffer - 8.3 naming convension! 8+1+3+1 = 13
-  char filename[13] = "NNN.WAV";
-  //search for the sound file
-  int note = sample_now;
-  int nnn = (note % 1000);  // 0~999
-  int nn =  (note % 100);   // 0~99
-  filename[0] = '0' + (nnn / 100); // N__.WAV
-  filename[1] = '0' + (nn / 10);   // _N_.WAV
-  filename[2] = '0' + (nn % 10);   // __N.WAV
-  //TEST
-  Serial.println(filename);
-  AudioNoInterrupts();
-  bool test = SD.exists(filename);
-  AudioInterrupts();
-  if (!test) {
-    Serial.println("... does not exist.");
-    return;
+  //if note == 0, just stop immediately w/o checking
+  // + and this way of checking is not nice (AudioNoInterrupts + test + AudioInterrupts)
+  //   what if sound files list could be generated @ setup time and later just react on that list?
+  //   i think that way is much more stable than stopping interrupts. (-> breaks audio engine sometimes.)
+  if (note != 0) {
+    //filename buffer - 8.3 naming convension! 8+1+3+1 = 13
+    char filename[13] = "NNN.WAV";
+    //search for the sound file
+    int note = sample_now;
+    int nnn = (note % 1000);  // 0~999
+    int nn =  (note % 100);   // 0~99
+    filename[0] = '0' + (nnn / 100); // N__.WAV
+    filename[1] = '0' + (nn / 10);   // _N_.WAV
+    filename[2] = '0' + (nn % 10);   // __N.WAV
+    //TEST
+    Serial.println(filename);
+    AudioNoInterrupts();
+    bool test = SD.exists(filename);
+    AudioInterrupts();
+    if (!test) {
+      Serial.println("... does not exist.");
+      return;
+    }
   }
   //stop the player.
   if (playSdWav1.isPlaying() == true) {
