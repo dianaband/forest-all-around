@@ -108,10 +108,6 @@ void sample_player_start() {
   }
   //start the player!
   playSdWav1.play(filename);
-#if defined(USE_LED_INDICATOR)
-  //mark the indicator : HIGH: ON
-  digitalWrite(13, HIGH);
-#endif
   //to wait a bit for updating isPlaying()
   delay(10);
 }
@@ -140,14 +136,20 @@ void sample_player_stop() {
   }
 }
 void sample_player_check() {
-  if (playSdWav1.isPlaying() == false) {
-    //mark the indicator : LOW: OFF
+  //
+  static bool wasplaying = false;
+  bool isplaying = playSdWav1.isPlaying();
+  // Serial.println("isplaying: " + String(isplaying));
+  //
+#if defined(USE_LED_INDICATOR)
+  if (isplaying == true) {
+    digitalWrite(13, HIGH);
+  } else {
     digitalWrite(13, LOW);
   }
-#if defined(USE_IDLE_NOISE)
-  static bool wasplaying = false;
+#endif
   //
-  bool isplaying = playSdWav1.isPlaying();
+#if defined(USE_IDLE_NOISE)
   if (wasplaying == false && isplaying == true) { //rising edge event
     idle_noise_task.disable();
     sine1.amplitude(0);
@@ -155,9 +157,9 @@ void sample_player_check() {
   else if (wasplaying == true && isplaying == false) { //falling edge event
     idle_noise_task.restart();
   }
+#endif
   //
   wasplaying = isplaying;
-#endif
 }
 #if defined(USE_IDLE_NOISE)
 void idle_noise() {
