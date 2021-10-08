@@ -116,7 +116,7 @@ void sample_player_stop() {
   // + and this way of checking is not nice (AudioNoInterrupts + test + AudioInterrupts)
   //   what if sound files list could be generated @ setup time and later just react on that list?
   //   i think that way is much more stable than stopping interrupts. (-> breaks audio engine sometimes.)
-  if (note != 0) {
+  if (sample_now != 0) {
     //filename buffer - 8.3 naming convension! 8+1+3+1 = 13
     char filename[13] = "NNN.WAV";
     //search for the sound file
