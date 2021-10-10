@@ -23,10 +23,10 @@
 //============<identities>============
 //
 #define MY_GROUP_ID   (20000)
-#define MY_ID         (MY_GROUP_ID + 1000 + 999)
+#define MY_ID         (MY_GROUP_ID + 1000 + 21)
 #define MY_SIGN       ("@POSTMAN|REPEATER")
 //
-#define ADDRESSBOOK_TITLE ("1st floor")
+#define ADDRESSBOOK_TITLE ("3rd floor")
 //
 //============</identities>============
 

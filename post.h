@@ -116,6 +116,7 @@ struct AddressLibrary {
       book.add(Address(0x30, 0x83, 0x98, 0xB2, 0x77, 0xE6, "slopeway 12"));
       book.add(Address(0xBC, 0xDD, 0xC2, 0x14, 0x63, 0x8E, "slopeway a "));
       //+
+      book.add(Address(0xE0, 0xE2, 0xE6, 0xCD, 0x0A, 0xCC, "TEST"));
       book.add(Address(0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, "BROADCAST")); //a broadcast //12
       //
       lib.push_back(book);
@@ -341,6 +342,30 @@ struct Note {
   float x3;
   float x4;
   float ps;
+  //
+  Note() {
+    id = 0;
+    pitch = 0;
+    velocity = 0;
+    onoff = 0;
+    x1 = 0;
+    x2 = 0;
+    x3 = 0;
+    x4 = 0;
+    ps = 0;
+  }
+  Note(int32_t id_, float pitch_, float velocity_, float onoff_, float x1_, float x2_, float x3_, float x4_, float ps_)
+  {
+    id = id_;
+    pitch = pitch_;
+    velocity = velocity_;
+    onoff = onoff_;
+    x1 = x1_;
+    x2 = x2_;
+    x3 = x3_;
+    x4 = x4_;
+    ps = ps_;
+  }
   //
   void clear() {
     id = 0;
