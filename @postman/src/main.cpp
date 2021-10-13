@@ -22,11 +22,11 @@
 
 //============<identities>============
 //
-#define MY_GROUP_ID   (20000)
-#define MY_ID         (MY_GROUP_ID + 1000 + 21)
-#define MY_SIGN       ("@POSTMAN|REPEATER")
+#define MY_GROUP_ID   (10000)
+#define MY_ID         (MY_GROUP_ID + 1)
+#define MY_SIGN       ("@POSTMAN|@SAMPLER")
 //
-#define ADDRESSBOOK_TITLE ("3rd floor")
+#define ADDRESSBOOK_TITLE ("broadcast only")
 //
 //============</identities>============
 
@@ -56,7 +56,7 @@
 #define HAVE_CLIENT_I2C
 #define DISABLE_AP
 // #define SERIAL_SWAP
-#define REPLICATE_NOTE_REQ
+// #define REPLICATE_NOTE_REQ
 
 //============<parameters>============
 //
