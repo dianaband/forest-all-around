@@ -16,8 +16,9 @@
 //============<identities>============
 //
 #define MY_GROUP_ID   (10000)
-#define MY_ID         (MY_GROUP_ID + 1)
+#define MY_ID         (MY_GROUP_ID + 2)
 #define MY_SIGN       ("AUDIOOOO")
+#define ADDRESSBOOK_TITLE   ("broadcast only")
 //
 //============</identities>============
 
@@ -35,15 +36,14 @@
 //   + then, network would be flooded by infinite duplicating msg.,
 //     unless they stop reacting to 'known' req. for some seconds. (e.g. 3 seconds)
 //
-// 'USE_ALTERNATIVE_ADDRESSES'
+// 'ADDRESSBOOK_TITLE'
 // --> peer list limited max. 20.
-//     so, we have alternative address book that covers after 20th.
+//     so, we might use different address books for each node to cover a network of more than 20 nodes.
 //
 //==========</list-of-configurations>==========
 //
 #define DISABLE_AP
 #define REPLICATE_NOTE_REQ
-#define USE_ALTERNATIVE_ADDRESSES
 
 //============<audioooo-param>============
 #define GAIN_MAX 1.0 // if 1.0 is too loud, give max. limit here.
@@ -256,7 +256,29 @@ void repeat() {
   memcpy(frm + 1, (uint8_t *) &note_now, sizeof(Note));
   frm[frm_size - 1] = ']';
   //
-  esp_now_send(NULL, frm, frm_size); // to all peers in the list.
+  // strange but following didn't work as expected. (instead, i have to send one-by-one.)
+  // esp_now_send(NULL, frm, frm_size); // to all peers in the list.
+
+  // so, forget about peer list -> just pick a broadcast peer to be sent.
+  uint8_t broadcastmac[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+  esp_now_send(broadcastmac, frm, frm_size);
+
+  // (DEBUG) fetch full peer list
+  esp_now_peer_num_t num;
+  esp_now_get_peer_num(&num);
+  esp_now_peer_info_t peer_info;
+  bool first = true;
+  for (uint8_t ii = 0; ii < num.total_num; ii++) {
+    esp_now_fetch_peer(first, &peer_info);
+    if (first) first = false;
+    MONITORING_SERIAL.printf("# peer: %02X:%02X:%02X:%02X:%02X:%02X\n",
+                             peer_info.peer_addr[0],
+                             peer_info.peer_addr[1],
+                             peer_info.peer_addr[2],
+                             peer_info.peer_addr[3],
+                             peer_info.peer_addr[4],
+                             peer_info.peer_addr[5]);
+  }
   //
   MONITORING_SERIAL.print("repeat! ==> ");
   MONITORING_SERIAL.println(note_now.to_string());
@@ -298,21 +320,6 @@ void hello() {
     if (hello_delay < 100) hello_delay = 100;
     hello_task.restartDelayed(hello_delay);
   }
-
-  // //TEST
-  // Note n = {
-  //   10001, // int32_t id;
-  //   1, // float pitch;
-  //   127, // float velocity;
-  //   1, // float onoff;
-  //   0, // float x1;
-  //   0, // float x2;
-  //   0, // float x3;
-  //   0, // float x4;
-  //   5000 // float ps;
-  // };
-  // note_now = n;
-  // repeat_task.restart();
 }
 Task hello_task(0, TASK_ONCE, &hello, &runner, false);
 
@@ -372,7 +379,7 @@ void onNoteHandler(Note & n) {
 void onDataReceive(const uint8_t * mac, const uint8_t *incomingData, int32_t len) {
 
   //
-  //MONITORING_SERIAL.write(incomingData, len);
+  // MONITORING_SERIAL.write(incomingData, len);
 
   //
 #if defined(HAVE_CLIENT)
@@ -402,7 +409,6 @@ void onDataReceive(const uint8_t * mac, const uint8_t *incomingData, int32_t len
       }
     }
 
-    //
     MONITORING_SERIAL.println(note.to_string());
 
     #if defined(REPLICATE_NOTE_REQ)
@@ -417,7 +423,11 @@ void onDataReceive(const uint8_t * mac, const uint8_t *incomingData, int32_t len
 
 // on 'sent'
 void onDataSent(const uint8_t *mac_addr, esp_now_send_status_t sendStatus) {
-  if (sendStatus != 0) MONITORING_SERIAL.println("Delivery failed!");
+  // well, i think this cb should be called once for EVERY single TX attempts,
+  //   but in reality, it doesn't get called that often.
+  //   i think this is sorta bug. but have no clear clue.
+  MONITORING_SERIAL.printf("* delivery attempt! ~~~>>> %02X:%02X:%02X:%02X:%02X:%02X\n", mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
+  if (sendStatus != 0) MONITORING_SERIAL.printf("* ==>> FAILED :(\n\n");
 }
 
 // SD TEST
@@ -505,6 +515,7 @@ void setup() {
   Serial.println("-");
   Serial.println("- my id: " + String(MY_ID) + ", gid: " + String(MY_GROUP_ID) + ", call me ==> \"" + String(MY_SIGN) + "\"");
   Serial.println("- mac address: " + WiFi.macAddress() + ", channel: " + String(WIFI_CHANNEL));
+  Serial.println("- my peer book ==> \"" + String(ADDRESSBOOK_TITLE) + "\"");
 #if defined(HAVE_CLIENT)
   Serial.println("- ======== 'HAVE_CLIENT' ========");
 #endif
@@ -543,20 +554,16 @@ void setup() {
   // uint8_t broadcastmac[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
   //
   // //
-  // esp_now_peer_info_t peerInfo;
+  // esp_now_peer_info_t peerInfo = {};
   // memcpy(peerInfo.peer_addr, broadcastmac, 6);
   // peerInfo.channel = 0;
   // peerInfo.encrypt = false;
   // esp_now_add_peer(&peerInfo);
 
-#if defined(USE_ALTERNATIVE_ADDRESSES)
-  AddressBook * book = lib.getBookByTitle("audioooo alt");
-#else
-  AddressBook * book = lib.getBookByTitle("audioooo");
-#endif
+  AddressBook * book = lib.getBookByTitle(ADDRESSBOOK_TITLE);
   for (int idx = 0; idx < book->list.size(); idx++) {
     Serial.println("- ! (esp_now_add_peer) ==> add a '" + book->list[idx].name + "'.");
-    esp_now_peer_info_t peerInfo;
+    esp_now_peer_info_t peerInfo = {};
     memcpy(peerInfo.peer_addr, book->list[idx].mac, 6);
     peerInfo.channel = 0;
     peerInfo.encrypt = false;
