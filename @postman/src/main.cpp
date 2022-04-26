@@ -25,7 +25,6 @@
 #define MY_GROUP_ID   (10000)
 #define MY_ID         (MY_GROUP_ID + 1)
 #define MY_SIGN       ("@POSTMAN|@SAMPLER")
-//
 #define ADDRESSBOOK_TITLE ("broadcast only")
 //
 //============</identities>============
@@ -51,6 +50,10 @@
 // 'HAVE_CLIENT_I2C'
 // --> i have a client w/ I2C i/f. enable the I2C client task.
 //
+// 'ADDRESSBOOK_TITLE'
+// --> peer list limited max. 20.
+//     so, we might use different address books for each node to cover a network of more than 20 nodes.
+//
 //==========</list-of-configurations>==========
 //
 #define HAVE_CLIENT_I2C
@@ -64,7 +67,7 @@
 #define LED_ONTIME (1)
 #define LED_GAPTIME (222)
 //
-#define WIFI_CHANNEL 5
+#define WIFI_CHANNEL 1
 //
 // 'MONITORING_SERIAL'
 //
@@ -370,32 +373,14 @@ void setup() {
   esp_now_register_send_cb(onDataSent);
   esp_now_register_recv_cb(onDataReceive);
 
-  //fetch & read addressbook
-  String addressbook_title = ADDRESSBOOK_TITLE;
-// #if defined(ADDRESSBOOK_TITLE_CLI)
-//   addressbook_title = ADDRESSBOOK_TITLE_CLI;
-// #endif
-//
-// NOTE: there is a way to give a define value here like:
-//   export PLATFORMIO_SRC_BUILD_FLAGS="'-DADDRESSBOOK_TITLE_CLI=\"broadcast only\"'" && pio run
-// but, everytime i change this, whole arduino framework + libraries rebuild.
-// PLATFORMIO_SRC_BUILD_FLAGS supposed to work only to src/ but strange.
-// this takes up too much time, not really haptic. later, investigate the issues.
-//
-  AddressBook * book = lib.getBookByTitle(addressbook_title);
+  AddressBook * book = lib.getBookByTitle(ADDRESSBOOK_TITLE);
   if (book == NULL) {
-    Serial.println("- ! wrong book !! :" + addressbook_title); while(1);
-  } else {
-    Serial.println("- ! reading book ....");
-    Serial.println("    -----------------");
-    Serial.println("    { " + addressbook_title + " }");
-    Serial.println("    -----------------");
-    Serial.println();
+    Serial.println("- ! wrong book !! : \"" + String(ADDRESSBOOK_TITLE) + "\""); while(1);
   }
   for (int idx = 0; idx < book->list.size(); idx++) {
     Serial.println("- ! (esp_now_add_peer) ==> add a '" + book->list[idx].name + "'.");
 #if defined(ESP32)
-    esp_now_peer_info_t peerInfo;
+    esp_now_peer_info_t peerInfo = {};
     memcpy(peerInfo.peer_addr, book->list[idx].mac, 6);
     peerInfo.channel = 0;
     peerInfo.encrypt = false;
@@ -404,6 +389,8 @@ void setup() {
     esp_now_add_peer(book->list[idx].mac, ESP_NOW_ROLE_COMBO, 1, NULL, 0);
 #endif
   }
+  // (DEBUG) fetch full peer list
+  { PeerLister a; a.print(); }
   //
   Serial.println("-");
   Serial.println("\".-.-.-. :)\"");

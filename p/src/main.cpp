@@ -39,7 +39,7 @@
 //
 #define SCREEN_PERIOD (200) //200ms = 5hz
 //
-#define WIFI_CHANNEL 5
+#define WIFI_CHANNEL 1
 //
 // 'MONITORING_SERIAL'
 //

@@ -57,7 +57,7 @@
 //
 #define SCREEN_PERIOD (200) //200ms = 5hz
 //
-#define WIFI_CHANNEL 5
+#define WIFI_CHANNEL 1
 //
 // 'MONITORING_SERIAL'
 //
@@ -264,23 +264,10 @@ void repeat() {
   esp_now_send(broadcastmac, frm, frm_size);
 
   // (DEBUG) fetch full peer list
-  esp_now_peer_num_t num;
-  esp_now_get_peer_num(&num);
-  esp_now_peer_info_t peer_info;
-  bool first = true;
-  for (uint8_t ii = 0; ii < num.total_num; ii++) {
-    esp_now_fetch_peer(first, &peer_info);
-    if (first) first = false;
-    MONITORING_SERIAL.printf("# peer: %02X:%02X:%02X:%02X:%02X:%02X\n",
-                             peer_info.peer_addr[0],
-                             peer_info.peer_addr[1],
-                             peer_info.peer_addr[2],
-                             peer_info.peer_addr[3],
-                             peer_info.peer_addr[4],
-                             peer_info.peer_addr[5]);
-  }
+  { PeerLister a; a.print(); }
+
   //
-  MONITORING_SERIAL.print("repeat! ==> ");
+  MONITORING_SERIAL.print("\nrepeat! ==> ");
   MONITORING_SERIAL.println(note_now.to_string());
 }
 Task repeat_task(0, TASK_ONCE, &repeat, &runner, false);
@@ -561,6 +548,9 @@ void setup() {
   // esp_now_add_peer(&peerInfo);
 
   AddressBook * book = lib.getBookByTitle(ADDRESSBOOK_TITLE);
+  if (book == NULL) {
+    Serial.println("- ! wrong book !! : \"" + String(ADDRESSBOOK_TITLE) + "\""); while(1);
+  }
   for (int idx = 0; idx < book->list.size(); idx++) {
     Serial.println("- ! (esp_now_add_peer) ==> add a '" + book->list[idx].name + "'.");
     esp_now_peer_info_t peerInfo = {};
@@ -569,6 +559,8 @@ void setup() {
     peerInfo.encrypt = false;
     esp_now_add_peer(&peerInfo);
   }
+  // (DEBUG) fetch full peer list
+  { PeerLister a; a.print(); }
   //
   Serial.println("-");
   Serial.println("\".-.-.-. :)\"");

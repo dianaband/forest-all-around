@@ -57,7 +57,7 @@
 #define LED_ONTIME (1)
 #define LED_GAPTIME (222)
 //
-#define WIFI_CHANNEL 5
+#define WIFI_CHANNEL 1
 //
 // 'MONITORING_SERIAL'
 //

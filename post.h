@@ -8,6 +8,51 @@
 //esp-now
 #include <vector>
 
+// (DEBUG) fetch full peer list
+#if defined(ARDUINO_ARCH_ESP32) // for esp32 API
+#include <esp_now.h>
+struct PeerLister {
+  void print() {
+    Serial.printf("\n# (DEBUG) peer list (NOTE: a broadcast peer won't be listed properly)\n");
+    esp_now_peer_num_t num;
+    esp_now_get_peer_num(&num);
+    esp_now_peer_info_t peer_info = {};
+    bool first = true;
+    for (uint8_t ii = 0; ii < num.total_num; ii++) {
+      esp_now_fetch_peer(first, &peer_info);
+      if (first) first = false;
+      Serial.printf("# peer: %02X:%02X:%02X:%02X:%02X:%02X\n",
+                               peer_info.peer_addr[0],
+                               peer_info.peer_addr[1],
+                               peer_info.peer_addr[2],
+                               peer_info.peer_addr[3],
+                               peer_info.peer_addr[4],
+                               peer_info.peer_addr[5]);
+    }
+  }
+};
+#elif defined(ARDUINO_ARCH_ESP8266) // for esp8266 API
+#include <espnow.h>
+struct PeerLister {
+  void print() {
+    Serial.printf("\n# (DEBUG) peer list\n");
+    bool first = true;
+    uint8_t * peer_addr = NULL;
+    while((peer_addr = esp_now_fetch_peer(first)) != NULL) {
+      first = false;
+      Serial.printf("# peer: %02X:%02X:%02X:%02X:%02X:%02X\n",
+                               peer_addr[0],
+                               peer_addr[1],
+                               peer_addr[2],
+                               peer_addr[3],
+                               peer_addr[4],
+                               peer_addr[5]);
+    }
+  }
+};
+#endif
+
+
 // 'address'
 struct Address {
   String name;
