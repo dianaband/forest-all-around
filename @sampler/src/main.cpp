@@ -31,7 +31,7 @@
 //==========</list-of-configurations>===========
 // #define USE_EXTERNAL_ANALOG_REFERENCE
 // #define USE_IDLE_NOISE
-// #define USE_LED_INDICATOR
+#define USE_LED_INDICATOR
 
 //============<parameters>============
 //

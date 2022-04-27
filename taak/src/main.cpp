@@ -20,9 +20,10 @@
 
 //============<identities>============
 //
-#define MY_GROUP_ID   (1000)
-#define MY_ID         (MY_GROUP_ID + 100)
-#define MY_SIGN       ("TAAK")
+#define MY_GROUP_ID       (1000)
+#define MY_ID             (MY_GROUP_ID + 31)
+#define MY_SIGN           ("TAAK")
+#define ADDRESSBOOK_TITLE ("broadcast only")
 //
 //============</identities>============
 
@@ -38,13 +39,24 @@
 // 'DISABLE_AP'
 // --> (questioning)...
 //
+// 'REPLICATE_NOTE_REQ' (+ N_SEC_BLOCKING_NOTE_REQ)
+// --> for supporting wider area with simple esp_now protocol,
+//     all receipents will replicate NOTE msg. when they are newly appeared.
+//   + then, network would be flooded by infinite duplicating msg.,
+//     unless they stop reacting to 'known' req. for some seconds. (e.g. 3 seconds)
+
 // 'HAVE_CLIENT_I2C'
 // --> i have a client w/ I2C i/f. enable the I2C client task.
+//
+// 'ADDRESSBOOK_TITLE'
+// --> peer list limited max. 20.
+//     so, we might use different address books for each node to cover a network of more than 20 nodes.
 //
 //==========</list-of-configurations>==========
 //
 // (EMPTY)
 #define DISABLE_AP
+// #define REPLICATE_NOTE_REQ
 
 //============<parameters>============
 //
@@ -83,14 +95,45 @@
 //post & addresses
 #include "../../post.h"
 
+//vector
+#include <vector>
+std::vector<Note> recentNotes;
+
 //espnow
 #include <ESP8266WiFi.h>
 #include <espnow.h>
+AddressLibrary lib;
 
 //task
 #include <TaskScheduler.h>
 Scheduler runner;
 
+//
+#if defined(REPLICATE_NOTE_REQ)
+Note note_now = {
+  -1, // int32_t id;
+  -1, // float pitch;
+  -1, // float velocity;
+  -1, // float onoff;
+  -1, // float x1;
+  -1, // float x2;
+  -1, // float x3;
+  -1, // float x4;
+  -1 // float ps;
+};
+#define RECENT_NOTES_TIMEOUT (3000)
+static unsigned long last_note_time = 0;
+void recent_clear() {
+  //
+  if (millis() - last_note_time > RECENT_NOTES_TIMEOUT) {
+    recentNotes.clear();
+    Serial.println("recent list cleared");
+    last_note_time = millis();
+  }
+  //
+}
+Task recent_clear_task(100, TASK_FOREVER, &recent_clear, &runner, true);
+#endif
 //-*-*-*-*-*-*-*-*-*-*-*-*-
 void taak_on() {
   Serial.println("taak_on!");
@@ -131,8 +174,8 @@ void hello() {
   //
   esp_now_send(NULL, frm, frm_size); // to all peers in the list.
   //
-  MONITORING_SERIAL.write(frm, frm_size);
-  MONITORING_SERIAL.println(" ==(esp_now_send/0)==> ");
+  // MONITORING_SERIAL.write(frm, frm_size);
+  // MONITORING_SERIAL.println(" ==(esp_now_send/0)==> ");
   //
   if (hello_delay > 0) {
     if (hello_delay < 100) hello_delay = 100;
@@ -226,12 +269,50 @@ void onDataReceive(uint8_t * mac, uint8_t *incomingData, uint8_t len) {
     }
 
     MONITORING_SERIAL.println(note.to_string());
+
+    #if defined(REPLICATE_NOTE_REQ)
+    last_note_time = millis(); //clear timer reset : the recent list holding (re)started
+    // check if this note is in the list?
+    bool check = false;
+    for (uint32_t idx = 0; idx < recentNotes.size(); idx++) {
+      if (recentNotes[idx].pitch == note.pitch && recentNotes[idx].id == note.id) {
+        check = true;
+      }
+    }
+    // if not, add this into the list and repeat!
+    if (check == false) {
+      //
+      recentNotes.push_back(note);
+      //
+      uint8_t frm_size = sizeof(Note) + 2;
+      uint8_t frm[frm_size];
+      frm[0] = '[';
+      memcpy(frm + 1, (uint8_t *) &note, sizeof(Note));
+      frm[frm_size - 1] = ']';
+      //
+      esp_now_send(NULL, frm, frm_size); // to all peers in the list.
+      //
+      MONITORING_SERIAL.print("repeat! ==> ");
+      MONITORING_SERIAL.println(note.to_string());
+      //
+    }
+
+    //EMERGENCY PATCH.HACK:
+    // original code is not intended for a BURST of notes.
+    // so, only 1 msg. will be repeated in 3 sec. all others will be simply ignored.
+    // to make a burst of msgs repeatible:
+    // --> make a list of recent 'pitches'
+    //     if there is any new msg. check if this is in the list, if not, add it & repeat, if yes, skip it.
+    //     after 3sec no new msg., the list will be flushed. every new msg. will reset timeout + save the list for extra. 3 sec.
+    #endif
   }
 }
 
 // on 'sent'
 void onDataSent(uint8_t *mac_addr, uint8_t sendStatus) {
-  if (sendStatus != 0) MONITORING_SERIAL.println("Delivery failed!");
+  char buff[256] = "";
+  sprintf(buff, "Delivery failed! -> %02X:%02X:%02X:%02X:%02X:%02X",  mac_addr[0],  mac_addr[1],  mac_addr[2],  mac_addr[3],  mac_addr[4],  mac_addr[5]);
+  if (sendStatus != 0) MONITORING_SERIAL.println(buff);
 }
 
 //
@@ -263,6 +344,9 @@ void setup() {
 #if defined(HAVE_CLIENT_I2C)
   Serial.println("- ======== 'HAVE_CLIENT_I2C' ========");
 #endif
+#if defined(REPLICATE_NOTE_REQ)
+  Serial.println("- ======== 'REPLICATE_NOTE_REQ' ========");
+#endif
   Serial.println("-");
 
   //wifi
@@ -282,10 +366,28 @@ void setup() {
   esp_now_register_send_cb(onDataSent);
   esp_now_register_recv_cb(onDataReceive);
   //
-  Serial.println("- ! (esp_now_add_peer) ==> add a 'broadcast peer' (FF:FF:FF:FF:FF:FF).");
-  uint8_t broadcastmac[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
-  esp_now_add_peer(broadcastmac, ESP_NOW_ROLE_COMBO, 1, NULL, 0);
+  // Serial.println("- ! (esp_now_add_peer) ==> add a 'broadcast peer' (FF:FF:FF:FF:FF:FF).");
+  // uint8_t broadcastmac[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+  // esp_now_add_peer(broadcastmac, ESP_NOW_ROLE_COMBO, 1, NULL, 0);
 
+  AddressBook * book = lib.getBookByTitle(ADDRESSBOOK_TITLE);
+  if (book == NULL) {
+    Serial.println("- ! wrong book !! : \"" + String(ADDRESSBOOK_TITLE) + "\""); while(1);
+  }
+  for (int idx = 0; idx < book->list.size(); idx++) {
+    Serial.println("- ! (esp_now_add_peer) ==> add a '" + book->list[idx].name + "'.");
+#if defined(ESP32)
+    esp_now_peer_info_t peerInfo = {};
+    memcpy(peerInfo.peer_addr, book->list[idx].mac, 6);
+    peerInfo.channel = 0;
+    peerInfo.encrypt = false;
+    esp_now_add_peer(&peerInfo);
+#else
+    esp_now_add_peer(book->list[idx].mac, ESP_NOW_ROLE_COMBO, 1, NULL, 0);
+#endif
+  }
+  // (DEBUG) fetch full peer list
+  { PeerLister a; a.print(); }
   //
   Serial.println("-");
   Serial.println("\".-.-.-. :)\"");

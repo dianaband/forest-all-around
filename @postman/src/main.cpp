@@ -22,9 +22,9 @@
 
 //============<identities>============
 //
-#define MY_GROUP_ID   (10000)
-#define MY_ID         (MY_GROUP_ID + 1)
-#define MY_SIGN       ("@POSTMAN|@SAMPLER")
+#define MY_GROUP_ID       (10000)
+#define MY_ID             (MY_GROUP_ID + 5)
+#define MY_SIGN           ("@POSTMAN|@SAMPLER")
 #define ADDRESSBOOK_TITLE ("broadcast only")
 //
 //============</identities>============

@@ -15,9 +15,9 @@
 
 //============<identities>============
 //
-#define MY_GROUP_ID   (10000)
-#define MY_ID         (MY_GROUP_ID + 2)
-#define MY_SIGN       ("AUDIOOOO")
+#define MY_GROUP_ID         (10000)
+#define MY_ID               (MY_GROUP_ID + 5)
+#define MY_SIGN             ("AUDIOOOO")
 #define ADDRESSBOOK_TITLE   ("broadcast only")
 //
 //============</identities>============
