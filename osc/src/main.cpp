@@ -1,30 +1,13 @@
 //
-// wirelessly connected cloud (based on ESP-NOW, a kind of LPWAN?)
+// wirelessly connected cloud (based on ESP-NOW, a kind of LPWAN)
 //
-
-//
-// Conversation about the ROOT @ SEMA storage, Seoul
-//
-
-//
-// 2021 02 15
-//
-// (part-1) esp8266 : 'osc node on esp8266' (the esp-now network nodes)
-//
-//   this module will be an esp-now node in a group.
-//       like, a bird in a group of birds.
-//
-//   esp-now @ esp8266 w/ broadcast address (FF:FF:FF:FF:FF:FF)
-//       always broadcasting. everyone is 'talkative'.
-//
-
-// then, let it save a value in EEPROM (object with memory=mind?)
 
 //============<identities>============
 //
-#define MY_GROUP_ID   (0)
-#define MY_ID         (MY_GROUP_ID + 2)
-#define MY_SIGN       ("POSTMAN|OSC(Pd)")
+#define MY_GROUP_ID       (0)
+#define MY_ID             (MY_GROUP_ID + 2)
+#define MY_SIGN           ("POSTMAN|OSC(Pd)")
+#define ADDRESSBOOK_TITLE ("broadcast only")
 //
 //============</identities>============
 
@@ -47,6 +30,10 @@
 // 'HAVE_CLIENT_I2C'
 // --> i have a client w/ I2C i/f. enable the I2C client task.
 //
+// 'ADDRESSBOOK_TITLE'
+// --> peer list limited max. 20.
+//     so, we might use different address books for each node to cover a network of more than 20 nodes.
+//
 //==========</list-of-configurations>==========
 //
 #define SLIPSERIAL_ACTIVE
@@ -56,6 +43,8 @@
 #define LED_PERIOD (11111)
 #define LED_ONTIME (1)
 #define LED_GAPTIME (222)
+//
+#define SCREEN_PERIOD (200) //200ms = 5hz
 //
 #define WIFI_CHANNEL 1
 //
@@ -77,6 +66,8 @@
 //============<board-specifics>============
 #if defined(ARDUINO_FEATHER_ESP32) // featheresp32
 #define LED_PIN 13
+#elif defined(ARDUINO_ESP32_DEV) // esp32dev (MakePython ESP32 => Have NO LED)
+#define LED_PIN 2
 #else
 #define LED_PIN 2
 #endif
@@ -89,8 +80,14 @@
 #include "../../post.h"
 
 //espnow
+#if defined(ESP8266) // for esp8266 API
 #include <ESP8266WiFi.h>
 #include <espnow.h>
+#elif defined(ESP32) // for esp32 API
+#include <WiFi.h>
+#include <esp_now.h>
+#endif
+AddressLibrary lib;
 
 //task
 #include <TaskScheduler.h>
@@ -101,6 +98,8 @@ Scheduler runner;
 #include <SLIPEncodedSerial.h>
 SLIPEncodedSerial SLIPSerial(Serial);
 void swap_println(String abc) {
+#if defined(ESP8266) // for esp8266 API
+
   Serial.flush();
 
   Serial.swap();
@@ -108,7 +107,45 @@ void swap_println(String abc) {
   Serial.flush();
 
   Serial.swap();
+#endif
 }
+
+#if defined(ESP32) // for esp32 API
+//screen
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+#define MAKEPYTHON_ESP32_SDA 4
+#define MAKEPYTHON_ESP32_SCL 5
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 64 // OLED display height, in pixels
+#define OLED_RESET -1    // Reset pin # (or -1 if sharing Arduino reset pin)
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+
+//-*-*-*-*-*-*-*-*-*-*-*-*-
+//
+//screen task
+String screen_text = "(.........................................";
+extern Task screen_task;
+void screen() {
+  //clear screen + a
+  int line_step = 12;
+  int line = 0;
+  display.clearDisplay();
+  display.setTextColor(SSD1306_WHITE);
+  display.setTextSize(1);
+
+  //line1 - debug line
+  display.setCursor(0, line);
+  display.println(screen_text.c_str());
+  line += line_step;
+
+  //
+  display.display();
+  //
+}
+Task screen_task(SCREEN_PERIOD, TASK_FOREVER, &screen, &runner, true);
+#endif
+//*-*-*-*-*-*-*-*-*-*-*-*-*
 
 //
 extern Task hello_task;
@@ -237,13 +274,22 @@ void osc()
     if(!bundleIN.hasError()) {
       // on '/note'
       bundleIN.route("/note", route_note);
+#if defined(ESP32)
+      static int a = 0;
+      screen_text = String(a) + " => \n" + String(bundleIN.timetag.seconds-2208988800UL) + "\n" + String(bundleIN.timetag.fractionofseconds);
+      a++;
+#endif
     }
   }
 }
 Task osc_task(0, TASK_FOREVER, &osc, &runner, true); // -> ENABLED, at start-up.
 
 // on 'receive'
+#if defined(ESP32)
+void onDataReceive(const uint8_t * mac, const uint8_t *incomingData, int32_t len) {
+#elif defined(ESP8266)
 void onDataReceive(uint8_t * mac, uint8_t *incomingData, uint8_t len) {
+#endif
 
   //
   //MONITORING_SERIAL.write(incomingData, len);
@@ -286,9 +332,26 @@ void onDataReceive(uint8_t * mac, uint8_t *incomingData, uint8_t len) {
 }
 
 // on 'sent'
+#if defined(ESP32)
+void onDataSent(const uint8_t *mac_addr, esp_now_send_status_t sendStatus) {
+#elif defined(ESP8266)
 void onDataSent(uint8_t *mac_addr, uint8_t sendStatus) {
-  if (sendStatus != 0) MONITORING_SERIAL.println("Delivery failed!");
+#endif
+  char buff[256] = "";
+  sprintf(buff, "Delivery failed! -> %02X:%02X:%02X:%02X:%02X:%02X",  mac_addr[0],  mac_addr[1],  mac_addr[2],  mac_addr[3],  mac_addr[4],  mac_addr[5]);
+  if (sendStatus != 0) MONITORING_SERIAL.println(buff);
 }
+
+#if defined(ESP32)
+void lcd_text(String str) {
+  display.clearDisplay();
+  display.setTextColor(SSD1306_WHITE);
+  display.setTextSize(1);
+  display.setCursor(0, 0);
+  display.println(str.c_str());
+  display.display();
+}
+#endif
 
 //
 void setup() {
@@ -300,6 +363,18 @@ void setup() {
   Serial.begin(57600);
   delay(100);
 
+#if defined(ESP32)
+  //screen
+  Wire.begin(MAKEPYTHON_ESP32_SDA, MAKEPYTHON_ESP32_SCL);
+  // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
+  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3C for 128x32
+    Serial.println(F("SSD1306 allocation failed"));
+    for (;;)
+      ;         // Don't proceed, loop forever
+  }
+  display.clearDisplay();
+#endif
+
   //info
   Serial.println();
   Serial.println();
@@ -307,6 +382,7 @@ void setup() {
   Serial.println("-");
   Serial.println("- my id: " + String(MY_ID) + ", gid: " + String(MY_GROUP_ID) + ", call me ==> \"" + String(MY_SIGN) + "\"");
   Serial.println("- mac address: " + WiFi.macAddress() + ", channel: " + String(WIFI_CHANNEL));
+  Serial.println("- my peer book ==> \"" + String(ADDRESSBOOK_TITLE) + "\"");
 #if defined(HAVE_CLIENT)
   Serial.println("- ======== 'HAVE_CLIENT' ========");
 #endif
@@ -337,14 +413,31 @@ void setup() {
     Serial.println("Error initializing ESP-NOW");
     return;
   }
+#if defined(ESP8266)
   esp_now_set_self_role(ESP_NOW_ROLE_COMBO);
+#endif
   esp_now_register_send_cb(onDataSent);
   esp_now_register_recv_cb(onDataReceive);
   //
-  Serial.println("- ! (esp_now_add_peer) ==> add a 'broadcast peer' (FF:FF:FF:FF:FF:FF).");
-  uint8_t broadcastmac[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
-  esp_now_add_peer(broadcastmac, ESP_NOW_ROLE_COMBO, 1, NULL, 0);
 
+  AddressBook * book = lib.getBookByTitle(ADDRESSBOOK_TITLE);
+  if (book == NULL) {
+    Serial.println("- ! wrong book !! : \"" + String(ADDRESSBOOK_TITLE) + "\""); while(1);
+  }
+  for (int idx = 0; idx < book->list.size(); idx++) {
+    Serial.println("- ! (esp_now_add_peer) ==> add a '" + book->list[idx].name + "'.");
+#if defined(ESP32)
+    esp_now_peer_info_t peerInfo = {};
+    memcpy(peerInfo.peer_addr, book->list[idx].mac, 6);
+    peerInfo.channel = 0;
+    peerInfo.encrypt = false;
+    esp_now_add_peer(&peerInfo);
+#else
+    esp_now_add_peer(book->list[idx].mac, ESP_NOW_ROLE_COMBO, 1, NULL, 0);
+#endif
+  }
+  // (DEBUG) fetch full peer list
+  { PeerLister a; a.print(); }
   //
   Serial.println("-");
   Serial.println("\".-.-.-. :)\"");
