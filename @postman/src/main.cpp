@@ -369,9 +369,12 @@ void setup() {
     Serial.println("Error initializing ESP-NOW");
     return;
   }
+#if defined(ESP8266)
   esp_now_set_self_role(ESP_NOW_ROLE_COMBO);
+#endif
   esp_now_register_send_cb(onDataSent);
   esp_now_register_recv_cb(onDataReceive);
+  //
 
   AddressBook * book = lib.getBookByTitle(ADDRESSBOOK_TITLE);
   if (book == NULL) {
