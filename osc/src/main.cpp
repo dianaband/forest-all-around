@@ -222,7 +222,7 @@ void route_note(OSCMessage& msg, int offset) {
     note.clear();
     //
     note.onoff = msg.getFloat(0);
-    if (note.onoff != 0) note.onoff = 1;
+    // if (note.onoff != 0) note.onoff = 1;
   }
   // (2) --> /velocity
   if (msg.fullMatch("/velocity", offset)) {
