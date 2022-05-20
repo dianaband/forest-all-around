@@ -436,7 +436,8 @@ void printDirectory(File dir, int numTabs) {
     Serial.print(entry.name());
     if (entry.isDirectory()) {
       Serial.println("/");
-      printDirectory(entry, numTabs+1);
+      //non-recursive listing...
+      // printDirectory(entry, numTabs+1);
     } else {
       // files have sizes, directories do not
       Serial.print("\t\t");
