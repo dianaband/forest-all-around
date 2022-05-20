@@ -244,14 +244,17 @@ void receiveEvent(int numBytes) {
     // sample_now = key;
     //
     int velocity = str_velocity.toInt();   // 0 ~ 127
-    float amp_gain = (float)velocity / 127.0;
-    //
-    amp_gain = amp_gain * GAIN_FACTOR;
-    //
-    amp1.gain(amp_gain);
-    amp2.gain(amp_gain);
-    //
     int gate = str_gate.toInt();
+    //
+    if (velocity != 0 || gate == 2) {
+      float amp_gain = (float)velocity / 127.0;
+      //
+      amp_gain = amp_gain * GAIN_FACTOR;
+      //
+      amp1.gain(amp_gain);
+      amp2.gain(amp_gain);
+    }
+    //
     if (gate == 1) { //on 'start'
       // filter out re-triggering same note while it is playing.
       if (!playSdWav1.isPlaying() || sample_now != key) {
