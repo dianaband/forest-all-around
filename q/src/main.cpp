@@ -126,6 +126,26 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 #define I2S_LRC 25
 Audio audio;
 
+// q list
+std::vector<Note> qlist;
+void init_qlist() {
+  // tech. rehearsal @ May 21
+  qlist.push_back(Note(10000,   1, 127, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 101, 127, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 102, 127, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 103, 127, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 104, 127, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 105, 127, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 106, 127, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 107, 127, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 108, 127, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 109, 127, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 110, 127, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 111, 127, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 112, 127, 1, 0, 0, 0, 0, 0));
+
+}
+
 //buttons
 const int pin_vol_up = 39;
 const int pin_vol_down = 36;
@@ -144,22 +164,8 @@ extern Task sample_player_stop_task;
 static unsigned long new_note_time = (-1*NEW_NOTE_TIMEOUT);
 
 //screen task
-#if defined(GEN_NOTE_REQ)
-String screen_cmd = "XXX..composing..XXX";
-#else
-String screen_cmd = "(((..listening..)))";
-#endif
+String screen_cmd = ":Q: ----- --- --- -";
 String screen_filename = "***.mp3";
-
-//
-extern Task screen_cmd_notify_task;
-bool cmd_notify = false;
-void screen_cmd_notify() {
-  if (screen_cmd_notify_task.isFirstIteration()) cmd_notify = true;
-  else if (screen_cmd_notify_task.isLastIteration()) cmd_notify = false;
-  else cmd_notify = !cmd_notify;
-}
-Task screen_cmd_notify_task(500, 10, &screen_cmd_notify, &runner, false);
 
 //
 extern Task screen_req_notify_task;
@@ -169,13 +175,16 @@ void screen_req_notify() {
   else if (screen_req_notify_task.isLastIteration()) req_notify = false;
   else req_notify = !req_notify;
 }
-Task screen_req_notify_task(500, 10, &screen_req_notify, &runner, false);
+Task screen_req_notify_task(500, 8, &screen_req_notify, &runner, false);
 
 //
 extern Task screen_task;
 void screen() {
 
-#if defined(GEN_NOTE_REQ)
+  //
+  if (screen_task.isFirstIteration()) {
+    init_qlist();
+  }
 
   // button job!
   static int btn_vol_up = 0;
@@ -186,7 +195,8 @@ void screen() {
   static int btn_next = 0;
   //
   int a;
-  static int song_request = 1;
+  static int qselect = 0;
+  bool nowsend = false;
   //
   a = digitalRead(pin_vol_up);
   if(btn_vol_up != a) {
@@ -194,8 +204,8 @@ void screen() {
     if(a == 0) {
       // 'vol_up' button pressed.
 
-      song_request = song_request - 1;
-      if (song_request < 1) song_request = 1;
+      qselect = qselect + 1;
+      if (qselect > (qlist.size() - 1)) qselect = 0;
     }
   }
   //
@@ -205,8 +215,8 @@ void screen() {
     if(a == 0) {
       // 'vol_down' button pressed.
 
-      song_request = song_request + 1;
-      if (song_request > 999) song_request = 999;
+      qselect = qselect - 1;
+      if (qselect < 0) qselect = (qlist.size() - 1);
     }
   }
   //
@@ -215,6 +225,8 @@ void screen() {
     btn_mute = a;
     if(a == 0) {
       // 'mute' button pressed.
+
+      nowsend = true;
     }
   }
   //
@@ -223,6 +235,9 @@ void screen() {
     btn_previous = a;
     if(a == 0) {
       // 'previous' button pressed.
+
+      qselect = qselect - 1;
+      if (qselect < 0) qselect = (qlist.size() - 1);
     }
   }
   //
@@ -232,51 +247,7 @@ void screen() {
     if(a == 0) {
       // 'pause' button pressed.
 
-      // create a NOTE req. and send it out.
-      Note note_composed = {
-        10000, // int32_t id;
-        song_request, // float pitch;
-        127, // float velocity;
-        1, // float onoff;
-        0, // float x1;
-        0, // float x2;
-        0, // float x3;
-        0, // float x4;
-        0 // float ps;
-      };
-      MONITORING_SERIAL.print("# posting a req.# ==> ");
-      MONITORING_SERIAL.println(note_composed.to_string());
-
-      //
-      uint8_t frm_size = sizeof(Note) + 2;
-      uint8_t frm[frm_size];
-      frm[0] = '[';
-      memcpy(frm + 1, (uint8_t *) &note_composed, sizeof(Note));
-      frm[frm_size - 1] = ']';
-      //
-      // strange but following didn't work as expected. (instead, i have to send one-by-one.)
-      // esp_now_send(NULL, frm, frm_size); // to all peers in the list.
-
-      // so, forget about peer list -> just pick a broadcast peer to be sent.
-      uint8_t broadcastmac[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
-      esp_now_send(broadcastmac, frm, frm_size);
-
-      // (DEBUG) fetch full peer list
-      { PeerLister a; a.print(); }
-
-      //+ play start for myself
-      sample_now = song_request;
-      sample_player_start_task.restartDelayed(10);
-      new_note_time = millis(); // also, block for some time.
-
-      //+ fancy stuff
-      screen_cmd_notify_task.restart();
-      screen_req_notify_task.restart();
-
-      //+ automatically increase 'song_request'
-      song_request = song_request + 1;
-      if (song_request > 999) song_request = 999;
-
+      nowsend = true;
     }
   }
   //
@@ -285,10 +256,47 @@ void screen() {
     btn_next = a;
     if(a == 0) {
       // 'next' button pressed.
+
+      qselect = qselect + 1;
+      if (qselect > (qlist.size() - 1)) qselect = 0;
     }
   }
 
-#endif
+  if (nowsend == true) {
+    nowsend = false;
+    // create a NOTE req. and send it out.
+    //
+    MONITORING_SERIAL.print("# posting a req.# ==> ");
+    MONITORING_SERIAL.println(qlist[qselect].to_string());
+    //
+    uint8_t frm_size = sizeof(Note) + 2;
+    uint8_t frm[frm_size];
+    frm[0] = '[';
+    memcpy(frm + 1, (uint8_t *) &qlist[qselect], sizeof(Note));
+    frm[frm_size - 1] = ']';
+    //
+    // strange but following didn't work as expected. (instead, i have to send one-by-one.)
+    // esp_now_send(NULL, frm, frm_size); // to all peers in the list.
+
+    // so, forget about peer list -> just pick a broadcast peer to be sent.
+    uint8_t broadcastmac[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+    esp_now_send(broadcastmac, frm, frm_size);
+
+    // (DEBUG) fetch full peer list
+    { PeerLister a; a.print(); }
+
+    //+ fancy stuff
+    screen_req_notify_task.restart();
+
+    //+ play start for myself
+    sample_now = qlist[qselect].pitch;
+    sample_player_start_task.restartDelayed(10);
+    new_note_time = millis(); // also, block for some time.
+
+    //+ automatically increase 'song_request'
+    qselect = qselect + 1;
+    if (qselect > (qlist.size() - 1)) qselect = 0;
+  }
 
   //clear screen + a
   int line_step = 12;
@@ -314,10 +322,6 @@ void screen() {
     // display.printf("%06d* stopped !:.", b); // (DEBUG)
     display.printf("* stopped !:.");
   }
-  if (cmd_notify) {
-    display.setCursor(120, line);
-    display.println("*");
-  }
   line += line_step;
 
   //line2 - filename
@@ -325,16 +329,17 @@ void screen() {
   display.println(screen_filename.c_str());
   line += line_step;
 
-  //line3 - rf. last msg.
+  //line3 - msg. ready to be sent now.
   display.setCursor(0, line);
-  display.println(screen_cmd.c_str());
+  display.printf(":Q: %05d %03d %03d %01d", (int)qlist[qselect].id, (int)qlist[qselect].pitch, (int)qlist[qselect].velocity, (int)qlist[qselect].onoff);
   line += line_step;
 
+  //line4 - big file name display
   display.setCursor(0, line);
   display.setTextSize(2);
   //
   char filename[14] = "/NNN.mp3";
-  int note = song_request;
+  int note = qlist[qselect].pitch;
   int nnn = (note % 1000);  // 0~999
   int nn =  (note % 100);   // 0~99
   filename[1] = '0' + (nnn / 100); // N__.MP3
@@ -345,6 +350,11 @@ void screen() {
   line += line_step;
   display.setTextSize(1);
   line += 8;
+
+  // //alternative line3+4 - full msg. dump (DEBUG/MONITORING)
+  // display.setCursor(0, line);
+  // display.println(":Q: " + qlist[qselect].to_string());
+  // line += line_step;
 
   //line5 - song req. tx. notify. (GEN_NOTE_REQ)
   display.setCursor(0, line);
@@ -522,28 +532,6 @@ void blink() {
 }
 Task blink_task(0, TASK_FOREVER, &blink, &runner, false); // makepython esp32 has NO led => disabled.
 
-// on 'Note'
-void onNoteHandler(Note & n) {
-  //is it for me?
-  if (n.id == MY_GROUP_ID || n.id == MY_ID) {
-    //
-#if defined(GEN_NOTE_REQ)
-#else
-    screen_cmd = n.to_string();
-#endif
-    screen_cmd_notify_task.restart();
-    //
-    if (n.onoff == 1) {
-      sample_now = n.pitch;
-      sample_player_start_task.restartDelayed(10);
-    } else if (n.onoff == 0) {
-      sample_now = n.pitch;
-      sample_player_stop_task.restartDelayed(10);
-    }
-    //
-  }
-}
-
 // on 'receive'
 void onDataReceive(const uint8_t * mac, const uint8_t *incomingData, int32_t len) {
 
@@ -568,7 +556,7 @@ void onDataReceive(const uint8_t * mac, const uint8_t *incomingData, int32_t len
   if (incomingData[0] == '[' && incomingData[len - 1] == ']' && len == (sizeof(Note) + 2)) {
     Note note;
     memcpy((uint8_t *) &note, incomingData + 1, sizeof(Note));
-    onNoteHandler(note);
+    //onNoteHandler(note);
 
     //is it for me?
     if (note.id == MY_GROUP_ID || note.id == MY_ID) {
