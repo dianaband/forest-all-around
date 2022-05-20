@@ -130,19 +130,19 @@ Audio audio;
 std::vector<Note> qlist;
 void init_qlist() {
   // tech. rehearsal @ May 21
-  qlist.push_back(Note(10000,   1, 127, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 101, 127, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 102, 127, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 103, 127, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 104, 127, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 105, 127, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 106, 127, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 107, 127, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 108, 127, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 109, 127, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 110, 127, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 111, 127, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 112, 127, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000,   1, 0, 1, 0, 0, 0, 0, 0)); //velocity == 0 ~~> don't change volume.
+  qlist.push_back(Note(10000, 101, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 102, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 103, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 104, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 105, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 106, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 107, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 108, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 109, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 110, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 111, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 112, 0, 1, 0, 0, 0, 0, 0));
 
 }
 

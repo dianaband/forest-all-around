@@ -16,7 +16,7 @@
 //============<identities>============
 //
 #define MY_GROUP_ID         (10000)
-#define MY_ID               (MY_GROUP_ID + 5)
+#define MY_ID               (MY_GROUP_ID + 15)
 #define MY_SIGN             ("AUDIOOOO")
 #define ADDRESSBOOK_TITLE   ("broadcast only")
 //
@@ -346,7 +346,9 @@ void onNoteHandler(Note & n) {
     screen_cmd = n.to_string();
     screen_cmd_notify_task.restart();
     //
-    audio.setVolume(n.velocity * 21 / 127 * GAIN_MAX); // 0...127 ==> 0...21
+    if (n.velocity != 0 || n.onoff == 2) {
+      audio.setVolume(n.velocity * 21 / 127 * GAIN_MAX); // 0...127 ==> 0...21
+    }
     //
     if (n.onoff == 1) {
       // filter out re-triggering same note while it is playing.
