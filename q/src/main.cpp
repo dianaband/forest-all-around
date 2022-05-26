@@ -670,7 +670,8 @@ void setup() {
 
   //audio(I2S)
   audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
-  audio.setVolume(21);   // 0...21
+  // audio.setVolume(21);   // 0...21
+  audio.setVolume(14.88);   // 90 * 21 / 127 == 14.88
   // audio.connecttoFS(SD, filename.c_str());
 
   //info

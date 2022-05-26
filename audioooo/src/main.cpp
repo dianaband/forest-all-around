@@ -16,7 +16,7 @@
 //============<identities>============
 //
 #define MY_GROUP_ID         (10000)
-#define MY_ID               (MY_GROUP_ID + 15)
+#define MY_ID               (MY_GROUP_ID + 7)
 #define MY_SIGN             ("AUDIOOOO")
 #define ADDRESSBOOK_TITLE   ("broadcast only")
 //
@@ -495,7 +495,9 @@ void setup() {
 
   //audio(I2S)
   audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
-  audio.setVolume(21);   // 0...21
+  // audio.setVolume(21);   // 0...21
+  audio.setVolume(11.57);   // 70 * 21 / 127 == 11.57
+
   // audio.connecttoFS(SD, filename.c_str());
 
   //info
