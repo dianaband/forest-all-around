@@ -165,21 +165,37 @@ void init_qlist() {
   // qlist.push_back(Note(10000, 217, 0, 1, 0, 0, 0, 0, 0));
 
   // day 2 @ May 27
-  qlist.push_back(Note(10000,   1, 0, 1, 0, 0, 0, 0, 0)); //velocity == 0 ~> don't change volume.
-  qlist.push_back(Note(10000, 301, 0, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 302, 0, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 303, 0, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 304, 0, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 305, 0, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 306, 0, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 307, 0, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 308, 0, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 309, 0, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 310, 0, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 311, 0, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 312, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000,   1, 0, 1, 0, 0, 0, 0, 0)); //velocity == 0 ~> don't change volume.
+  // qlist.push_back(Note(10000, 301, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 302, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 303, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 304, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 305, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 306, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 307, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 308, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 309, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 310, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 311, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 312, 0, 1, 0, 0, 0, 0, 0));
 
   // day 3 @ May 28
+  qlist.push_back(Note(10000,   1, 0, 1, 0, 0, 0, 0, 0)); //velocity == 0 ~> don't change volume.
+  qlist.push_back(Note(10000, 401, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 402, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 403, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 404, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 405, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 406, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 407, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 408, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 409, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 410, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 411, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 412, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 413, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 414, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 415, 0, 1, 0, 0, 0, 0, 0));
 
   // day 4 @ May 29
 
