@@ -130,19 +130,58 @@ Audio audio;
 std::vector<Note> qlist;
 void init_qlist() {
   // tech. rehearsal @ May 21
-  qlist.push_back(Note(10000,   1, 0, 1, 0, 0, 0, 0, 0)); //velocity == 0 ~~> don't change volume.
-  qlist.push_back(Note(10000, 101, 0, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 102, 0, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 103, 0, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 104, 0, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 105, 0, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 106, 0, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 107, 0, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 108, 0, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 109, 0, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 110, 0, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 111, 0, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 112, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000,   1, 0, 1, 0, 0, 0, 0, 0)); //velocity == 0 ~> don't change volume.
+  // qlist.push_back(Note(10000, 101, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 102, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 103, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 104, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 105, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 106, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 107, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 108, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 109, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 110, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 111, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 112, 0, 1, 0, 0, 0, 0, 0));
+
+  // // day 1 @ May 26
+  // qlist.push_back(Note(10000,   1, 0, 1, 0, 0, 0, 0, 0)); //velocity == 0 ~> don't change volume.
+  // qlist.push_back(Note(10000, 201, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 202, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 203, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 204, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 205, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 206, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 207, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 208, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 209, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 210, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 211, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 212, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 213, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 214, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 215, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 216, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 217, 0, 1, 0, 0, 0, 0, 0));
+
+  // day 2 @ May 27
+  qlist.push_back(Note(10000,   1, 0, 1, 0, 0, 0, 0, 0)); //velocity == 0 ~> don't change volume.
+  qlist.push_back(Note(10000, 301, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 302, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 303, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 304, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 305, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 306, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 307, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 308, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 309, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 310, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 311, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 312, 0, 1, 0, 0, 0, 0, 0));
+
+  // day 3 @ May 28
+
+  // day 4 @ May 29
 
 }
 
