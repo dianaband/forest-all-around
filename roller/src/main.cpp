@@ -21,7 +21,7 @@
 //============<identities>============
 //
 #define MY_GROUP_ID   (4000)
-#define MY_ID         (MY_GROUP_ID + 200)
+#define MY_ID         (MY_GROUP_ID + 4)
 #define MY_SIGN       ("ROLLER")
 //
 //============</identities>============
@@ -41,9 +41,16 @@
 // 'HAVE_CLIENT_I2C'
 // --> i have a client w/ I2C i/f. enable the I2C client task.
 //
+// 'USE_OLD_PWM_RANGE'
+// --> For ESP8266 releases before 3.0, the default range was between 0 and 1023.
+//     For ESP8266 releases after 3.0, the default range is between 0 and 255.
+//     this can be mitigated by calling analogWriteRange(new_range).
+//     for example, 'rounder' used range 0-1023.
+//
 //==========</list-of-configurations>==========
 //
 // (EMPTY)
+// #define USE_OLD_PWM_RANGE
 
 //============<parameters>============
 //
@@ -268,6 +275,10 @@ void setup() {
 
   //pwm freq.
   analogWriteFreq(40000);
+#if defined(USE_OLD_PWM_RANGE)
+  analogWriteRange(1023);
+#endif
+
 
   //serial
   Serial.begin(115200);
@@ -291,6 +302,9 @@ void setup() {
 #endif
 #if defined(HAVE_CLIENT_I2C)
   Serial.println("- ======== 'HAVE_CLIENT_I2C' ========");
+#endif
+#if defined(USE_OLD_PWM_RANGE)
+  Serial.println("- ======== 'USE_OLD_PWM_RANGE' ========");
 #endif
   Serial.println("-");
 
