@@ -1,0 +1,24 @@
+#N canvas 505 114 428 406 10;
+#X obj 68 239 expr ($f1-$f2)/($f3-$f2);
+#X obj 68 261 min 1;
+#X obj 68 283 max 0;
+#X obj 68 191 inlet;
+#X obj 150 191 inlet;
+#X obj 233 191 inlet;
+#X obj 68 331 outlet;
+#X text 7 7 .;
+#X text 396 364 .;
+#X text 58 26 << signal conditioner >>;
+#X text 43 65 zoom & fit region of interest. [X \, Y) --> [0 \, 1)
+;
+#X floatatom 104 115 5 0 0 1 H - -, f 5;
+#X floatatom 104 130 5 0 0 1 L - -, f 5;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 2 0 6 0;
+#X connect 3 0 0 0;
+#X connect 4 0 12 0;
+#X connect 5 0 11 0;
+#X connect 11 0 0 2;
+#X connect 12 0 0 1;
+#X coords 0 -1 1 1 55 50 1 100 100;
