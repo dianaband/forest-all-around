@@ -252,6 +252,9 @@ void onNoteHandler(Note & n) {
         watch_counter = 0;
       } else if (n.onoff == 0) {
         rest_task.restartDelayed(10);
+      } else if (n.onoff == 2) {
+        set_speed_task.restartDelayed(10);
+        rest_task.restartDelayed(10 + n.x1);
       }
     }
     //
@@ -263,6 +266,9 @@ void onNoteHandler(Note & n) {
         watch2_counter = 0;
       } else if (n.onoff == 0) {
         rest2_task.restartDelayed(10);
+      } else if (n.onoff == 2) {
+        set_speed2_task.restartDelayed(10);
+        rest2_task.restartDelayed(10 + n.x1);
       }
     }
     //
