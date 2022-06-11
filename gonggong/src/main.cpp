@@ -46,6 +46,7 @@
 // (EMPTY)
 
 //============<gonggong>============
+#define GONG_SIDE_RAW_KEY  0    // velocity = writeMicroseconds(us)
 #define GONG_SIDE_KEY      1000 // X1 = start angle, X2 = hit angle
 #define GONG_SIDE_MOVE_KEY 1001 // X3 = set angle
 #define GONG_HEAD_KEY      1002 // random (HEAD)
@@ -148,6 +149,21 @@ void ring_side_move() {
   side_release_task.restartDelayed(100);
 }
 Task ring_side_move_task(0, TASK_ONCE, &ring_side_move);
+
+// ring_side. - act type #3 (set raw us==move)
+extern Task ring_side_raw_task;
+int side_set_raw_us = 1000;
+void ring_side_raw() {
+  //
+  MONITORING_SERIAL.print("ring_side_raw go -> ");
+  MONITORING_SERIAL.print(side_set_raw_us);
+  MONITORING_SERIAL.println(" (us)");
+  //
+  side.attach(D6);
+  side.writeMicroseconds(side_set_raw_us);
+  side_release_task.restartDelayed(100);
+}
+Task ring_side_raw_task(0, TASK_ONCE, &ring_side_raw);
 
 // ring_head.
 static Servo head;
@@ -273,6 +289,12 @@ Task blink_task(0, TASK_FOREVER, &blink, &runner, true); // -> ENABLED, at start
 void onNoteHandler(Note & n) {
   //
   if (n.id == MY_GROUP_ID || n.id == MY_ID) {
+    if (n.pitch == GONG_SIDE_RAW_KEY && n.onoff == 1) {
+      side_set_raw_us = n.velocity;
+      //
+      ring_side_raw_task.restartDelayed(10);
+      //
+    }
     if (n.pitch == GONG_SIDE_KEY && n.onoff == 1) {
       side_start_angle = n.x1;
       side_hit_angle = n.x2;
@@ -422,6 +444,7 @@ void setup() {
   //tasks
   runner.addTask(ring_side_task);
   runner.addTask(ring_side_move_task);
+  runner.addTask(ring_side_raw_task);
   runner.addTask(side_release_task);
   //
   runner.addTask(ring_head_task);
