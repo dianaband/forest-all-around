@@ -1,0 +1,16 @@
+#N canvas 1 89 370 282 12;
+#X obj 94 124 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 94 189 print;
+#X msg 189 95 1000 4000;
+#X obj 94 143 retro 200 1800;
+#X msg 200 125 200 1800;
+#X text 2 7 <<<;
+#X text 322 7 >>>;
+#X text 2 237 <<<;
+#X text 322 237 >>>;
+#X text 95 39 * a randomized metro !;
+#X connect 0 0 3 0;
+#X connect 2 0 3 1;
+#X connect 3 0 1 0;
+#X connect 4 0 3 1;

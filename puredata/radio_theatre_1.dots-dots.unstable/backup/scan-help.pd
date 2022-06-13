@@ -1,0 +1,20 @@
+#N canvas 630 384 450 300 12;
+#X floatatom 120 194 5 0 0 0 - - -;
+#X obj 120 224 print;
+#X floatatom 120 73 5 0 0 1 scan_target - -;
+#X msg 120 48 100;
+#X floatatom 193 144 5 0 0 1 delay_amount_(ms) - -;
+#X obj 120 163 scan 100;
+#X msg 140 109 0;
+#X text 174 109 if <= 0 \, stop immediately;
+#X obj 173 198 bng 15 250 50 0 empty empty done! 17 7 0 10 -262144
+-1 -1;
+#X obj 173 224 print done;
+#X connect 0 0 1 0;
+#X connect 2 0 5 0;
+#X connect 3 0 2 0;
+#X connect 4 0 5 1;
+#X connect 5 0 0 0;
+#X connect 5 1 8 0;
+#X connect 6 0 5 0;
+#X connect 8 0 9 0;

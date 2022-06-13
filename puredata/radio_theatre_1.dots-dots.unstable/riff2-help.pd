@@ -1,0 +1,36 @@
+#N canvas 0 0 353 343 10;
+#X obj 96 166 riff2;
+#X msg 167 112 \$1-abc;
+#X obj 167 89 f \$0;
+#X obj 167 69 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#X obj 24 151 bng 15 250 50 0 empty empty go- 17 7 0 10 #fcfcfc #000000
+#000000;
+#X msg 24 220 0;
+#X obj 143 301 print;
+#X obj 239 266 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X obj 239 120 loadbang;
+#X msg 239 143 4501 0 900 500;
+#X obj 239 286 print done;
+#N canvas 0 50 450 250 (subpatch) 0;
+#X array \$0-abc 10 float 3;
+#A 0 0.885708 0.785709 0.471426 0.0428596 -0.299994 -0.642848 -0.357136
+0.514283 0.185715 -0.0571394;
+#X coords 0 1 10 -1 100 100 1 0 0;
+#X restore 19 25 graph;
+#X obj 167 46 loadbang;
+#X text 22 201 stop!;
+#X connect 0 0 6 0;
+#X connect 0 1 6 0;
+#X connect 0 2 6 0;
+#X connect 0 3 7 0;
+#X connect 1 0 0 1;
+#X connect 2 0 1 0;
+#X connect 3 0 2 0;
+#X connect 4 0 0 0;
+#X connect 5 0 0 0;
+#X connect 7 0 10 0;
+#X connect 8 0 9 0;
+#X connect 9 0 0 2;
+#X connect 12 0 3 0;

@@ -1,0 +1,13 @@
+#N canvas 620 344 450 300 12;
+#X floatatom 24 125 5 0 0 0 - - - 0;
+#X floatatom 24 188 5 0 0 0 - - - 0;
+#X obj 24 212 print;
+#X obj 24 163 resampl 1000;
+#X text 19 27 [resampl] only output up to 1 output per \$1 millisec.
+;
+#X text 19 13 [resampl] always output \, no skip;
+#X text 19 57 [resampl] is simpler version of [skip] which also detect/change
+events;
+#X connect 0 0 3 0;
+#X connect 1 0 2 0;
+#X connect 3 0 1 0;
