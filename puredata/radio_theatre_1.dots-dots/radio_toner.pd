@@ -56,6 +56,10 @@
 #X msg 446 411 1;
 #X msg 388 436 0;
 #X obj 334 394 sel 1;
+#X obj 22 463 tgl 15 0 empty WORLD_SLEEP r:WORLD_SLEEP 17 7 0 10 #fc0400
+#fcfcfc #fc0400 0 1;
+#X obj 22 483 sel 1;
+#X msg 22 508 0;
 #X connect 0 0 1 0;
 #X connect 1 0 5 0;
 #X connect 1 0 25 0;
@@ -107,3 +111,7 @@
 #X connect 46 0 43 0;
 #X connect 47 0 43 0;
 #X connect 48 0 45 0;
+#X connect 49 0 50 0;
+#X connect 50 0 51 0;
+#X connect 51 0 31 0;
+#X connect 51 0 43 0;

@@ -138,7 +138,7 @@
 #X connect 51 0 46 1;
 #X connect 52 0 53 0;
 #X restore 283 57 pd world and me;
-#N canvas 240 25 392 534 expressions 1;
+#N canvas 240 25 392 534 expressions 0;
 #X obj 55 312 inlet;
 #X obj 55 393 outlet;
 #X obj 55 364 t b a;
