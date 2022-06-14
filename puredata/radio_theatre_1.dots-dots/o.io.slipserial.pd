@@ -16,7 +16,7 @@
 #000000 0 1;
 #X obj 166 64 route open devicename close;
 #X obj 219 114 del 200;
-#X obj 50 169 comport -1;
+#X obj 50 169 comport 99;
 #X connect 0 0 3 0;
 #X connect 2 0 7 0;
 #X connect 3 0 11 0;
