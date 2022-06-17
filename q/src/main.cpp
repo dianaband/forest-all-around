@@ -200,20 +200,28 @@ void init_qlist() {
   // qlist.push_back(Note(10000, 414, 0, 1, 0, 0, 0, 0, 0));
   // qlist.push_back(Note(10000, 415, 0, 1, 0, 0, 0, 0, 0));
 
-  // day 4 @ May 29
-  qlist.push_back(Note(10000,   1, 0, 1, 0, 0, 0, 0, 0)); //velocity == 0 ~> don't change volume.
+  // // day 4 @ May 29
+  // qlist.push_back(Note(10000,   1, 0, 1, 0, 0, 0, 0, 0)); //velocity == 0 ~> don't change volume.
+  // qlist.push_back(Note(10000, 101, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 102, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 103, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 104, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 105, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 106, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 107, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 108, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 109, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 110, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 111, 0, 1, 0, 0, 0, 0, 0));
+  // qlist.push_back(Note(10000, 112, 0, 1, 0, 0, 0, 0, 0));
+
+  // extra. day 5 @ June 18
   qlist.push_back(Note(10000, 101, 0, 1, 0, 0, 0, 0, 0));
   qlist.push_back(Note(10000, 102, 0, 1, 0, 0, 0, 0, 0));
   qlist.push_back(Note(10000, 103, 0, 1, 0, 0, 0, 0, 0));
   qlist.push_back(Note(10000, 104, 0, 1, 0, 0, 0, 0, 0));
   qlist.push_back(Note(10000, 105, 0, 1, 0, 0, 0, 0, 0));
   qlist.push_back(Note(10000, 106, 0, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 107, 0, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 108, 0, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 109, 0, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 110, 0, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 111, 0, 1, 0, 0, 0, 0, 0));
-  qlist.push_back(Note(10000, 112, 0, 1, 0, 0, 0, 0, 0));
 
 }
 

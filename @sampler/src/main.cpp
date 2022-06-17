@@ -351,8 +351,8 @@ void setup() {
   mixer2.gain(3,0);
   // amp1.gain(GAIN_FACTOR);
   // amp2.gain(GAIN_FACTOR);
-  amp1.gain(33.0/127.0); //default volume preset
-  amp2.gain(33.0/127.0); //default volume preset
+  amp1.gain(50.0/127.0); //default volume preset
+  amp2.gain(50.0/127.0); //default volume preset
 
   //let auto-poweroff speakers stay turned ON!
   sine1.frequency(IDLE_FREQ);
