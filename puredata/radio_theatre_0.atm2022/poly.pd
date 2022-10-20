@@ -1,0 +1,25 @@
+#N canvas 803 89 525 569 10;
+#X declare -path ofelia/abs;
+#X obj 18 64 ofWindow;
+#X obj 18 18 loadbang;
+#X obj 358 18 declare -path ofelia/abs;
+#X msg 18 41 setPosition 0 0 \, setSize 800 800 \, create;
+#X obj 18 98 ofDraw;
+#X floatatom 18 121 5 0 0 0 - - -;
+#X obj 18 143 max 3;
+#X obj 18 166 min 10;
+#X obj 18 220 ofelia f \; ofNoFill() \; local n = a \; local angleChangePerPt
+= OF_TWO_PI / n \; local radius = ofGetWidth()/2 - 10 \; local origx
+= ofGetWidth()/2 \; local origy = ofGetHeight()/2 \; local angle =
+-OF_TWO_PI / 4 \; ofSetHexColor(0xa16bca) \; ofBeginShape() \; for
+i = 0 \, n do \; local x = origx + radius * math.cos(angle) \; local
+y = origy + radius * math.sin(angle) \; ofVertex(x \, y) \; angle =
+angle + angleChangePerPt \; end \; ofEndShape() \;;
+#X floatatom 18 189 5 0 0 0 - - -;
+#X connect 1 0 3 0;
+#X connect 3 0 0 0;
+#X connect 4 0 5 0;
+#X connect 5 0 6 0;
+#X connect 6 0 7 0;
+#X connect 7 0 9 0;
+#X connect 9 0 8 0;

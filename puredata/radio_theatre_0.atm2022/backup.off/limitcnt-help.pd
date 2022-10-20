@@ -1,0 +1,12 @@
+#N canvas 1 89 450 300 12;
+#X obj 82 72 bng 15 250 50 0 empty empty -(dec) 17 7 0 10 -262144 -1
+-1;
+#X obj 163 72 bng 15 250 50 0 empty empty +(inc) 17 7 0 10 -262144
+-1 -1;
+#X floatatom 82 137 5 0 0 0 - - -;
+#X obj 82 104 limitcnt 0 8;
+#X text 195 102 count from 0 to 8;
+#X text 195 122 always stay in the range;
+#X connect 0 0 3 0;
+#X connect 1 0 3 1;
+#X connect 3 0 2 0;
