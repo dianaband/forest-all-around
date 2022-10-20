@@ -42,3 +42,4 @@
 .pio/*
 members/*/.pio/
 members/*/.pio/*
+.python-version
