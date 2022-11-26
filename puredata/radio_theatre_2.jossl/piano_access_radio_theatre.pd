@@ -67,7 +67,7 @@
 #X text 419 134 /id /pitch /velocity /onoff;
 #X text 11 442 <<<;
 #X text 581 442 >>>;
-#X text 370 279 * sub-patches;
+#X text 402 302 * sub-patches;
 #X floatatom 549 325 5 0 0 0 - - - 0;
 #X obj 549 347 s PS;
 #X obj 500 236 tgl 25 0 empty empty hello 32 7 0 15 #9c00fc #f8fc00
@@ -92,7 +92,7 @@
 #X obj 533 62 del 1000;
 #X msg 210 58 devicename /dev/tty.SLAB_USBtoUART \, baud 57600 \, pollintervall
 1 \, verbose 1;
-#N canvas 42 45 1287 714 crickets 0;
+#N canvas 141 76 1287 714 crickets 1;
 #X obj 417 251 radio_yellow;
 #X floatatom 319 19 5 0 0 0 r:E_SEQ_line E_SEQ_line - 0;
 #X obj 365 515 radio_postbox;
@@ -133,7 +133,7 @@
 -5.96046e-08 -5.96046e-08 -5.96046e-08 -5.96046e-08 -5.96046e-08 -5.96046e-08
 -5.96046e-08 0.0952381 0.142857 0.114286 0.0571423 0.0190468 -0.0380964
 -0.0761918 -0.123811 50 4201 0 200 700 1000 fruit_do world 0.3 0.1
-0.02 -0.005;
+0.04 -0.005;
 #X obj 668 251 radio_mote_random;
 #A saved 0.0952383 0.114286 0.114286 0.114286 0.057143 -0.0476183 -0.133332
 -0.133332 -0.133332 -0.133332 -0.0761895 0.0285717 0.0857142 0.104762
@@ -164,7 +164,7 @@
 0.0190476 0.0190476 0.0190476 0.0190476 0.0190476 0.00952369 0.00952369
 -1.78814e-07 -0.0857131 -0.0571419 -0.00952315 0.0190481 0.0571431
 0.0952381 0.0857143 5.96046e-07 -0.0476182 -0.0952369 -0.133332 -0.133332
-0.0857143 50 4403 0 200 700 1000 fruit_sol world 0.23 0.1 0.02 -0.005
+0.0857143 50 4403 0 200 700 1000 fruit_sol world 0.23 0.1 0.04 -0.005
 ;
 #X obj 668 538 radio_mote_random;
 #A saved 0.0952383 0.114286 0.114286 0.114286 0.057143 -0.0476183 -0.133332
@@ -196,7 +196,7 @@
 0.0857143 0.114286 0.0571431 5.96046e-07 -0.0666656 -0.104761 -0.0857131
 -0.0571419 -0.00952315 0.0190481 0.0571431 0.0952381 0.0857143 5.96046e-07
 -0.0476182 -0.0952369 -0.133332 -0.133332 0.0857143 50 4807 1 200 700
-1000 fruit_si world 0.225 0.1 0.02 -0.005;
+1000 fruit_si world 0.225 0.1 0.04 -0.005;
 #N canvas 0 23 518 399 vinyl 0;
 #X obj 96 321 s NOTE;
 #X msg 96 251 3555 0 0 0;
@@ -439,7 +439,7 @@
 #X connect 13 1 8 0;
 #X connect 14 0 4 0;
 #X restore 153 259 pd capser;
-#N canvas 11 23 398 376 fridge 0;
+#N canvas 11 23 398 376 fridge 1;
 #X obj 73 285 s NOTE;
 #X obj 73 242 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
@@ -453,7 +453,7 @@
 0.628571 0.476189 0.438094 0.333331 0.304759 0.266664 0.276188 0 0
 10 0.52381 0.609525 0.619048 0.628572 0.628572 0.604763 0.580953 0.533334
 0 0 10 0 0.533333 0.47619 0.438095 0.414285 0.390475 0.380951 0.399999
-0.457142 0 10 0 0 0 2500 5000 fridge world 0.2 0.1 0.02 -0.005;
+0.457142 0 10 0 0 0 2500 5000 fridge world 0.2 0.1 0.04 -0.005;
 #X text 235 144 all words: 10 points;
 #X obj 112 208 tgl 15 0 empty TAPE_REWIND TAPE_REWIND 17 7 0 10 #fcfcfc
 #000000 #000000 0 1;
@@ -476,14 +476,14 @@
 0.628571 0.476189 0.438094 0.333331 0.304759 0.266664 0.276188 0 0
 10 0.52381 0.609525 0.619048 0.628572 0.628572 0.604763 0.580953 0.533334
 0 0 10 0 0.533333 0.47619 0.438095 0.414285 0.390475 0.380951 0.399999
-0.457142 0 10 0 0 0 2500 7500 compressor world 0.2 0.1 0.02 -0.005
+0.457142 0 10 0 0 0 2500 7500 compressor world 0.23 0.1 0.02 -0.005
 ;
 #X text 235 144 all words: 10 points;
 #X connect 2 0 3 0;
 #X connect 3 0 1 0;
 #X connect 4 0 2 0;
-#X restore 413 182 pd compressor;
-#N canvas 0 23 681 459 plane 0;
+#X restore 493 210 pd compressor;
+#N canvas 749 96 681 459 plane 1;
 #N canvas 0 23 450 278 (subpatch) 0;
 #X array riff10 50 float 3;
 #A 0 0.809524 0.809524 0.819048 0.819048 0.819048 0.809524 0.7 0.695239
@@ -728,7 +728,7 @@
 0.628571 0.476189 0.438094 0.333331 0.304759 0.266664 0.276188 0 0
 10 0.52381 0.609525 0.619048 0.628572 0.628572 0.604763 0.580953 0.533334
 0 0 10 0 0.533333 0.47619 0.438095 0.414285 0.390475 0.380951 0.399999
-0.457142 0 10 0 0 0 2500 7500 fruitshake world 0.19 0.1 0.02 -0.005
+0.457142 0 10 0 0 0 2500 7500 fruitshake world 0.19 0.1 0.04 -0.004
 ;
 #X text 1141 376 all words: 10 points;
 #X msg 237 121 0.07;
@@ -736,15 +736,16 @@
 #X obj 302 63 tgl 25 0 empty PRESET PRESET 27 7 0 10 #e3c6ff #9c00ff
 #000000 0 1;
 #X obj 302 93 sel 0 1;
-#X obj 392 63 tgl 25 0 empty HAPPYSET HAPPY\ ENDING 27 7 0 10 #feffc6
+#X obj 392 63 tgl 25 0 empty HAPPYSET HAPPY\\\ ENDING 27 7 0 10 #feffc6
 #0400ff #000000 0 1;
 #X obj 392 93 sel 0 1;
 #X msg 392 114 0.1;
-#X msg 411 135 10;
 #X obj 452 131 bng 20 250 50 0 WORLD_evt_half empty s:WORLD_evt_half
 22 7 0 10 #f8fc00 #000000 #000000;
 #X obj 452 110 until;
 #X msg 452 88 5;
+#X msg 237 151 0.05;
+#X msg 411 135 2;
 #X connect 19 0 18 1;
 #X connect 20 0 22 0;
 #X connect 20 1 24 0;
@@ -763,14 +764,15 @@
 #X connect 33 0 31 0;
 #X connect 33 1 19 0;
 #X connect 34 0 35 0;
-#X connect 34 0 40 0;
 #X connect 35 0 36 0;
-#X connect 35 1 37 0;
+#X connect 35 1 41 0;
+#X connect 35 1 39 0;
 #X connect 36 0 18 1;
-#X connect 37 0 18 1;
+#X connect 38 0 37 0;
 #X connect 39 0 38 0;
-#X connect 40 0 39 0;
-#X restore 379 315 pd crickets;
+#X connect 40 0 18 1;
+#X connect 41 0 18 1;
+#X restore 409 325 pd crickets;
 #N canvas 194 235 450 300 archive 0;
 #X obj 21 109 tgl 25 0 WORLD_SLEEP empty WORLD_SLEEP 27 7 0 14 #fc0400
 #fcfcfc #fc0400 0 1;
@@ -786,20 +788,48 @@
 #X connect 4 0 3 0;
 #X connect 5 0 0 0;
 #X restore 506 442 pd archive;
-#X obj 84 238 cnv 15 220 220 empty empty empty 20 12 0 14 #c6ffc7 #404040
+#X obj 96 231 cnv 15 100 220 empty empty empty 20 12 0 14 #c6ffc7 #404040
 0;
-#X obj 193 293 tgl 25 0 PRESET empty PRESET 27 7 0 10 #e3c6ff #9c00ff
+#X obj 291 253 tgl 25 0 PRESET empty PRESET 27 7 0 10 #e3c6ff #9c00ff
 #000000 0 1;
-#X obj 193 373 tgl 25 0 HAPPYSET empty HAPPY\\\ ENDING 27 7 0 10 #feffc6
+#X obj 291 317 tgl 25 0 HAPPYSET empty HAPPY\\\ ENDING 27 7 0 10 #feffc6
 #0400ff #000000 0 1;
-#X text 93 277 cue #1 ==> [X];
-#X text 93 319 cue #2 ==> [ ];
-#X text 93 357 cue #3 ==> [X];
-#X text 93 399 cue #4 ==> [ ];
-#X obj 357 396 cnv 15 100 60 empty empty empty 20 12 0 14 #ffe3c6 #404040
+#X obj 387 366 cnv 15 100 60 empty empty empty 20 12 0 14 #ffe3c6 #404040
 0;
-#X obj 367 419 tgl 15 0 TAPE_REWIND empty TAPE_REWIND 17 7 0 10 #fcfcfc
+#X obj 397 389 tgl 15 0 TAPE_REWIND empty TAPE_REWIND 17 7 0 10 #fcfcfc
 #000000 #000000 0 1;
+#X msg 244 247 1;
+#X msg 244 268 0;
+#X msg 244 311 1;
+#X msg 244 332 0;
+#X msg 244 382 1;
+#X msg 244 403 0;
+#X msg 244 424 1;
+#X obj 163 247 bng 15 250 50 0 empty empty empty 17 7 0 10 #ffc7c6
+#000000 #000000;
+#X obj 163 268 bng 15 250 50 0 empty empty empty 17 7 0 10 #ffe3c6
+#000000 #000000;
+#X obj 163 311 bng 15 250 50 0 empty empty empty 17 7 0 10 #feffc6
+#000000 #000000;
+#X obj 163 332 bng 15 250 50 0 empty empty empty 17 7 0 10 #c6ffc7
+#000000 #000000;
+#X obj 163 382 bng 15 250 50 0 empty empty empty 17 7 0 10 #c6feff
+#000000 #000000;
+#X obj 163 403 bng 15 250 50 0 empty empty empty 17 7 0 10 #c7c6ff
+#000000 #000000;
+#X obj 163 424 bng 15 250 50 0 empty empty empty 17 7 0 10 #e3c6ff
+#000000 #000000;
+#X obj 291 403 tgl 25 0 PRESET empty PRESET 27 7 0 10 #e3c6ff #9c00ff
+#000000 0 1;
+#X text 111 246 cue #1;
+#X text 111 268 cue #2;
+#X text 111 311 cue #3;
+#X text 111 335 cue #4;
+#X text 111 381 cue #5;
+#X text 111 403 cue #6;
+#X text 111 426 cue #7;
+#X obj 358 442 bng 20 250 50 0 WORLD_evt_half empty s:WORLD_evt_half
+22 7 0 10 #f8fc00 #000000 #000000;
 #X connect 0 0 18 0;
 #X connect 1 0 0 1;
 #X connect 4 0 16 0;
@@ -830,3 +860,17 @@
 #X connect 37 0 5 1;
 #X connect 38 0 39 0;
 #X connect 39 0 5 1;
+#X connect 47 0 43 0;
+#X connect 48 0 43 0;
+#X connect 49 0 44 0;
+#X connect 50 0 44 0;
+#X connect 51 0 61 0;
+#X connect 52 0 61 0;
+#X connect 53 0 61 0;
+#X connect 54 0 47 0;
+#X connect 55 0 48 0;
+#X connect 56 0 49 0;
+#X connect 57 0 50 0;
+#X connect 58 0 51 0;
+#X connect 59 0 52 0;
+#X connect 60 0 53 0;

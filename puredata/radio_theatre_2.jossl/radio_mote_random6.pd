@@ -896,6 +896,6 @@ d2 -14 7 0 10 #ffffff #000000 #000000 0 256;
 #X connect 96 0 97 0;
 #X connect 98 0 15 0;
 #X connect 98 3 11 0;
-#X connect 101 0 8 0;
+#X connect 101 0 5 0;
 #X connect 102 0 25 0;
 #X coords 0 -1 1 1 285 122 2 5 5;
