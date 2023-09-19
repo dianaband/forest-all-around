@@ -19,7 +19,7 @@
 #define MY_ID         (MY_GROUP_ID + 1)
 #define MY_SIGN       ("P")
 //
-#define ADDRESSBOOK_TITLE ("1st floor")
+#define ADDRESSBOOK_TITLE ("broadcast only")
 //============</identities>============
 
 //==========<list-of-configurations>===========
@@ -89,50 +89,9 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 // q list
 std::vector<Note> qlist;
-std::vector<String> qlist_desc;
 void init_qlist() {
-  //
-  qlist.push_back(Note(20000, 40, 60, 1, 0, 0, 0, 0, 0)); //guide A: start song
-  qlist_desc.push_back("guide A: start song");
-  //
-  qlist.push_back(Note(20000, 30, 0,  0, 0, 0, 0, 0, 0)); //stop all.
-  qlist_desc.push_back("stop all.");
-  //
-  qlist.push_back(Note(20000, 30, 60, 1, 0, 0, 0, 0, 0)); //tour start
-  qlist_desc.push_back("tour start");
-  //
-  qlist.push_back(Note(20000, 30, 0,  0, 0, 0, 0, 0, 0)); //stop all.
-  qlist_desc.push_back("stop all.");
-  //
-  qlist.push_back(Note(20000, 31, 70, 1, 0, 0, 0, 0, 0)); //tour end
-  qlist_desc.push_back("tour end");
-  //
-  qlist.push_back(Note(20000, 30, 0,  0, 0, 0, 0, 0, 0)); //stop all.
-  qlist_desc.push_back("stop all.");
-  //
-  qlist.push_back(Note(20000, 41, 60, 1, 0, 0, 0, 0, 0)); //guide A: end song
-  qlist_desc.push_back("guide A: end song");
-  //
-  qlist.push_back(Note(20000, 40, 60, 1, 0, 0, 0, 0, 0)); //guide B: start song
-  qlist_desc.push_back("guide B: start song");
-  //
-  qlist.push_back(Note(20000, 30, 0,  0, 0, 0, 0, 0, 0)); //stop all.
-  qlist_desc.push_back("stop all.");
-  //
-  qlist.push_back(Note(20000, 30, 60, 1, 0, 0, 0, 0, 0)); //tour start
-  qlist_desc.push_back("tour start");
-  //
-  qlist.push_back(Note(20000, 30, 0,  0, 0, 0, 0, 0, 0)); //stop all.
-  qlist_desc.push_back("stop all.");
-  //
-  qlist.push_back(Note(20000, 31, 70, 1, 0, 0, 0, 0, 0)); //tour end
-  qlist_desc.push_back("tour end");
-  //
-  qlist.push_back(Note(20000, 30, 0,  0, 0, 0, 0, 0, 0)); //stop all.
-  qlist_desc.push_back("stop all.");
-  //
-  qlist.push_back(Note(20000, 51, 60, 1, 0, 0, 0, 0, 0)); //guide B: end song
-  qlist_desc.push_back("guide B: end song");
+  qlist.push_back(Note(10000, 1, 0, 1, 0, 0, 0, 0, 0));
+  qlist.push_back(Note(10000, 1, 0, 0, 0, 0, 0, 0, 0));
 }
 
 //buttons
@@ -144,8 +103,7 @@ const int pin_pause = 33;
 const int pin_next = 2;
 
 //screen task
-String screen_cmd = "XXX..composing..XXX";
-String screen_filename = "***.mp3";
+String screen_cmd = ":Q: ----- --- --- -";
 
 //
 extern Task screen_req_notify_task;
@@ -246,20 +204,29 @@ void screen() {
     nowsend = false;
     // create a NOTE req. and send it out.
     //
+    MONITORING_SERIAL.print("# posting a req.# ==> ");
+    MONITORING_SERIAL.println(qlist[qselect].to_string());
+    //
     uint8_t frm_size = sizeof(Note) + 2;
     uint8_t frm[frm_size];
     frm[0] = '[';
     memcpy(frm + 1, (uint8_t *) &qlist[qselect], sizeof(Note));
     frm[frm_size - 1] = ']';
     //
-    esp_now_send(NULL, frm, frm_size); // to all peers in the list.
-    //
-    MONITORING_SERIAL.print("# posting a req.# ==> ");
-    MONITORING_SERIAL.println(qlist[qselect].to_string());
-    //
+    // strange but following didn't work as expected. (instead, i have to send one-by-one.)
+    // esp_now_send(NULL, frm, frm_size); // to all peers in the list.
+
+    // so, forget about peer list -> just pick a broadcast peer to be sent.
+    uint8_t broadcastmac[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+    esp_now_send(broadcastmac, frm, frm_size);
+
 
     //+ fancy stuff
     screen_req_notify_task.restart();
+
+    //+ automatically increase 'song_request'
+    qselect = qselect + 1;
+    if (qselect > (qlist.size() - 1)) qselect = 0;
   }
 
   //clear screen + a
@@ -277,24 +244,47 @@ void screen() {
   // b = b*10 + digitalRead(pin_pause);
   // b = b*10 + digitalRead(pin_next);
 
-  //line1 - q description.
-  display.setTextSize(1);
+  //line1 - mode line (playing / stopped) + notify mark
   display.setCursor(0, line);
-  display.println("[" + String(qselect) + "] " + qlist_desc[qselect]);
+  display.printf("= transmitting ))) ==");
   line += line_step;
 
-  //line2 - q sent notify
+  //line3 - msg. ready to be sent now.
+  display.setCursor(0, line);
+  display.printf(":Q: %05d %03d %03d %01d", (int)qlist[qselect].id, (int)qlist[qselect].pitch, (int)qlist[qselect].velocity, (int)qlist[qselect].onoff);
+  line += line_step;
+
+  //line4 - big file name display
+  display.setCursor(0, line);
+  display.setTextSize(2);
+  //
+  char filename[14] = "/NNN.mp3 >";
+  int note = qlist[qselect].pitch;
+  int nnn = (note % 1000);  // 0~999
+  int nn =  (note % 100);   // 0~99
+  filename[1] = '0' + (nnn / 100); // N__.MP3
+  filename[2] = '0' + (nn / 10);   // _N_.MP3
+  filename[3] = '0' + (nn % 10);   // __N.MP3
+  //
+  if (qlist[qselect].onoff == 0) {
+    filename[9] = 'x';
+  }
+  display.println(filename);
+  line += line_step;
+  display.setTextSize(1);
+  line += 8;
+
+  // //alternative line3+4 - full msg. dump (DEBUG/MONITORING)
+  // display.setCursor(0, line);
+  // display.println(":Q: " + qlist[qselect].to_string());
+  // line += line_step;
+
+  //line5 - song req. tx. notify. (GEN_NOTE_REQ)
   display.setCursor(0, line);
   if (req_notify) {
     display.setCursor(25, line);
     display.println("~~ d[+=+]b ~~ >>>");
   }
-  line += line_step;
-
-  //line3 - note dump
-  display.setTextSize(1);
-  display.setCursor(0, line);
-  display.println(qlist[qselect].to_string());
   line += line_step;
 
   //
@@ -372,6 +362,7 @@ void setup() {
   Serial.println("-");
   Serial.println("- my id: " + String(MY_ID) + ", gid: " + String(MY_GROUP_ID) + ", call me ==> \"" + String(MY_SIGN) + "\"");
   Serial.println("- mac address: " + WiFi.macAddress() + ", channel: " + String(WIFI_CHANNEL));
+  Serial.println("- my peer book ==> \"" + String(ADDRESSBOOK_TITLE) + "\"");
 #if defined(DISABLE_AP)
   Serial.println("- ======== 'DISABLE_AP' ========");
 #endif
@@ -396,41 +387,31 @@ void setup() {
   }
   esp_now_register_send_cb(onDataSent);
   esp_now_register_recv_cb(onDataReceive);
+  //
+  // Serial.println("- ! (esp_now_add_peer) ==> add a 'broadcast peer' (FF:FF:FF:FF:FF:FF).");
+  // uint8_t broadcastmac[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+  //
+  // //
+  // esp_now_peer_info_t peerInfo = {};
+  // memcpy(peerInfo.peer_addr, broadcastmac, 6);
+  // peerInfo.channel = 0;
+  // peerInfo.encrypt = false;
+  // esp_now_add_peer(&peerInfo);
 
-  //fetch & read addressbook
-  String addressbook_title = ADDRESSBOOK_TITLE;
-// #if defined(ADDRESSBOOK_TITLE_CLI)
-//   addressbook_title = ADDRESSBOOK_TITLE_CLI;
-// #endif
-//
-// NOTE: there is a way to give a define value here like:
-//   export PLATFORMIO_SRC_BUILD_FLAGS="'-DADDRESSBOOK_TITLE_CLI=\"broadcast only\"'" && pio run
-// but, everytime i change this, whole arduino framework + libraries rebuild.
-// PLATFORMIO_SRC_BUILD_FLAGS supposed to work only to src/ but strange.
-// this takes up too much time, not really haptic. later, investigate the issues.
-//
-  AddressBook * book = lib.getBookByTitle(addressbook_title);
+  AddressBook * book = lib.getBookByTitle(ADDRESSBOOK_TITLE);
   if (book == NULL) {
-    Serial.println("- ! wrong book !! :" + addressbook_title); while(1);
-  } else {
-    Serial.println("- ! reading book ....");
-    Serial.println("    -----------------");
-    Serial.println("    { " + addressbook_title + " }");
-    Serial.println("    -----------------");
-    Serial.println();
+    Serial.println("- ! wrong book !! : \"" + String(ADDRESSBOOK_TITLE) + "\""); while(1);
   }
   for (int idx = 0; idx < book->list.size(); idx++) {
     Serial.println("- ! (esp_now_add_peer) ==> add a '" + book->list[idx].name + "'.");
-#if defined(ESP32)
-    esp_now_peer_info_t peerInfo;
+    esp_now_peer_info_t peerInfo = {};
     memcpy(peerInfo.peer_addr, book->list[idx].mac, 6);
     peerInfo.channel = 0;
     peerInfo.encrypt = false;
     esp_now_add_peer(&peerInfo);
-#else
-    esp_now_add_peer(book->list[idx].mac, ESP_NOW_ROLE_COMBO, 1, NULL, 0);
-#endif
   }
+  // (DEBUG) fetch full peer list
+  { PeerLister a; a.print(); }
   //
   Serial.println("-");
   Serial.println("\".-.-.-. :)\"");
